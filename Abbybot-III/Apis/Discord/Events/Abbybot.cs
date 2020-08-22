@@ -9,36 +9,42 @@ namespace Abbybot_III.Apis.Discord.Events
     {
         internal static void Init(DiscordSocketClient _client)
         {
-            _client.Connected += async () => await Abbybot.Connected();
-            _client.Disconnected += async (exception) => await Abbybot.Disconnected(exception);
-            _client.LoggedIn += async () => await Abbybot.LoggedIn();
-            _client.LoggedOut += async () => await Abbybot.LoggedOut();
-            _client.Ready += async () => await Abbybot.Ready();
+            _client.Connected += async () => await Connected();
+            _client.Disconnected += async (exception) => await Disconnected(exception);
+            _client.LoggedIn += async () => await LoggedIn();
+            _client.LoggedOut += async () => await LoggedOut();
+            _client.Ready += async () => await Ready();
         }
 
-        private static Task Connected()
+        private static async Task Connected()
         {
-            throw new NotImplementedException();
+            await Task.CompletedTask;
+            //throw new NotImplementedException();
         }
 
-        private static Task Disconnected(Exception exception)
+        private static async Task Disconnected(Exception exception)
         {
-            throw new NotImplementedException();
+            await Task.CompletedTask;
+            //throw new NotImplementedException();
         }
 
-        private static Task LoggedIn()
+        private static async Task LoggedIn()
         {
-            throw new NotImplementedException();
+            await Task.CompletedTask;
+            //throw new NotImplementedException();
         }
 
-        private static Task LoggedOut()
+        private static async Task LoggedOut()
         {
-            throw new NotImplementedException();
+            await Task.CompletedTask;
+            //throw new NotImplementedException();
         }
 
-        private static Task Ready()
+        private static async Task Ready()
         {
-            throw new NotImplementedException();
+            await Task.CompletedTask;
+            
+            //throw new NotImplementedException();
         }
     }
 }

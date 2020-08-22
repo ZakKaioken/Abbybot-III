@@ -5,7 +5,12 @@ VisualStudioVersion = 16.0.30105.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Abbybot-III", "Abbybot-III.csproj", "{5790D981-4E97-44F8-91A8-7FCCC50B5D16}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abbybot", "..\Abbybot\Abbybot.csproj", "{1667AB23-FB55-4439-AA27-D155E410EE3F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Abbybot", "..\Abbybot\Abbybot.csproj", "{1667AB23-FB55-4439-AA27-D155E410EE3F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9755C529-5B08-4806-BD90-4B307A792C79}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

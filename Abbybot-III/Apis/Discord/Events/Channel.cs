@@ -7,24 +7,29 @@ namespace Abbybot_III.Apis.Discord.Events
 {
     internal class Channel
     {
-        internal static Task Created(SocketChannel channel)
+        internal static async Task Created(SocketChannel channel)
         {
-            throw new NotImplementedException();
+            await Task.CompletedTask;
+            //throw new NotImplementedException();
         }
 
-        internal static Task Destroyed(SocketChannel channel)
+        internal static async Task Destroyed(SocketChannel channel)
         {
-            throw new NotImplementedException();
+            await Task.CompletedTask;
+            //throw new NotImplementedException();
         }
 
-        internal static Task Updated(SocketChannel oldchannel, SocketChannel newchannel)
+        internal static async Task Updated(SocketChannel oldchannel, SocketChannel newchannel)
         {
-            throw new NotImplementedException();
+            await Task.CompletedTask;
+            //throw new NotImplementedException();
         }
 
-        internal static void Init(DiscordSocketClient client)
+        internal static void Init(DiscordSocketClient _client)
         {
-            throw new NotImplementedException();
+            _client.ChannelCreated += async (channel) => await Created(channel);
+            _client.ChannelDestroyed += async (channel) => await Destroyed(channel);
+            _client.ChannelUpdated += async (oldchannel, newchannel) => await Updated(oldchannel, newchannel);
         }
     }
 }

@@ -1,14 +1,46 @@
 ﻿using Discord.WebSocket;
 
 using System;
+using System.Threading.Tasks;
 
 namespace Abbybot_III.Apis.Discord.Events
 {
     internal class Guild
     {
-        internal static void Init(DiscordSocketClient client)
+
+        internal static void Init(DiscordSocketClient _client)
         {
-            throw new NotImplementedException();
+            _client.JoinedGuild += async (guild) => await Guild.Joined(guild);
+            _client.LeftGuild += async (guild) => await Guild.Left(guild);
+            _client.GuildUpdated += async (oldguild, newguild) => await Guild.Updated(oldguild, newguild);
+            _client.GuildAvailable += async (guild) => await Guild.Available(guild);
+            _client.GuildUnavailable += async (guild) => await Guild.Unavailable(guild);
+        }
+
+        private static async Task Joined(SocketGuild guild)
+        {
+            await Task.CompletedTask;
+            //throw new NotImplementedException();
+        }
+        private static async Task Left(SocketGuild guild)
+        {
+            await Task.CompletedTask;
+            //throw new NotImplementedException();
+        }
+        private static async Task Updated(SocketGuild oldguild, SocketGuild newguild)
+        {
+            await Task.CompletedTask;
+            //throw new NotImplementedException();
+        }
+        private static async Task Available(SocketGuild guild)
+        {
+            await Task.CompletedTask;
+            //throw new NotImplementedException();
+        }
+        private static async Task Unavailable(SocketGuild guild)
+        {
+            await Task.CompletedTask;
+            //throw new NotImplementedException();
         }
     }
 }

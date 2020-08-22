@@ -4,28 +4,26 @@ using Abbybot_III.Apis.Discord.Events;
 using Discord;
 using Discord.WebSocket;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Apis.Discord
 {
     class Discord
     {
+
         public static DiscordSocketClient _client;
-        public void DiscordMain()
+        public static void DiscordMain()
         {
             _client = new DiscordSocketClient();
             EventInitializer.Init(_client);
 
             StartDiscord().GetAwaiter().GetResult();
-            
+
         }
 
-        private async Task StartDiscord()
+        private static async Task StartDiscord()
         {
-            DiscordApiKey dak = DiscordApiKey.Load("DiscordApiKey.json");
+            DiscordApiKey dak = DiscordApiKey.Load(@"ApiKeys\Discord.json");
             await _client.LoginAsync(TokenType.Bot, dak.ApiKey);
             await _client.StartAsync();
             await Task.Delay(-1);

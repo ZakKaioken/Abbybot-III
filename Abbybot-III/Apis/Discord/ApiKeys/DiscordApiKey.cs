@@ -1,9 +1,7 @@
 ﻿using Newtonsoft.Json;
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace Abbybot_III.Apis.Discord.ApiKeys
 {
@@ -25,8 +23,9 @@ namespace Abbybot_III.Apis.Discord.ApiKeys
             DiscordApiKey api = null;
             try
             {
-                JsonConvert.DeserializeObject<DiscordApiKey>(File.ReadAllText(path));
-            } catch
+                api = JsonConvert.DeserializeObject<DiscordApiKey>(File.ReadAllText(path));
+            }
+            catch
             {
                 Console.WriteLine("Master!! Hey!! You forgot to give me my discord api keys!!!");
             }

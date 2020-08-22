@@ -1,14 +1,23 @@
-﻿using Discord.WebSocket;
+﻿using Discord;
+using Discord.WebSocket;
 
 using System;
+using System.Threading.Tasks;
 
 namespace Abbybot_III.Apis.Discord.Events
 {
     internal class Log
     {
-        internal static void Init(DiscordSocketClient client)
+        internal static void Init(DiscordSocketClient _client)
         {
-            throw new NotImplementedException();
+            _client.Log += async (log) => await Log.Recieved(log);
+        }
+
+        private static async Task Recieved(LogMessage log)
+        {
+            await Task.CompletedTask;
+            Console.WriteLine(log.ToString());
+            //throw new NotImplementedException();
         }
     }
 }
