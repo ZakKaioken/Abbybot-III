@@ -4,6 +4,32 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>Abbybot_III</RootNamespace>
+    
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <OutputPath>C:\Users\Zacha\Documents\GitHub\Abbybot-III\Release\Abbybot-III</OutputPath>
+ 
+    <OutDir>Abbybot\III</OutDir>
+
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>true</Optimize> 
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Apis\Booru\" />
+    <Folder Include="Commands\Contains\" />
+    <Folder Include="Commands\Custom\" />
+    <Folder Include="Commands\Normal\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BooruSharp" Version="2.10.0" />
+    <PackageReference Include="Discord.Net" Version="2.2.0" />
+    <PackageReference Include="MySql.Data" Version="8.0.21" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="NHentaiSharp" Version="1.1.1" />
+    <PackageReference Include="PrettyBin" Version="1.1.0" />
+  </ItemGroup>
 
 </Project>
