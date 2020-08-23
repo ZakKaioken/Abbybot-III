@@ -12,12 +12,13 @@ namespace Abbybot_III.Apis.Discord
     {
 
         public static DiscordSocketClient _client;
-        public static void DiscordMain()
+
+        public static async void DiscordMain()
         {
             _client = new DiscordSocketClient();
             EventInitializer.Init(_client);
 
-            StartDiscord().GetAwaiter().GetResult();
+            await StartDiscord();
 
         }
 

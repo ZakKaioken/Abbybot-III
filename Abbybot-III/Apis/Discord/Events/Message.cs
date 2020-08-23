@@ -11,10 +11,10 @@ namespace Abbybot_III.Apis.Discord.Events
     {
         internal static void Init(DiscordSocketClient _client)
         {
-            _client.MessageReceived += async (message) => await Message.Recieved(message);
-            _client.MessageDeleted += async (message, channel) => await Message.Deleted(message, channel);
-            _client.MessageUpdated += async (oldmessage, newmessage, channel) => await Message.Updated(oldmessage, newmessage, channel);
-            _client.MessagesBulkDeleted += async (messages, channel) => await Message.BulkDeleted(messages, channel);
+            _client.MessageReceived += async (message) => await Recieved(message);
+            _client.MessageDeleted += async (message, channel) => await Deleted(message, channel);
+            _client.MessageUpdated += async (oldmessage, newmessage, channel) => await Updated(oldmessage, newmessage, channel);
+            _client.MessagesBulkDeleted += async (messages, channel) => await BulkDeleted(messages, channel);
         }
 
         private static async Task Recieved(SocketMessage message)

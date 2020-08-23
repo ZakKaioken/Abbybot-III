@@ -1,4 +1,5 @@
-﻿
+﻿using Abbybot_III.Core.Heart;
+
 using System;
 
 namespace Abbybot_III
@@ -7,8 +8,9 @@ namespace Abbybot_III
     {
         static void Main()
         {
+            AbbyHeart.Start();
             Apis.Discord.Discord.DiscordMain();
-            Console.ReadLine();
+            Console.ReadLine(); 
         }
     }
 }
