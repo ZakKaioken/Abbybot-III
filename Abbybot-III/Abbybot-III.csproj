@@ -17,10 +17,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Apis\Booru\" />
-    <Folder Include="Commands\Contains\" />
+    <Folder Include="Apis\Mysql\lib\" />
+    <Folder Include="Apis\Twitter\lib\" />
     <Folder Include="Commands\Custom\" />
     <Folder Include="Commands\Normal\" />
+    <Folder Include="Core\CommandHandler\lib\" />
+    <Folder Include="Core\AbbyBooru\" />
+    <Folder Include="Core\Users\extentions\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,6 +33,21 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="NHentaiSharp" Version="1.1.1" />
     <PackageReference Include="PrettyBin" Version="1.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="AbbySql">
+      <HintPath>Apis\Mysql\lib\AbbySql.dll</HintPath>
+    </Reference>
+    <Reference Include="Capi">
+      <HintPath>Core\CommandHandler\lib\Capi.dll</HintPath>
+    </Reference>
+    <Reference Include="Hammock.ClientProfile">
+      <HintPath>Apis\Twitter\lib\Hammock.ClientProfile.dll</HintPath>
+    </Reference>
+    <Reference Include="TweetSharp">
+      <HintPath>Apis\Twitter\lib\TweetSharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

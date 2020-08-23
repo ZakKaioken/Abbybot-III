@@ -1,4 +1,5 @@
 ﻿using Abbybot_III.Core;
+using Abbybot_III.Core.CommandHandler;
 
 using Discord;
 using Discord.WebSocket;
@@ -21,7 +22,6 @@ namespace Abbybot_III.Apis.Discord.Events
 
         private static async Task Recieved(SocketMessage message)
         {
-            
             var guild = (message.Author is SocketGuildUser gu) ? gu.Guild.Name : "dms";
           
             var username = message.Author.Username;
