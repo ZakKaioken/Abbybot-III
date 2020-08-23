@@ -1,4 +1,6 @@
-﻿using Discord;
+﻿using Abbybot_III.Core;
+
+using Discord;
 using Discord.WebSocket;
 
 using System;
@@ -19,14 +21,14 @@ namespace Abbybot_III.Apis.Discord.Events
 
         private static async Task Recieved(SocketMessage message)
         {
-
+            
             var guild = (message.Author is SocketGuildUser gu) ? gu.Guild.Name : "dms";
           
             var username = message.Author.Username;
       
             Console.WriteLine($"{guild}-{username}: {message.Content}");
-            await Task.CompletedTask;
-            //throw new NotImplementedException();
+
+            await CommandHandler.Handle(message);
         }
 
         private static async Task Deleted(Cacheable<IMessage, ulong> message, ISocketMessageChannel channel)
