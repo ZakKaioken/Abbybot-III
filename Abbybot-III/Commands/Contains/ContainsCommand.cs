@@ -38,7 +38,6 @@ namespace Abbybot_III.Commands.Contains
 
             bool v = (aca.Message.ToLower().Contains(Command.ToLower()));
             bool verification = v && e;
-            
             //if (v)
             //await aca.Send($"{Command} tested {aca.AbbybotUser.PreferedName} sent, has permissions {e}, can run {verification}");
             return verification;
@@ -52,6 +51,8 @@ namespace Abbybot_III.Commands.Contains
         public virtual async Task DoWork(AbbybotCommandArgs aca)
         {
             var s = new StringBuilder(Command);
+
+            
             s.Append(" was called with the message: ");
             s.Append(aca.Message.Replace(Command, ""));
             await Task.CompletedTask;
