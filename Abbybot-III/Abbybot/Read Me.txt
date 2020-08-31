@@ -1,0 +1,1 @@
+This is the folder that visual studio builds abbybot in.

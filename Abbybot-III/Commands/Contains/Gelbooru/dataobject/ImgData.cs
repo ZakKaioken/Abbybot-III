@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Abbybot_III.Commands.Contains.Gelbooru
+namespace Abbybot_III.Commands.Contains.Gelbooru.dataobject
 {
     public class ImgData
     {

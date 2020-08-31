@@ -1,4 +1,8 @@
-﻿using Discord.WebSocket;
+﻿using Abbybot_III.Core.Guilds;
+using Abbybot_III.Core.Guilds.GuildMessageHandler;
+using Abbybot_III.Core.Guilds.GuildMessageHandler.DataType.DiscordGuildMessage.User;
+
+using Discord.WebSocket;
 
 using System;
 using System.Threading.Tasks;
@@ -10,14 +14,14 @@ namespace Abbybot_III.Apis.Discord.Events
 
         private static async Task Joined(SocketGuildUser user)
         {
-            await Task.CompletedTask;
-            //throw new NotImplementedException();
+            JoinedMessage jm = await JoinedMessage.CreateFromUser(user);
+            await MessageHandler.DoGuildMessage(jm);
         }
 
         private static async Task Left(SocketGuildUser user)
         {
-            await Task.CompletedTask;
-            //throw new NotImplementedException();
+            LeftMessage lm = await LeftMessage.CreateFromUser(user);
+            await MessageHandler.DoGuildMessage(lm);
         }
 
         private static async Task Banned(SocketUser user, SocketGuild guild)

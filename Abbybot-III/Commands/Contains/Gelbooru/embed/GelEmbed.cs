@@ -1,4 +1,6 @@
-﻿using Discord;
+﻿using Abbybot_III.Commands.Contains.Gelbooru.dataobject;
+
+using Discord;
 
 using System;
 using System.Collections.Generic;

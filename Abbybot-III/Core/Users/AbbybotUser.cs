@@ -63,8 +63,13 @@ namespace Abbybot_III.Core.Data.User
             await GetGuild(author);
             }catch{ }
 
-            var eeeer = (userGuild != null) ? userNames.Nickname : userNames.Username;
-            userNames.PreferedName = eeeer;
+            var eeeer = (userGuild != null && userNames.Nickname != null) ? userNames.Nickname : userNames.Username;
+
+            var eex = Regex.Replace(eeeer.ToString(),
+                @"([(\u2100-\u27ff)(\uD83C\uDC00 - \uD83C\uDFFF)(\uD83D\uDC00 - \uD83D\uDFFF)(\uD83E\uDD00 - \uD83E\uDFFF)])",
+                @"\$1").Replace("\\ ", " ");
+
+            userNames.PreferedName = eex;
 
 
             await UserSql.GetUser(this);
