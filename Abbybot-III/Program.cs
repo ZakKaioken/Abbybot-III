@@ -1,4 +1,5 @@
-﻿using Abbybot_III.Core.Heart;
+﻿using Abbybot_III.Core.AbbyBooru;
+using Abbybot_III.Core.Heart;
 
 using System;
 
@@ -8,6 +9,7 @@ namespace Abbybot_III
     {
         static void Main()
         {
+            AbbyBooruChecker.Init();
             AbbySql.AbbysqlClient.connectionstring = Apis.Mysql.ApiKeys.MysqlApiKeys.Load(@"ApiKeys\Mysql.json").ToString();
             AbbyHeart.Start();
             Apis.Discord.Discord.DiscordMain();

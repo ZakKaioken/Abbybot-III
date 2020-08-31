@@ -21,8 +21,8 @@
     <Folder Include="Apis\Twitter\lib\" />
     <Folder Include="Commands\Custom\" />
     <Folder Include="Commands\Normal\" />
+    <Folder Include="Core\AbbyBooru\sql\" />
     <Folder Include="Core\CommandHandler\lib\" />
-    <Folder Include="Core\AbbyBooru\" />
     <Folder Include="Core\Users\extentions\" />
   </ItemGroup>
 

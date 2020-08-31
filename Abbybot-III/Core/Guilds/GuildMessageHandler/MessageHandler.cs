@@ -16,7 +16,8 @@ namespace Abbybot_III.Core.Guilds.GuildMessageHandler
 
         internal static async Task DoGuildMessage(GuildMessage gm)
         {
-            
+            if (gm == null)
+                return;
             EmbedBuilder embedBuilder = new EmbedBuilder()
             {
                 Color = gm.color,

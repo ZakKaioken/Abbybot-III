@@ -1,4 +1,6 @@
-﻿using BooruSharp.Search.Post;
+﻿using Abbybot_III.Core.AbbyBooru.types;
+
+using BooruSharp.Search.Post;
 
 using System;
 using System.Collections.Generic;
@@ -44,6 +46,11 @@ namespace Abbybot_III.Apis.Booru
                 }
             }
             return searchResult;
+        }
+
+        internal static async Task<SearchResult[]> GetLatest(Character character)
+        {
+            return await gel.GetLastPostsAsync(new string[] { character.tag });
         }
 
         private static List<string> GetTags(string[] tags)

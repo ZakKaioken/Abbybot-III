@@ -10,23 +10,23 @@ using System.Threading.Tasks;
 
 namespace Abbybot_III.Core.Guilds.GuildMessageHandler.DataType.DiscordGuildMessage.User
 {
-    class JoinedMessage : GuildMessage
+    class BannedMessage : GuildMessage
     {
-        SocketGuildUser user;
+        SocketUser user;
 
         public override string BuildDescription(string msg)
         {
-            return msg.Replace("[server]", user.Guild.Name).Replace("[user]", user.Username);
+            return msg.Replace("[user]", user.Username);
         }
 
-        internal static async Task<JoinedMessage> CreateFromUser(SocketGuildUser user)
+        internal static async Task<BannedMessage> CreateFromUser(SocketUser user, SocketGuild guild)
         {
-            var e = await Get(user.Guild, "welcome");
+            var e = await Get(guild, "banned");
 
-            JoinedMessage jm = null;
+            BannedMessage jm = null;
 
-            if (e != null) {
-                jm = new JoinedMessage()
+            if (e != null)
+                jm = new BannedMessage()
                 {
                     channelId = e.channelId,
                     guildId = e.guildId,
@@ -34,10 +34,9 @@ namespace Abbybot_III.Core.Guilds.GuildMessageHandler.DataType.DiscordGuildMessa
                     type = e.type,
                     user = user,
                     message = e.message,
-                    color = Color.Green
+                    color = Color.Red
             };
-            jm.guild = user.Guild;
-            }
+            jm.guild = guild;
             return jm;
         }
     }

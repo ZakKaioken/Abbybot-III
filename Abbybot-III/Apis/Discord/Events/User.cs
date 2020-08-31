@@ -26,14 +26,12 @@ namespace Abbybot_III.Apis.Discord.Events
 
         private static async Task Banned(SocketUser user, SocketGuild guild)
         {
-            await Task.CompletedTask;
-            //throw new NotImplementedException();
+            BannedMessage bm = await BannedMessage.CreateFromUser(user, guild);
         }
 
         private static async Task Unbanned(SocketUser user, SocketGuild guild)
         {
-            await Task.CompletedTask;
-            //throw new NotImplementedException();
+            UnbannedMessage bm = await UnbannedMessage.CreateFromUser(user, guild);
         }
 
         private static async Task Updated(SocketUser olduser, SocketUser newuser)

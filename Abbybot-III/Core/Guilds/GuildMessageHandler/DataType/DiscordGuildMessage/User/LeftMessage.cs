@@ -25,7 +25,7 @@ namespace Abbybot_III.Core.Guilds.GuildMessageHandler.DataType.DiscordGuildMessa
 
             LeftMessage jm = null;
 
-            if (e != null)
+            if (e != null) {
                 jm = new LeftMessage()
                 {
                     channelId = e.channelId,
@@ -37,6 +37,7 @@ namespace Abbybot_III.Core.Guilds.GuildMessageHandler.DataType.DiscordGuildMessa
                     color = Color.Red
             };
             jm.guild = user.Guild;
+            }
             return jm;
         }
     }
