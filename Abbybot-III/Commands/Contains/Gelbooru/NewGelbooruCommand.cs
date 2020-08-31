@@ -52,6 +52,9 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 
         public override async Task DoWork(AbbybotCommandArgs aca)
         {
+            if (aca.Message.Contains("%say"))
+                return;
+
             List<AbbybotUser> mentionedUsers = await aca.GetMentionedUsers();
 
             string fc = await GetFavoriteCharacterTag(aca, mentionedUsers);

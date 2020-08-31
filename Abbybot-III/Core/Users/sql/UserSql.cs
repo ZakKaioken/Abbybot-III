@@ -25,7 +25,7 @@ namespace Abbybot_III.Core.Users.sql
 
             user.userFavoriteCharacter = new UserFavoriteCharacter
             {
-                FavoriteCharacter = (row["FavoriteCharacter"] is string s) ? s : "",
+                FavoriteCharacter = (row["FavoriteCharacter"] is string s) ? s : "abigail_williams*",
                 IsLewd = (sbyte)row["IsLewd"] == 1 ? true : false
             };
 
