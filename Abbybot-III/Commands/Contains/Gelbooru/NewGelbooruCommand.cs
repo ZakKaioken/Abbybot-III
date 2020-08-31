@@ -73,8 +73,13 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
                 return;
             }
 
-            bool guildloli = aca.abbybotGuild.NoLoli;
-            bool guildnsfw = aca.abbybotGuild.NoNSFW;
+
+            bool guildloli = false;
+            bool guildnsfw = false;
+            if (aca.abbybotGuild != null) {
+                guildloli = aca.abbybotGuild.NoLoli;
+                guildnsfw = aca.abbybotGuild.NoNSFW;
+            }
 
             if ((loli&&guildloli) || (nsfw&&guildnsfw))
                 await aca.Send("I can't send that to this server due to it opting not to allow nsfw.");
@@ -110,7 +115,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
             
             tagz.Add($"{fc}*");
 
-
+            if (!(aca.channel is SocketDMChannel sdc)) {
             if (!aca.abbybotUser.userPerms.Ratings.Contains((CommandRatings)2) || !await aca.IsNSFW())
             {
                 tagz.Add("rating:safe");
@@ -118,6 +123,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
             if (!aca.abbybotUser.userPerms.Ratings.Contains((CommandRatings)3))
             {
                 tagz.Add("-loli");
+            }
             }
 
             var blacklisttags = await UserBlacklistSql.GetBlackListTags(aca.abbybotUser.Id);
