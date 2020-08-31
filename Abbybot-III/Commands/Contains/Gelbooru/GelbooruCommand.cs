@@ -24,7 +24,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 
         public List<string> tags = new List<string> { "" };
 
-        public GelbooruCommand(string Command, string[] tags, Capi.Interfaces.CommandRatings Rating)
+        public GelbooruCommand(string Command, string[] tags, CommandRatings Rating)
         {
             this.Rating = Rating;
             this.Command = Command;
@@ -35,29 +35,32 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 
         public override async Task DoWork(AbbybotCommandArgs msg)
         {
-            //await msg.Send($"I heard you type the {Command} command...");
-            List<AbbybotUser> mentionedUsers = new List<AbbybotUser>();
-            foreach (var u in msg.mentionedUserIds) {
-                AbbybotUser au = null;
-                if (u is SocketGuildUser sgu)
-                {
-                    au = await AbbybotUser.GetUserFromSocketGuildUser(sgu);
-                } else
-                {
-                    au = await AbbybotUser.GetUserFromSocketUser(u);
-                }
-                mentionedUsers.Add(au);
-            }
-            bool isnsf = true;
-            if (msg.channel is ITextChannel itc)
-                isnsf = itc.IsNsfw;
+            List<AbbybotUser> mentionedUsers = await GetMentionedUsers(msg);
 
+            bool isnsf = IsChannelNsfw(msg);
 
-            ImgData im = (new ImgData { safe = isnsf || (Rating != ((CommandRatings)2)), command = Command, mentions = mentionedUsers, user = msg.abbybotUser });
-            string url = "";
-
+            ImgData im = new ImgData
+            {
+                safe = isnsf || (Rating != ((CommandRatings)2)),
+                command = Command,
+                mentions = mentionedUsers,
+                user = msg.abbybotUser
+            };
             im.sudouser = msg.abbybotSudoUser;
-            List<object> os = new List<object>();
+
+            int count = await GetImageCount(msg);
+
+            for (int t = 0; t < count; t++)
+            {
+                await PostImages(msg, im);
+            }
+
+            await Task.CompletedTask;
+
+        }
+
+        private static async Task<int> GetImageCount(AbbybotCommandArgs msg)
+        {
             int count = 1;
             var s = msg.Message.Split(" ");
             foreach (var e in s)
@@ -81,22 +84,46 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
                 count = 0;
             if (count > 4)
                 count = 4;
-            for (int t = 0; t < count; t++)
-            {
-                await PostImages(msg, im);
+            return count;
+        }
 
+        private static bool IsChannelNsfw(AbbybotCommandArgs msg)
+        {
+            bool isnsf = true;
+            if (msg.channel is ITextChannel itc)
+                isnsf = itc.IsNsfw;
+            return isnsf;
+        }
+
+        private static async Task<List<AbbybotUser>> GetMentionedUsers(AbbybotCommandArgs msg)
+        {
+            List<AbbybotUser> mentionedUsers = new List<AbbybotUser>();
+
+            foreach (var u in msg.mentionedUserIds)
+            {
+                AbbybotUser au = null;
+                if (u is SocketGuildUser sgu)
+                {
+                    au = await AbbybotUser.GetUserFromSocketGuildUser(sgu);
+                }
+                else
+                {
+                    au = await AbbybotUser.GetUserFromSocketUser(u);
+                }
+                mentionedUsers.Add(au);
             }
 
-            await Task.CompletedTask;
-
+            return mentionedUsers;
         }
 
         private async Task PostImages(AbbybotCommandArgs msg, ImgData im)
         {
             await GetImage(im);
+
+            EmbedBuilder data = null;
+
             if (im.source == null)
                 im.source = "no source";
-            EmbedBuilder data = null;
             if (!im.source.Contains("error"))
                 data = embed.GelEmbed.Build(im, sb);
             else if (im.source.Contains("errornsfw"))
@@ -108,49 +135,53 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
             {
                 var fc = im.user.userFavoriteCharacter.FavoriteCharacter;
                 await msg.Send($"sorry master... I could not find the an {im.command.Replace("%", "")}ing picture for {fc}.. im sory");
-
                 return;
             }
-            //object returnobj = null;
+
             if (msg.abbybotGuild != null)
             {
+                bool comb = await IsNsfworLoli(msg, im, data);
 
-                bool loli = (msg.abbybotGuild.NoLoli && im.loli);
-                bool shot = (msg.abbybotGuild.NoLoli && im.shot);
-                bool nsfw = (msg.abbybotGuild.NoNSFW && im.nsfw);
-                if (loli || shot || nsfw)
-                {
-                    StringBuilder sb = new StringBuilder();
-                    sb.Append("Autodestructing in 2 minutes due to this server not allowing ");
-
-                    if (loli)
-                        sb.Append("lolis");
-                    if (loli && shot)
-                        sb.Append(", ");
-                    if (shot)
-                        sb.Append("shotas");
-                    if ((loli || shot) && nsfw)
-                        sb.Append(" and ");
-                    if (nsfw)
-                        sb.Append("nsfw");
-
-                    (data).Footer = new EmbedFooterBuilder() { Text = sb.ToString() };
-
-                    var reqj = new RequestObject();
-                    reqj.itc = msg.channel;
-
-                    reqj.o = data;
-                    reqj.UsersMessage = msg.originalMessage;
-                    reqj.requestType = RequestType.Delete;
-                    //await msg.Send($"I sending command as a request...");
-                    await msg.Send(reqj);
-                }
-                else
-                {
-                    //await msg.Send($"sending immediately");
+                if (!comb)
                     await msg.Send(data);
-                }
+
             }
+        }
+
+        private static async Task<bool> IsNsfworLoli(AbbybotCommandArgs msg, ImgData im, EmbedBuilder data)
+        {
+            bool loli = msg.abbybotGuild.NoLoli && im.loli;
+            bool shot = msg.abbybotGuild.NoLoli && im.shot;
+            bool nsfw = msg.abbybotGuild.NoNSFW && im.nsfw;
+            bool comb = loli || shot || nsfw;
+            if (comb)
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append("Autodestructing in 2 minutes due to this server not allowing ");
+
+                if (loli)
+                    sb.Append("lolis");
+                if (loli && shot)
+                    sb.Append(", ");
+                if (shot)
+                    sb.Append("shotas");
+                if ((loli || shot) && nsfw)
+                    sb.Append(" and ");
+                if (nsfw)
+                    sb.Append("nsfw");
+
+                (data).Footer = new EmbedFooterBuilder() { Text = sb.ToString() };
+
+                var reqj = new RequestObject();
+                reqj.itc = msg.channel;
+                reqj.o = data;
+                reqj.UsersMessage = msg.originalMessage;
+                reqj.requestType = RequestType.Delete;
+
+                await msg.Send(reqj);
+            }
+
+            return comb;
         }
 
         private async Task GetImage(ImgData im)
@@ -179,9 +210,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
                 im.loli = imgdata.tags.Contains("loli");
                 im.shot = imgdata.tags.Contains("shot");
                 im.nsfw = (imgdata.rating == BooruSharp.Search.Post.Rating.Explicit || imgdata.rating == BooruSharp.Search.Post.Rating.Explicit);
-                //if (!tags.Contains("ratings:safe")) im.nsfw = true; 
-                //Console.WriteLine(imgdata.rating);
-
+           
 
                 if (imgdata.fileUrl != null)
                 {
@@ -211,7 +240,6 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
         public override async Task<bool> Evaluate(AbbybotCommandArgs aca)
         {
             bool canrun = await CanRun(aca);
-            //Console.WriteLine($"evaluating {Command}");
             if (aca.abbybotUser.userTrust.inTimeOut && canrun)
             {
                 await aca.Send($"You're in timeout for a little while. You did a mean thing and I can't stand for that. Check your time and details with %timeout. Sorry.");
@@ -286,8 +314,6 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
             {
                 if (md.author is SocketGuildUser sgu)
                 {
-                    //var ratings = await RoleManager.GetRatings(sgu, sgc);
-
                     if (md.abbybotUser.userPerms.Ratings.Contains(Rating))
                     {
                         canrun = true;
