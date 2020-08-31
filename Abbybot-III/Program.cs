@@ -1,4 +1,5 @@
-﻿using Abbybot_III.Core.AbbyBooru;
+﻿using Abbybot_III.Apis.Twitter;
+using Abbybot_III.Core.AbbyBooru;
 using Abbybot_III.Core.Heart;
 
 using System;
@@ -9,6 +10,7 @@ namespace Abbybot_III
     {
         static void Main()
         {
+            Twitter.init();
             AbbyBooruChecker.Init();
             AbbySql.AbbysqlClient.connectionstring = Apis.Mysql.ApiKeys.MysqlApiKeys.Load(@"ApiKeys\Mysql.json").ToString();
             AbbyHeart.Start();

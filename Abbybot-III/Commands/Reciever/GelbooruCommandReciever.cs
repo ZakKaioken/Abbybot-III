@@ -18,8 +18,6 @@ namespace Abbybot_III.Commands.Reciever
     class GelbooruCommandReciever : CmdReciever
     {
         List<iCommand> cmds = new List<iCommand>();
-
-
         
     public override async Task<List<iCommand>> RecieveCommands()
     {
@@ -33,7 +31,7 @@ namespace Abbybot_III.Commands.Reciever
                 string Tags = (row["Tags"] is string tags) ? tags : "";
                 int RatingId = (int)row["RatingId"];
 
-                GelbooruCommand gc = new GelbooruCommand($"%{Comm}", Tags.Split(' '), (CommandRatings)RatingId);
+                NewGelbooruCommand gc = new NewGelbooruCommand($"%{Comm}", Tags.Split(' '), (CommandRatings)RatingId);
                 cmds.Add(gc);
             }
 

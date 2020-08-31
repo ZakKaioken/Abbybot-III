@@ -16,6 +16,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.dataobject
         public bool loli;
         public bool shot;
         public AbbybotUser user;
+        public string favoritecharacter;
         public AbbybotUser sudouser;
         public List<AbbybotUser> mentions;
     }

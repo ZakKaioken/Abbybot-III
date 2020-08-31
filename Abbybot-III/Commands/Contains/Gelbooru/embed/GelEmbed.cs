@@ -1,4 +1,5 @@
 ﻿using Abbybot_III.Commands.Contains.Gelbooru.dataobject;
+using Abbybot_III.Core.Data.User;
 
 using Discord;
 
@@ -6,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Abbybot_III.Commands.Contains.Gelbooru.embed
 {
@@ -30,27 +32,25 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
             return embededodizer;
         }
 
-        private static void MentionsEmbed(ImgData abca, StringBuilder message)
+        private static void MentionsEmbed(ImgData imgd, StringBuilder message)
         {
-            if (abca.mentions != null)
+            if (imgd.mentions != null)
             {
-                var mentions = abca.mentions.ToList();
-                if (mentions.Count > 0)
+                if (imgd.mentions.Count > 0)
                 {
                     message.Append(" Hey");
 
-                    for (int hu = 0; hu < mentions.Count; hu++)
+                    for (int hu = 0; hu < imgd.mentions.Count; hu++)
                     {
-                        message.Append($" **{mentions[hu].userNames.PreferedName}**");
-                        if (mentions.Count - hu >= 1)
+                        message.Append($" **{imgd.mentions[hu].userNames.PreferedName}**");
+                        if (imgd.mentions.Count - hu >= 1)
                             message.Append(", ");
                     }
 
                     message.Append("you were ");
-                    message.Append(abca.command.Replace("%", ""));
+                    message.Append(imgd.command.Replace("%", ""));
                     message.Append("ed by **");
-                    var us = abca.sudouser != null ? abca.sudouser : abca.user;
-                    message.Append(us.userNames.PreferedName);
+                    message.Append(imgd.user.userNames.PreferedName);
                     message.Append("**! :)");
                 }
             }
@@ -65,6 +65,43 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
             return "";
         }
 
+        internal static EmbedBuilder Build(string fileurl, string source, string fc, List<Core.Data.User.AbbybotUser> mentionedUsers, string command)
+        {
+            StringBuilder message = new StringBuilder();
+            EmbedBuilder embededodizer = new EmbedBuilder
+            {
+                ImageUrl = fileurl
+            };
+            string fcn = fc.ToString().Replace("* ", " and ").Replace(" ~ ", " or ").Replace("{", "").Replace("}", "").Replace("_", " ");
 
+            message.Clear();
+            //MentionsEmbed(imgd, message);
+            string fixedsource = FixSource(source);
+            embededodizer.AddField($"{fcn}  :)", $"[Image Source]({fixedsource})");
+            embededodizer.Color = Color.LightOrange;
+            embededodizer.Description = message.ToString();
+
+            return embededodizer;
+        }
+
+        internal static EmbedBuilder Build(ImgData imgdrata)
+        {
+                StringBuilder message = new StringBuilder();
+                EmbedBuilder embededodizer = new EmbedBuilder
+                {
+                    ImageUrl = imgdrata.Imageurl
+                };
+                string fcn = imgdrata.favoritecharacter.ToString().Replace("* ", " and ").Replace(" ~ ", " or ").Replace("{", "").Replace("}", "").Replace("_", " ");
+
+                message.Clear();
+                MentionsEmbed(imgdrata, message);
+                string fixedsource = FixSource(imgdrata.source);
+                embededodizer.AddField($"{fcn}  :)", $"[Image Source]({fixedsource})");
+                embededodizer.Color = Color.LightOrange;
+                embededodizer.Description = message.ToString();
+
+                return embededodizer;
+            
+        }
     }
 }

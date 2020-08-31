@@ -1,4 +1,5 @@
 ﻿using Abbybot_III.Core.CommandHandler.Types;
+using Abbybot_III.Core.Data.User;
 using Abbybot_III.Core.RequestSystem;
 
 using Discord;
@@ -76,6 +77,28 @@ namespace Abbybot_III.Core.CommandHandler.extentions
             }
 
         }
+
+        public static async Task<List<AbbybotUser>> GetMentionedUsers(this AbbybotCommandArgs aca)
+        {
+            List<AbbybotUser> mentionedUsers = new List<AbbybotUser>();
+
+            foreach (var u in aca.mentionedUserIds)
+            {
+                AbbybotUser au = null;
+                if (u is SocketGuildUser sgu)
+                {
+                    au = await AbbybotUser.GetUserFromSocketGuildUser(sgu);
+                }
+                else
+                {
+                    au = await AbbybotUser.GetUserFromSocketUser(u);
+                }
+                mentionedUsers.Add(au);
+            }
+
+            return mentionedUsers;
+        }
+
 
     }
 }
