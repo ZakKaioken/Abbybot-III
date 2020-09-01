@@ -160,5 +160,22 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 
             return fc;
         }
+
+        public override bool ShowHelp(AbbybotCommandArgs aca)
+        {
+            bool isGuild = aca.abbybotGuild != null;
+            bool istextchannel = aca.channel is ITextChannel;
+            bool guilduser = aca.author is SocketGuildUser;
+            bool hasperms = aca.abbybotUser.userPerms.Ratings.Contains(Rating);
+            bool dmchannel = aca.channel is SocketDMChannel;
+
+            return ((isGuild && istextchannel && guilduser && hasperms) || dmchannel);
+        }
+
+        public override async Task<string> toHelpString(AbbybotCommandArgs aca)
+        {
+
+            return $"{Command} shows a picture of {aca.abbybotUser.userFavoriteCharacter.FavoriteCharacter} {Command.Replace("%", "")}ing someone!";
+        }
     }
 }

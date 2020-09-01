@@ -48,9 +48,15 @@ namespace Abbybot_III.Apis.Booru
             return searchResult;
         }
 
-        internal static async Task<SearchResult[]> GetLatest(Character character)
+        internal static async Task<SearchResult[]> GetLatest(string[] tags)
         {
-            return await gel.GetLastPostsAsync(new string[] { character.tag });
+
+            SearchResult[] e = null;
+            
+            try {
+                e = await gel.GetLastPostsAsync(tags);
+            } catch {}
+            return e;
         }
 
         private static List<string> GetTags(string[] tags)

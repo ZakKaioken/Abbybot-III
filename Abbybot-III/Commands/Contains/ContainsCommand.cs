@@ -42,22 +42,22 @@ namespace Abbybot_III.Commands.Contains
             //await aca.Send($"{Command} tested {aca.AbbybotUser.PreferedName} sent, has permissions {e}, can run {verification}");
             return verification;
         }
-
-        public virtual Task<string> toHelpString()
-        {
-            return Task.FromResult($"%{Command}: a contains command.");
-        }
-
         public virtual async Task DoWork(AbbybotCommandArgs aca)
         {
             var s = new StringBuilder(Command);
-
-            
             s.Append(" was called with the message: ");
             s.Append(aca.Message.Replace(Command, ""));
             await Task.CompletedTask;
         }
 
+        public virtual async Task<string> toHelpString(AbbybotCommandArgs aca)
+        {
+            return $"{Command}: a contains command.";
+        }
+        public virtual bool ShowHelp(AbbybotCommandArgs aca)
+        {
+            return aca.abbybotUser.userPerms.Ratings.Contains(Rating);
+        }
         async Task<bool> iCommand.Evaluate(iMsgData message)
         {
             return await Evaluate(message as AbbybotCommandArgs);
@@ -66,6 +66,16 @@ namespace Abbybot_III.Commands.Contains
         async Task iCommand.DoWork(iMsgData md)
         {
             await DoWork(md as AbbybotCommandArgs);
+        }
+
+        async Task<string> iCommand.toHelpString(iMsgData md)
+        {
+            return await toHelpString(md as AbbybotCommandArgs);
+        }
+
+        bool iCommand.ShowHelp(iMsgData md)
+        {
+            return ShowHelp(md as AbbybotCommandArgs);
         }
     }
 }
