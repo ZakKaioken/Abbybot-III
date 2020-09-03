@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Abbybot_III.Commands.Contains
 {
-    [Capi.Cmd("%!help", 1, 1)]
+    [Capi.Cmd("%help", 1, 1)]
     class HelpCommand : ContainCommand
     {
         public override async Task DoWork(AbbybotCommandArgs abd)

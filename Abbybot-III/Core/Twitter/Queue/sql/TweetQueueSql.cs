@@ -14,7 +14,7 @@ namespace Abbybot_III.Core.Twitter.Queue.sql
     {
         public static async Task Add(string message, Image I)
         {
-            await AbbysqlClient.RunSQL($"INSERT INTO `tweets` ( `ImgUrl`,`SrcUrl`, `Description` ) VALUES('{I.url}', '{I.sourceurl}', '{message}';");
+            await AbbysqlClient.RunSQL($"INSERT INTO `abbybottwitter`.`tweets` ( `ImgUrl`,`SrcUrl`, `Description`, `Priority` ) VALUES('{I.url}', '{I.sourceurl}', '{message}','0');");
         }
 
         public static async Task<int> Count()
@@ -28,13 +28,13 @@ namespace Abbybot_III.Core.Twitter.Queue.sql
 
         public static async Task Remove(Tweet I)
         {
-            await AbbysqlClient.RunSQL($"DELETE FROM `tweets` WHERE `Id` = '{I.id}';");
+            await AbbysqlClient.RunSQL($"DELETE FROM `abbybottwitter`.`tweets` WHERE `Id` = '{I.id}';");
         }
 
         public static async Task<Tweet> Peek()
         {
             Tweet tweet = null;
-            var table = await AbbysqlClient.FetchSQL($"SELECT Id, ImgUrl, SrcUrl, Description FROM `tweets`ORDER BY Id LIMIT 1");
+            var table = await AbbysqlClient.FetchSQL($"SELECT * FROM `abbybottwitter`.`tweets` ORDER BY Priority DESC, Id DESC LIMIT 1;");
             foreach (AbbyRow row in table)
             {
                 tweet = new Tweet()
@@ -42,10 +42,17 @@ namespace Abbybot_III.Core.Twitter.Queue.sql
                     id = (int)row["Id"],
                     url = (row["ImgUrl"] is string i) ? i : "",
                     sourceurl = (row["ImgUrl"] is string s) ? s : "",
-                    message = (row["ImgUrl"] is string m) ? m : ""
+                    message = (row["ImgUrl"] is string m) ? m : "",
+                    priority = (sbyte)row["Priority"] == 1 ? true : false
                 };
             }
             return tweet;
+        }
+
+        internal static async Task Add(Tweet I, bool v)
+        {
+                int priority = v ? 1 : 0;
+                await AbbysqlClient.RunSQL($"INSERT INTO `abbybottwitter`.`tweets` ( `ImgUrl`,`SrcUrl`, `Description`, `Priority` ) VALUES('{I.url}', '{I.sourceurl}', '{I.message}', '{priority}');");
         }
     }
 }

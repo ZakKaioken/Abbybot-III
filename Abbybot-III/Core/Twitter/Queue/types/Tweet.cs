@@ -8,6 +8,7 @@ namespace Abbybot_III.Core.Twitter.Queue.types
     {
         public int id;
         public string url;
+        public bool priority;
         public string sourceurl;
         public string message;
     }

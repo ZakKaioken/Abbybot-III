@@ -4,6 +4,7 @@ using BooruSharp.Search.Post;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,6 +17,7 @@ namespace Abbybot_III.Apis.Booru
         static BooruSharp.Booru.Safebooru safe = new BooruSharp.Booru.Safebooru();
 
         public static string[] blacklist = { "beastiality", "furry", "vore", "blood", "sofra" };
+
         public static async Task<SearchResult> Execute(string[] tags)
         {
             List<string> tagz = GetTags(tags);
@@ -39,9 +41,8 @@ namespace Abbybot_III.Apis.Booru
                     }
                     catch
                     {
-                        throw new Exception("no picture found");
 
-                        searchResult = new SearchResult(new Uri("https://img2.gelbooru.com/samples/ee/e2/sample_eee286783bfa37e088d1ffbcf8f098ba.jpg"), new Uri("https://img2.gelbooru.com/samples/ee/e2/sample_eee286783bfa37e088d1ffbcf8f098ba.jpg"), new Uri("https://gelbooru.com/index.php?page=post&s=view&id=4325788&tags=crying+abigail_williams_%28fate%2Fgrand_order%29"), Rating.Safe, new string[] { "abigail_williams_(fate/grand_order)" }, 0, null, 1000, 1000, null, null, null, "", 1000000, "47");
+                        searchResult = new SearchResult(new Uri("https://img2.gelbooru.com/samples/ee/e2/sample_eee286783bfa37e088d1ffbcf8f098ba.jpg"), new Uri("https://img2.gelbooru.com/samples/ee/e2/sample_eee286783bfa37e088d1ffbcf8f098ba.jpg"), new Uri("https://gelbooru.com/index.php?page=post&s=view&id=4325788&tags=crying+abigail_williams_%28fate%2Fgrand_order%29"), Rating.Safe, new string[] { "abigail_williams_(fate/grand_order)" }, 0, null, 1000, 1000, null, null, null, "noimagefound", 1000000, "47");
                     }
                 }
             }

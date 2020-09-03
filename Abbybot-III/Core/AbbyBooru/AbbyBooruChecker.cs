@@ -1,6 +1,7 @@
 ﻿using Abbybot_III.Apis.Twitter.Core;
 using Abbybot_III.Core.AbbyBooru.types;
 using Abbybot_III.Core.Heart;
+using Abbybot_III.Core.Twitter.Queue.sql;
 using Abbybot_III.Core.Twitter.Queue.types;
 
 using BooruSharp.Search.Post;
@@ -83,6 +84,7 @@ namespace Abbybot_III.Core.AbbyBooru
                         try {   
                             await channel.SendMessageAsync("", false, embededodizer.Build());
                         } catch { }
+                        await Character.AddLatestPostIdAsync(character.Id, sr.Id);
 
                         if (character.Id == 3)
                         {
@@ -92,11 +94,11 @@ namespace Abbybot_III.Core.AbbyBooru
                                 url = sr.imgurl,
                                 sourceurl = fixedsource
                             };
-                            await TweetSender.SendTweet(tweet);
-                        }
+
+                            await TweetQueueSql.Add(tweet, true);
+                            }
 
 
-                        await Character.AddLatestPostIdAsync(character.Id, sr.Id);
 
                     }
 

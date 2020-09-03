@@ -61,6 +61,13 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
             List<string> tagz = await GenerateTags(aca, fc);
             
             var imgdata = await Apis.Booru.AbbyBooru.Execute(tagz.ToArray());
+
+            if (imgdata.source == "noimagefound")
+            {
+                await NoImageFoundEmbed.Build(aca, fc);
+                return;
+            }
+
             bool loli = imgdata.tags.Contains("loli");
             bool shot = imgdata.tags.Contains("shota");
             bool nsfw = imgdata.rating != BooruSharp.Search.Post.Rating.Safe;
@@ -72,7 +79,6 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
                 await aca.Send("master i can't search for nsfw pictures in a safe channel. there may be children.");
                 return;
             }
-
 
             bool guildloli = false;
             bool guildnsfw = false;
