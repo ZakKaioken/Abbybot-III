@@ -34,7 +34,7 @@ namespace Abbybot_III.Core.Twitter.Queue.sql
         public static async Task<Tweet> Peek()
         {
             Tweet tweet = null;
-            var table = await AbbysqlClient.FetchSQL($"SELECT * FROM `abbybottwitter`.`tweets` ORDER BY Priority DESC, Id DESC LIMIT 1;");
+            var table = await AbbysqlClient.FetchSQL($"SELECT * FROM `abbybottwitter`.`tweets` ORDER BY Priority DESC, Id ASC LIMIT 1;");
             foreach (AbbyRow row in table)
             {
                 tweet = new Tweet()

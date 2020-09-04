@@ -41,12 +41,22 @@ namespace Abbybot_III.Apis.Twitter.Core
             {
                 return;
             }
+            FileStream file = null;
 
-            FileStream file = new FileStream(tempfilepath, FileMode.Open);
-            MediaFile m = new MediaFile { Content = file };
+            do
+            {
+                try
+                {
+                    file = new FileStream(tempfilepath, FileMode.Open);
+                    await Task.Delay(0);
+                }
+                catch { }
+            } while (file == null);
+
+                MediaFile m = new MediaFile { Content = file };
 
             TwitterAsyncResult<TwitterUploadedMedia> media = await Twitter.ts.UploadMediaAsync(new UploadMediaOptions { Media = m });
-            Console.WriteLine(media.Response.Response);
+            //Console.WriteLine(media.Response.Response);
 
             if (media.Response.Response.ToLower().Contains("unrecognized")|| media.Response.Response.ToLower().Contains("bad request"))
             {
@@ -98,8 +108,12 @@ namespace Abbybot_III.Apis.Twitter.Core
 
             string e = tweetvalue.CreatedDate.ToString().Replace(' ', '_').Replace('/', '-').Replace(':', '-');
 
-
+            try {
             File.WriteAllText($"{dir}Tweet-{e}.json", tweetvalue.RawSource);
-        }
+            } catch
+            {
+
+            }
+            }
     }
 }
