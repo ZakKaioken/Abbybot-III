@@ -16,8 +16,17 @@ namespace Abbybot_III.Apis.Twitter.Core
     {
         static int id;
         static int trycount;
+
+        static void p(object st) 
+        {
+            Console.WriteLine($"[Tweet Sender Core]: {st}");
+        }
+        static bool sendingtweet = false;
         public static async Task SendTweet(Tweet tweet)
         {
+            if (sendingtweet)
+                return;
+            sendingtweet = true;
             if (tweet == null)
                 return;
             if (tweet.id != id)
@@ -28,19 +37,15 @@ namespace Abbybot_III.Apis.Twitter.Core
 
             if (trycount > 2)
             {
-                await TweetQueueSql.Remove(tweet);
+                await TweetQueueSql.Remove(tweet); 
+                return;
             }
 
-            if (tweet == null)
-            {
-                throw new NullReferenceException("the tweet wasnt there. ");
-            }
             var tempfilepath = await ImageDownloader.DownloadImage(tweet.url);
 
             if (tempfilepath == null)
-            {
                 return;
-            }
+            
             FileStream file = null;
 
             do
@@ -53,18 +58,15 @@ namespace Abbybot_III.Apis.Twitter.Core
                 catch { }
             } while (file == null);
 
-                MediaFile m = new MediaFile { Content = file };
+            MediaFile m = new MediaFile { Content = file };
 
             TwitterAsyncResult<TwitterUploadedMedia> media = await Twitter.ts.UploadMediaAsync(new UploadMediaOptions { Media = m });
             //Console.WriteLine(media.Response.Response);
 
             if (media.Response.Response.ToLower().Contains("unrecognized")|| media.Response.Response.ToLower().Contains("bad request"))
             {
-
                 await TweetQueueSql.Remove(tweet);
-
-
-                await SendTweet(tweet);
+                //await SendTweet(tweet);
                 return;
             }
 
@@ -87,15 +89,14 @@ namespace Abbybot_III.Apis.Twitter.Core
 
             if (tweetvalue == null)
             {
-                throw new NullReferenceException("Coulnt publisb tweet. ");
             }
             else
             {
-                Console.WriteLine("sent tweet");
                 SaveTweet(tweetvalue, tweet);
                 await TweetQueueSql.Remove(tweet);
             }
             file.Dispose();
+            sendingtweet = false;
         }
 
         private static void SaveTweet(TwitterStatus tweetvalue, Tweet id)

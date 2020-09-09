@@ -11,8 +11,8 @@ namespace Abbybot_III.Core.Twitter.Queue
 {
     class TweetQueue
     {
-    static DateTime TweetQueueBeat;
-    static int tweetQueueMilis = 7200000;
+        static DateTime TweetQueueBeat;
+        static int tweetQueueMilis = 7200000;
 
     public static void init()
         {
@@ -20,18 +20,18 @@ namespace Abbybot_III.Core.Twitter.Queue
             var twtqueueinitialstart = tweetQueueMilis - ((now - DateTime.Today).TotalMilliseconds % (tweetQueueMilis));
             TweetQueueBeat = now.AddMilliseconds(twtqueueinitialstart);
 
-            //AbbyHeart.heartBeat += async (time) => await beat(time);
+            AbbyHeart.heartBeat += async (time) => await beat(time);
         }
         
         private static async Task beat(DateTime time)
         {
             if (TweetQueueBeat < time)
             {
-                TweetQueueBeat.AddMilliseconds(tweetQueueMilis);
-                
+                TweetQueueBeat = TweetQueueBeat.AddMilliseconds(tweetQueueMilis);
                 var tweet = await TweetQueueSql.Peek();
+                if (tweet != null) {
                 await TweetSender.SendTweet(tweet);
-
+                }
             }
 
         }

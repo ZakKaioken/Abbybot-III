@@ -4,19 +4,20 @@ using Abbybot_III.Core.Heart;
 using Abbybot_III.Core.Twitter;
 
 using System;
+using System.Threading.Tasks;
 
 namespace Abbybot_III
 {
     class Program
     {
-        static void Main()
+        static async Task Main()
         {
             Twitter.init();
             AbbyBooruChecker.Init();
             AbbybotTwitter.init();
             AbbySql.AbbysqlClient.connectionstring = Apis.Mysql.ApiKeys.MysqlApiKeys.Load(@"ApiKeys\Mysql.json").ToString();
             AbbyHeart.Start();
-            Apis.Discord.Discord.DiscordMain();
+            await Apis.Discord.Discord.DiscordMainAsync();
             Console.ReadLine(); 
         }
     }
