@@ -41,8 +41,8 @@ namespace Abbybot_III.Core.Twitter.Queue.sql
                 {
                     id = (int)row["Id"],
                     url = (row["ImgUrl"] is string i) ? i : "",
-                    sourceurl = (row["ImgUrl"] is string s) ? s : "",
-                    message = (row["ImgUrl"] is string m) ? m : "",
+                    sourceurl = (row["SrcUrl"] is string s) ? s : "",
+                    message = (row["Description"] is string m) ? m : "",
                     priority = (sbyte)row["Priority"] == 1 ? true : false
                 };
             }

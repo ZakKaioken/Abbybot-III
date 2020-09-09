@@ -11,23 +11,23 @@ namespace Abbybot_III.Core.Twitter.Queue
 {
     class TweetQueue
     {
-        static DateTime TweetQueueBeat;
-        static int tweetQueueMilis = 7200000;
+        DateTime TweetQueueBeat;
+        TimeSpan tweetQueueMilis = TimeSpan.FromHours(2);
 
-    public static void init()
+    public void init()
         {
             var now = DateTime.Now;
-            var twtqueueinitialstart = tweetQueueMilis - ((now - DateTime.Today).TotalMilliseconds % (tweetQueueMilis));
+            var twtqueueinitialstart = tweetQueueMilis.TotalMilliseconds - ((now - DateTime.Today).TotalMilliseconds % (tweetQueueMilis.TotalMilliseconds));
             TweetQueueBeat = now.AddMilliseconds(twtqueueinitialstart);
 
             AbbyHeart.heartBeat += async (time) => await beat(time);
         }
         
-        private static async Task beat(DateTime time)
+        private  async Task beat(DateTime time)
         {
             if (TweetQueueBeat < time)
             {
-                TweetQueueBeat = TweetQueueBeat.AddMilliseconds(tweetQueueMilis);
+                TweetQueueBeat = TweetQueueBeat.AddMilliseconds(tweetQueueMilis.TotalMilliseconds);
                 var tweet = await TweetQueueSql.Peek();
                 if (tweet != null) {
                 await TweetSender.SendTweet(tweet);
@@ -35,8 +35,5 @@ namespace Abbybot_III.Core.Twitter.Queue
             }
 
         }
-
-
-
     }
 }

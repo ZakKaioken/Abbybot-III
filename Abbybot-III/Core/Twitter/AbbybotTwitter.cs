@@ -10,9 +10,10 @@ namespace Abbybot_III.Core.Twitter
 {
     class AbbybotTwitter
     {
+        static TweetQueue tq = new TweetQueue();
         public static void init()
         {
-            TweetQueue.init();
+            tq.init();
             ImageQueue.init();
         }
     }
