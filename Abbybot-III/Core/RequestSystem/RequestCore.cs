@@ -12,7 +12,7 @@ namespace Abbybot_III.Core.RequestSystem
         static List<RequestObject> requestObjects = new List<RequestObject>();
         public static void Init()
         {
-            AbbyHeart.heartBeat += async (time) => await RequestBeat(time);
+            AbbyHeart.heartBeat +=async (time) => await RequestBeat(time);
         }
 
         private static async Task RequestBeat(DateTime time)

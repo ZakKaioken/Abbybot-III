@@ -17,11 +17,22 @@ namespace Abbybot_III.Apis.Discord
 
         private static async Task StartDiscord()
         {
-            DiscordApiKey dak = DiscordApiKey.Load(@"ApiKeys\Discord.json");
-            await _client.LoginAsync(TokenType.Bot, dak.ApiKey);
-            await _client.StartAsync();
-            await Task.Delay(-1);
-            await _client.StopAsync();
+            bool o = true;
+            do
+            {
+                try {
+                DiscordApiKey dak = DiscordApiKey.Load(@"ApiKeys\Discord.json");
+                await _client.LoginAsync(TokenType.Bot, dak.ApiKey);
+                await _client.StartAsync();
+                await Task.Delay(-1);
+                await _client.StopAsync();
+                    o = false;
+                } catch
+                {
+                    Console.WriteLine("Failed to start discord. Trying again in 10 seconds.");
+                    await Task.Delay(10000);
+                }
+            } while (o);
         }
 
         internal static async Task DiscordMainAsync()

@@ -14,7 +14,10 @@ namespace Abbybot_III.Core.Twitter.Queue.sql
     {
         public static async Task Add(string message, Image I)
         {
-            await AbbysqlClient.RunSQL($"INSERT INTO `abbybottwitter`.`tweets` ( `ImgUrl`,`SrcUrl`, `Description`, `Priority` ) VALUES('{I.url}', '{I.sourceurl}', '{message}','0');");
+            var url = AbbysqlClient.EscapeString(I.url);
+            var sourceurl = AbbysqlClient.EscapeString(I.sourceurl);
+            var msg = AbbysqlClient.EscapeString(message);
+            await AbbysqlClient.RunSQL($"INSERT INTO `abbybottwitter`.`tweets` ( `ImgUrl`,`SrcUrl`, `Description`, `Priority` ) VALUES('{url}', '{sourceurl}', '{msg}','0');");
         }
 
         public static async Task<int> Count()
@@ -52,7 +55,10 @@ namespace Abbybot_III.Core.Twitter.Queue.sql
         internal static async Task Add(Tweet I, bool v)
         {
                 int priority = v ? 1 : 0;
-                await AbbysqlClient.RunSQL($"INSERT INTO `abbybottwitter`.`tweets` ( `ImgUrl`,`SrcUrl`, `Description`, `Priority` ) VALUES('{I.url}', '{I.sourceurl}', '{I.message}', '{priority}');");
+                var url = AbbysqlClient.EscapeString(I.url);
+                var sourceurl = AbbysqlClient.EscapeString(I.sourceurl);
+                var message = AbbysqlClient.EscapeString(I.message);
+            await AbbysqlClient.RunSQL($"INSERT INTO `abbybottwitter`.`tweets` ( `ImgUrl`,`SrcUrl`, `Description`, `Priority` ) VALUES('{url}', '{sourceurl}', '{message}', '{priority}');");
         }
     }
 }

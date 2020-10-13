@@ -17,10 +17,11 @@ namespace Abbybot_III.Core.Users.sql
         {
 
             var table = await AbbysqlClient.FetchSQL($"SELECT `Id` FROM `users` WHERE `Id` = '{user.Id}';");
-            if (table.Count > 0)
+            if (table.Count < 1)
                 await AddUser(user);
 
             table = await AbbysqlClient.FetchSQL($"SELECT users.* FROM `users` WHERE users.Id = {user.Id};");
+            
             AbbyRow row = table[0];
 
             user.userFavoriteCharacter = new UserFavoriteCharacter

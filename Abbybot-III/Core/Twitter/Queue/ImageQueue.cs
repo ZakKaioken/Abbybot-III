@@ -22,7 +22,7 @@ namespace Abbybot_III.Core.Twitter.Queue
             var imgqueueinitialstart = imgQueueMilis - ((now - DateTime.Today).TotalMilliseconds % (imgQueueMilis));
             ImageQueueBeat = now.AddMilliseconds(imgqueueinitialstart);
 
-            AbbyHeart.heartBeat += async (time) => await beat(time);
+            AbbyHeart.heartBeat += async(time) => await beat(time);
 
         }
 

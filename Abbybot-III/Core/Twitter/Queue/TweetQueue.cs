@@ -20,7 +20,7 @@ namespace Abbybot_III.Core.Twitter.Queue
             var twtqueueinitialstart = tweetQueueMilis.TotalMilliseconds - ((now - DateTime.Today).TotalMilliseconds % (tweetQueueMilis.TotalMilliseconds));
             TweetQueueBeat = now.AddMilliseconds(twtqueueinitialstart);
 
-            AbbyHeart.heartBeat += async (time) => await beat(time);
+            //AbbyHeart.heartBeat += (time) => beat(time).GetAwaiter().GetResult();
         }
         
         private  async Task beat(DateTime time)

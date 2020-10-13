@@ -20,6 +20,16 @@ namespace Abbybot_III.Apis.Booru
 
         public static async Task<SearchResult> Execute(string[] tags)
         {
+            var e = ExecuteAsync(tags).GetAwaiter();
+
+            while (!e.IsCompleted)
+                await Task.Delay(1);
+
+            return e.GetResult();
+        }
+
+        private static async Task<SearchResult> ExecuteAsync(string[] tags)
+        {
             List<string> tagz = GetTags(tags);
             SearchResult searchResult;
             try
@@ -46,6 +56,7 @@ namespace Abbybot_III.Apis.Booru
                     }
                 }
             }
+
             return searchResult;
         }
 

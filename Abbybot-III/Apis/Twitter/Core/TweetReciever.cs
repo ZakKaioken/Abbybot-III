@@ -11,7 +11,8 @@ namespace Abbybot_III.Apis.Twitter.Core
     {
         public static void init()
         {
-            AbbyHeart.heartBeat += async (time) => await RequestBeat(time);
+            //AbbyHeart.heartBeat += (time) => RequestBeat(time).GetAwaiter().GetResult();
+            
         }
 
         private static async Task RequestBeat(DateTime time)

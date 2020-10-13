@@ -20,7 +20,6 @@ namespace Abbybot_III.Core.CommandHandler
 
         async static Task startcapi(AbbybotCommandArgs aca)
         {
-
             capi.Start(aca);
         }
 

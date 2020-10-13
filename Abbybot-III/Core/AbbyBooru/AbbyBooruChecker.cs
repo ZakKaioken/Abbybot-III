@@ -72,16 +72,22 @@ namespace Abbybot_III.Core.AbbyBooru
                     for (int i = 0; i < nngs.Count; i++)
                         {
                         img sr = nngs[i];
+
                         
-                        EmbedBuilder embededodizer = new EmbedBuilder
+                            EmbedBuilder embededodizer = new EmbedBuilder
                         {
                             ImageUrl = sr.imgurl
                             };
-                            string fixedsource = sr.source.Replace("/member_illust.php?mode=medium&amp;illust_id=", "/en/artworks/");
-                            embededodizer.AddField($"New picture of {character.tag.Replace("_", " ")} :)", $"[Source]({fixedsource})");
+
+                        string fixedsource = "no source found";
+                        try
+                        {
+                            if (sr.source != null)
+                             fixedsource = sr.source.Replace("/member_illust.php?mode=medium&amp;illust_id=", "/en/artworks/");
+                            
+                        embededodizer.AddField($"New picture of {character.tag.Replace("_", " ")} :)", $"[Source]({fixedsource})");
                             embededodizer.Color = Color.LightOrange;
 
-                        try {   
                             await channel.SendMessageAsync("", false, embededodizer.Build());
                         } catch { }
                         await Character.AddLatestPostIdAsync(character.Id, sr.Id);
