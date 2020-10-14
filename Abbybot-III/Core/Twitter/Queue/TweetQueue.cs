@@ -20,7 +20,7 @@ namespace Abbybot_III.Core.Twitter.Queue
             var twtqueueinitialstart = tweetQueueMilis.TotalMilliseconds - ((now - DateTime.Today).TotalMilliseconds % (tweetQueueMilis.TotalMilliseconds));
             TweetQueueBeat = now.AddMilliseconds(twtqueueinitialstart);
 
-            //AbbyHeart.heartBeat += (time) => beat(time).GetAwaiter().GetResult();
+            AbbyHeart.heartBeat += (time) => beat(time).GetAwaiter().GetResult();
         }
         
         private  async Task beat(DateTime time)
@@ -28,10 +28,7 @@ namespace Abbybot_III.Core.Twitter.Queue
             if (TweetQueueBeat < time)
             {
                 TweetQueueBeat = TweetQueueBeat.AddMilliseconds(tweetQueueMilis.TotalMilliseconds);
-                var tweet = await TweetQueueSql.Peek();
-                if (tweet != null) {
-                await TweetSender.SendTweet(tweet);
-                }
+                await TweetSender.SendTweet();
             }
 
         }

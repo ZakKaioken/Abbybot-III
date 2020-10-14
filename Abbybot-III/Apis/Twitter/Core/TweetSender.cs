@@ -1,4 +1,5 @@
 ﻿
+using Abbybot_III.Core.Twitter.Queue;
 using Abbybot_III.Core.Twitter.Queue.sql;
 using Abbybot_III.Core.Twitter.Queue.types;
 
@@ -22,81 +23,96 @@ namespace Abbybot_III.Apis.Twitter.Core
             Console.WriteLine($"[Tweet Sender Core]: {st}");
         }
         static bool sendingtweet = false;
-        public static async Task SendTweet(Tweet tweet)
+        public static async Task SendTweet()
         {
-            if (sendingtweet)
-                return;
-            sendingtweet = true;
-            if (tweet == null)
-                return;
-            if (tweet.id != id)
-            {
-                trycount = 0;
-            }
-            trycount++;
+            var tweet = await TweetQueueSql.Peek();
 
-            if (trycount > 2)
+
+            if (tweet == null)
             {
-                await TweetQueueSql.Remove(tweet); 
+                p("no tweet was found");
                 return;
             }
 
             var tempfilepath = await ImageDownloader.DownloadImage(tweet.url);
 
             if (tempfilepath == null)
+            {
+               p("no image found.");
                 return;
-            
-            FileStream file = null;
+            }
 
+            TwitterUploadedMedia me;
+            int tsrs = 0;
             do
             {
-                try
+
+                FileStream file = new FileStream(tempfilepath, FileMode.Open);
+
+                MediaFile m = new MediaFile { Content = file };
+
+                tsrs++;
+                TwitterAsyncResult<TwitterUploadedMedia> media = await Twitter.ts.UploadMediaAsync(new UploadMediaOptions { Media = m });
+                if (media == null)
                 {
-                    file = new FileStream(tempfilepath, FileMode.Open);
-                    await Task.Delay(0);
+                    Console.WriteLine("failed to upload media");
+                    return;
                 }
-                catch { }
-            } while (file == null);
+                file.Dispose();
+                Console.WriteLine(media.Response.Response);
 
-            MediaFile m = new MediaFile { Content = file };
+                if (media.Response.Response.ToLower().Contains("unrecognized"))
+                {
+                    Console.WriteLine("media type unregognized");
+                    await TweetQueueSql.Remove(tweet);
+                    await SendTweet();
+                    return;
+                }
+                me = media.Value;
+            } while ((me == null) && (tsrs < 3));
 
-            TwitterAsyncResult<TwitterUploadedMedia> media = await Twitter.ts.UploadMediaAsync(new UploadMediaOptions { Media = m });
-            //Console.WriteLine(media.Response.Response);
-
-            if (media.Response.Response.ToLower().Contains("unrecognized")|| media.Response.Response.ToLower().Contains("bad request"))
+            if (me == null)
             {
                 await TweetQueueSql.Remove(tweet);
-                //await SendTweet(tweet);
+                await SendTweet();
                 return;
             }
 
-            TwitterUploadedMedia me = media.Value;
-            if (media == null)
-                return;
             string[] s = new string[] { me.Media_Id };
             Task<TwitterAsyncResult<TwitterStatus>> o = null;
-            if (!tweet.sourceurl.Contains("twitter"))
+            int tries = 0;
+            TwitterStatus tweetvalue;
+            do
             {
-                o = Twitter.ts.SendTweetAsync(new SendTweetOptions { Status = $"{tweet.message}\n\n{tweet.sourceurl} #abigailwilliams #abbybot @AbbyKaioken", MediaIds = s });
-            }
-            else
+                tries++;
+                Console.Write("I");
+                if (!tweet.sourceurl.Contains("twitter"))
+                {
+                    o = Twitter.ts.SendTweetAsync(new SendTweetOptions { Status = $"{tweet.message}\n\n{tweet.sourceurl} #abigailwilliams #abbybot @AbbyKaioken", MediaIds = s });
+                }
+                else
+                {
+                    o = Twitter.ts.SendTweetAsync(new SendTweetOptions { Status = $"{tweet.message}\n\n{tweet.sourceurl} #abigailwilliams #abbybot @AbbyKaioken" });
+                }
+
+                TwitterAsyncResult<TwitterStatus> tweeto = await o;
+                tweetvalue = tweeto.Value;
+
+            } while ((tweetvalue == null) && (tries <= 3));
+
+            if (tweetvalue != null)
             {
-                o = Twitter.ts.SendTweetAsync(new SendTweetOptions { Status = $"{tweet.message}\n\n{tweet.sourceurl} #abigailwilliams #abbybot @AbbyKaioken" });
+                Console.WriteLine("sent tweet");
+                SaveTweet(tweetvalue, tweet);
             }
 
-            TwitterAsyncResult<TwitterStatus> tweeto = await o;
-            TwitterStatus tweetvalue = tweeto.Value;
+            await TweetQueueSql.Remove(tweet);
 
             if (tweetvalue == null)
             {
+                await SendTweet();
+                return;
             }
-            else
-            {
-                SaveTweet(tweetvalue, tweet);
-                await TweetQueueSql.Remove(tweet);
-            }
-            file.Dispose();
-            sendingtweet = false;
         }
 
         private static void SaveTweet(TwitterStatus tweetvalue, Tweet id)

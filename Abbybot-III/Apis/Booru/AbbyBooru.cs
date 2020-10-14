@@ -1,5 +1,6 @@
 ﻿using Abbybot_III.Core.AbbyBooru.types;
 
+using BooruSharp.Booru;
 using BooruSharp.Search.Post;
 
 using System;
@@ -12,9 +13,15 @@ namespace Abbybot_III.Apis.Booru
 {
     class AbbyBooru
     {
-        static BooruSharp.Booru.Gelbooru gel = new BooruSharp.Booru.Gelbooru();
-        static BooruSharp.Booru.SankakuComplex sanku = new BooruSharp.Booru.SankakuComplex();
-        static BooruSharp.Booru.Safebooru safe = new BooruSharp.Booru.Safebooru();
+        static List<ABooru> boorus = new List<ABooru>()
+        {
+            new Gelbooru(),
+            new SankakuComplex(),
+            new Rule34(),
+            new DanbooruDonmai(),
+            new Safebooru(),
+            new Lolibooru()
+        };
 
         public static string[] blacklist = { "beastiality", "furry", "vore", "blood", "sofra" };
 
@@ -28,37 +35,24 @@ namespace Abbybot_III.Apis.Booru
             return e.GetResult();
         }
 
-        private static async Task<SearchResult> ExecuteAsync(string[] tags)
+
+
+        static async Task<SearchResult> ExecuteAsync (string[] tags)
         {
             List<string> tagz = GetTags(tags);
-            SearchResult searchResult;
-            try
-            {
-                searchResult = await gel.GetRandomPostAsync(tagz.ToArray());
-            }
-            catch
-            {
+
+            SearchResult searchResult = new SearchResult(new Uri("https://img2.gelbooru.com/samples/ee/e2/sample_eee286783bfa37e088d1ffbcf8f098ba.jpg"), new Uri("https://img2.gelbooru.com/samples/ee/e2/sample_eee286783bfa37e088d1ffbcf8f098ba.jpg"), new Uri("https://gelbooru.com/index.php?page=post&s=view&id=4325788&tags=crying+abigail_williams_%28fate%2Fgrand_order%29"), Rating.Safe, new string[] { "abigail_williams_(fate/grand_order)" }, 0, null, 1000, 1000, null, null, null, "noimagefound", 1000000, "47");
+            foreach (var booru in boorus)
+            {                
                 try
                 {
-                    searchResult = await sanku.GetRandomPostAsync(tagz.ToArray());
-                }
-                catch
-                {
-                    try
-                    {
-
-                        searchResult = await safe.GetRandomPostAsync(tagz.ToArray());
-                    }
-                    catch
-                    {
-
-                        searchResult = new SearchResult(new Uri("https://img2.gelbooru.com/samples/ee/e2/sample_eee286783bfa37e088d1ffbcf8f098ba.jpg"), new Uri("https://img2.gelbooru.com/samples/ee/e2/sample_eee286783bfa37e088d1ffbcf8f098ba.jpg"), new Uri("https://gelbooru.com/index.php?page=post&s=view&id=4325788&tags=crying+abigail_williams_%28fate%2Fgrand_order%29"), Rating.Safe, new string[] { "abigail_williams_(fate/grand_order)" }, 0, null, 1000, 1000, null, null, null, "noimagefound", 1000000, "47");
-                    }
-                }
+                    searchResult = await booru.GetRandomPostAsync(tagz.ToArray());
+                    break;
+                } catch { }
             }
-
             return searchResult;
         }
+
 
         internal static async Task<SearchResult[]> GetLatest(string[] tags)
         {
@@ -66,7 +60,7 @@ namespace Abbybot_III.Apis.Booru
             SearchResult[] e = null;
             
             try {
-                e = await gel.GetLastPostsAsync(tags);
+                e = await boorus[0].GetLastPostsAsync(tags);
             } catch {}
             return e;
         }
