@@ -15,7 +15,7 @@ namespace Abbybot_III.Core.Twitter.Queue.sql
 
         public static async Task Add(Image I)
         {
-            await AbbysqlClient.RunSQL($"INSERT INTO `images` ( `ImgUrl`,`SrcUrl` ) VALUES ('{I.url}','{I.sourceurl}'; ");
+            await AbbysqlClient.RunSQL($"INSERT INTO `images` ( `ImgUrl`,`SrcUrl` ) VALUES ('{I.url}','{I.sourceurl}' ); ");
          }
 
         public static async Task<int> Count()
