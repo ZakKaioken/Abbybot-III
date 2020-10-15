@@ -15,7 +15,7 @@ namespace Abbybot_III.Core.Twitter.Queue.sql
 
         public static async Task Add(Image I)
         {
-            await AbbysqlClient.RunSQL($"INSERT INTO `images` ( `ImgUrl`,`SrcUrl` ) VALUES ('{I.url}','{I.sourceurl}' ); ");
+            await AbbysqlClient.RunSQL($"INSERT INTO `abbybottwitter`.`images` ( `ImgUrl`,`SrcUrl` ) VALUES ('{I.url}','{I.sourceurl}' ); ");
          }
 
         public static async Task<int> Count()
@@ -29,13 +29,13 @@ namespace Abbybot_III.Core.Twitter.Queue.sql
 
         public static async Task Remove(Image I)
         {
-            await AbbysqlClient.RunSQL($"DELETE FROM `images` WHERE `Id` = '{I.id}';");
+            await AbbysqlClient.RunSQL($"DELETE FROM `abbybottwitter`.`images` WHERE `Id` = '{I.id}';");
         }
 
         public static async Task<Image> Peek()
         {
             Image image = null;
-            AbbyTable table = await AbbysqlClient.FetchSQL($"SELECT * FROM `images`ORDER BY Id LIMIT 1;");
+            AbbyTable table = await AbbysqlClient.FetchSQL($"SELECT * FROM `abbybottwitter`.`images`ORDER BY Id LIMIT 1;");
             foreach (AbbyRow row in table)
             {
                 image = new Image
