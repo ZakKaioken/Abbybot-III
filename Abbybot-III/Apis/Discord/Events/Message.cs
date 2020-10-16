@@ -28,7 +28,7 @@ namespace Abbybot_III.Apis.Discord.Events
       
             Console.WriteLine($"{guild}-{username}: {message.Content}");
             
-            if (message.Author.Id != Discord._client.CurrentUser.Id)
+            
             await CommandHandler.Handle(message);
         }
 

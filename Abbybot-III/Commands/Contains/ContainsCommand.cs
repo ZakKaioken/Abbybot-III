@@ -11,38 +11,16 @@ using System.Threading.Tasks;
 
 namespace Abbybot_III.Commands.Contains
 {
-    [Capi.Cmd("cons", 1,1)]
-    public class ContainCommand : iCommand
+    [Capi.Cmd("%!contains", 1,1)]
+    public class ContainCommand : BaseCommand
     {
-        public string Command
+        public override async Task<bool> Evaluate(AbbybotCommandArgs aca)
         {
-            get; set;
-        }
-        public bool Multithreaded
-        {
-            get; set;
-        }
-        public CommandRatings Rating
-        {
-            get; set;
-        }
-        public CommandType Type
-        {
-            get; set;
-        }
-        public virtual async Task<bool> Evaluate(AbbybotCommandArgs aca)
-        {
-            bool e = false;
-            if (aca.abbybotUser.userPerms.Ratings != null)
-                e = aca.abbybotUser.userPerms.Ratings.Contains(Rating);
-
             bool v = (aca.Message.ToLower().Contains(Command.ToLower()));
-            bool verification = v && e;
-            //if (v)
-            //await aca.Send($"{Command} tested {aca.AbbybotUser.PreferedName} sent, has permissions {e}, can run {verification}");
+            bool verification = v && await base.Evaluate(aca);
             return verification;
         }
-        public virtual async Task DoWork(AbbybotCommandArgs aca)
+        public override async Task DoWork(AbbybotCommandArgs aca)
         {
             var s = new StringBuilder(Command);
             s.Append(" was called with the message: ");
@@ -50,32 +28,10 @@ namespace Abbybot_III.Commands.Contains
             await Task.CompletedTask;
         }
 
-        public virtual async Task<string> toHelpString(AbbybotCommandArgs aca)
+        public override async Task<string> toHelpString(AbbybotCommandArgs aca)
         {
+            await Task.CompletedTask;
             return $"{Command}: a contains command.";
-        }
-        public virtual bool ShowHelp(AbbybotCommandArgs aca)
-        {
-            return aca.abbybotUser.userPerms.Ratings.Contains(Rating);
-        }
-        async Task<bool> iCommand.Evaluate(iMsgData message)
-        {
-            return await Evaluate(message as AbbybotCommandArgs);
-        }
-
-        async Task iCommand.DoWork(iMsgData md)
-        {
-            await DoWork(md as AbbybotCommandArgs);
-        }
-
-        async Task<string> iCommand.toHelpString(iMsgData md)
-        {
-            return await toHelpString(md as AbbybotCommandArgs);
-        }
-
-        bool iCommand.ShowHelp(iMsgData md)
-        {
-            return ShowHelp(md as AbbybotCommandArgs);
         }
     }
 }
