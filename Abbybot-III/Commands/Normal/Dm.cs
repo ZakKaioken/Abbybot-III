@@ -16,7 +16,7 @@ namespace Abbybot_III.Commands.Normal
     {
         public override async Task DoWork(AbbybotCommandArgs a)
         {
-            StringBuilder FavoriteCharacter = new StringBuilder(a.Message.Replace(Command, ""));
+            StringBuilder FavoriteCharacter = new StringBuilder(a.Message).Replace(Command, "").Replace("--debugmode", "");
             while (FavoriteCharacter[0] == ' ')
                 FavoriteCharacter.Remove(0, 1);
 

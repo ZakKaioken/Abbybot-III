@@ -72,6 +72,12 @@ namespace Abbybot_III.Commands
             bool istextchannel = aca.channel is ITextChannel;
             bool guilduser = aca.author is SocketGuildUser;
 
+            if (istextchannel)
+            {
+                var aaa = aca.channel as ITextChannel;
+                sb.AppendLine($"channel is nsfw: {aaa.IsNsfw}");
+            }
+
             bool guild = isGuild && istextchannel && guilduser;
             sb.AppendLine($"is in guild: {guild}");
 
@@ -90,10 +96,11 @@ namespace Abbybot_III.Commands
             var wecanrun = canRun && !isAbbybot || canRun && IsAbbybotRunnable;
             sb.AppendLine($"wecanrun: {wecanrun}");
 
-            sb.AppendLine($"canrun = (({isGuild} && {!inTimeOut} && {istextchannel} && {guilduser} && {hasperms}) || {dmchannel})");
-            sb.AppendLine($"wecanrun = {canRun} && {!isAbbybot} || {canRun} && {IsAbbybotRunnable} ");
+            sb.AppendLine($"canrun = (({isGuild} && {!inTimeOut} && {istextchannel} && {guilduser} && {hasperms}) OR {dmchannel})");
+            sb.AppendLine($"wecanrun = {canRun} && {!isAbbybot} OR {canRun} && {IsAbbybotRunnable} ");
 
-            Console.WriteLine(sb.ToString());
+            if (aca.Message.Contains("--debugmode") && !aca.Message.Contains("%say") && !aca.Message.Contains("%dm"))
+                await aca.Send(sb);
 
             
             return canRun && !isAbbybot || canRun && IsAbbybotRunnable;
