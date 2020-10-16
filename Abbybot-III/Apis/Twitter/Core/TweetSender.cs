@@ -25,8 +25,16 @@ namespace Abbybot_III.Apis.Twitter.Core
         static bool sendingtweet = false;
         public static async Task SendTweet()
         {
-            var tweet = await TweetQueueSql.Peek();
-
+            Tweet tweet = null;
+            try {
+            tweet = await TweetQueueSql.Peek();
+            } catch
+            {
+                try
+                {
+                    tweet = await TweetArchiveSql.Peek();
+                } catch {}
+            }
 
             if (tweet == null)
             {
@@ -64,6 +72,7 @@ namespace Abbybot_III.Apis.Twitter.Core
                 if (media.Response.Response.ToLower().Contains("unrecognized"))
                 {
                     Console.WriteLine("media type unregognized");
+                    await TweetArchiveSql.Add(tweet, false);
                     await TweetQueueSql.Remove(tweet);
                     await SendTweet();
                     return;
@@ -73,6 +82,7 @@ namespace Abbybot_III.Apis.Twitter.Core
 
             if (me == null)
             {
+                await TweetArchiveSql.Add(tweet, false);
                 await TweetQueueSql.Remove(tweet);
                 await SendTweet();
                 return;
@@ -106,6 +116,7 @@ namespace Abbybot_III.Apis.Twitter.Core
                 SaveTweet(tweetvalue, tweet);
             }
 
+            await TweetArchiveSql.Add(tweet, false);
             await TweetQueueSql.Remove(tweet);
 
             if (tweetvalue == null)
