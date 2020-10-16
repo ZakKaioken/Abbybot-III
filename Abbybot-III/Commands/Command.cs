@@ -3,6 +3,9 @@ using Abbybot_III.Core.CommandHandler.Types;
 
 using Capi.Interfaces;
 
+using Discord;
+using Discord.WebSocket;
+
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -54,21 +57,45 @@ namespace Abbybot_III.Commands
 
         public virtual async Task<bool> Evaluate(AbbybotCommandArgs aca)
         {
-            bool canRun = false;
+            StringBuilder sb = new StringBuilder("running the base evaluate\n");
+
+            bool hasperms = false;
             if (aca.abbybotUser.userPerms.Ratings != null)
-                canRun = aca.abbybotUser.userPerms.Ratings.Contains(Rating);
-
-            if(aca.abbybotUser.userTrust.inTimeOut && canRun)
-            {
+                hasperms = aca.abbybotUser.userPerms.Ratings.Contains(Rating);
+            sb.AppendLine($"has permissions: {hasperms}");
+            bool inTimeOut = aca.abbybotUser.userTrust.inTimeOut;
+            sb.AppendLine($"in time out: {inTimeOut}");
+            if (inTimeOut)
                 await aca.Send($"You're in timeout for a little while. You did a mean thing and I can't stand for that. Check your time and details with %timeout. Sorry.");
-                canRun = false;
-            }
+                
+            bool isGuild = aca.abbybotGuild != null;
+            bool istextchannel = aca.channel is ITextChannel;
+            bool guilduser = aca.author is SocketGuildUser;
 
-            var isAbbybot = aca.abbybotUser.Id != Apis.Discord.Discord._client.CurrentUser.Id;
+            bool guild = isGuild && istextchannel && guilduser;
+            sb.AppendLine($"is in guild: {guild}");
+
+            bool dmchannel = aca.channel is SocketDMChannel;
+            sb.AppendLine($"is in dms: {dmchannel}");
+            var canRun = ((isGuild && !inTimeOut && istextchannel && guilduser && hasperms) || dmchannel);
+            sb.AppendLine($"requirements met?: {canRun}");
+            var isAbbybot = aca.abbybotUser.Id == Apis.Discord.Discord._client.CurrentUser.Id;
             var IsAbbybotRunnable = isAbbybot && SelfRun;
-
+            
+            sb.AppendLine($"isabbybotrunnable: {IsAbbybotRunnable}");
+            sb.AppendLine($"isabbybotrunnable = {isAbbybot} && {SelfRun}");
             await Task.CompletedTask;
 
+
+            var wecanrun = canRun && !isAbbybot || canRun && IsAbbybotRunnable;
+            sb.AppendLine($"wecanrun: {wecanrun}");
+
+            sb.AppendLine($"canrun = (({isGuild} && {!inTimeOut} && {istextchannel} && {guilduser} && {hasperms}) || {dmchannel})");
+            sb.AppendLine($"wecanrun = {canRun} && {!isAbbybot} || {canRun} && {IsAbbybotRunnable} ");
+
+            Console.WriteLine(sb.ToString());
+
+            
             return canRun && !isAbbybot || canRun && IsAbbybotRunnable;
             
         }

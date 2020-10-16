@@ -66,7 +66,7 @@ namespace Abbybot_III.Commands.Contains
         {
             return aca.Message.ToLower().Contains(Command.ToLower());
         }
-        public override bool ShowHelp(AbbybotCommandArgs aca)
+        public override async Task<bool> ShowHelp(AbbybotCommandArgs aca)
         {
             return true;
         }

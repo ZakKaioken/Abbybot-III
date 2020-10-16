@@ -34,7 +34,7 @@ namespace Abbybot_III.Commands.Normal
         {
             var e = aca.Message.Split();
 
-            return e[0] == Command && await base.Evaluate(aca);
+            return e[0].ToLower() == Command.ToLower() && await base.Evaluate(aca);
         }
         public override async Task<string> toHelpString(AbbybotCommandArgs aca)
         {

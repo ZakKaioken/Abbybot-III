@@ -23,6 +23,12 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
     class NewGelbooruCommand : ContainCommand
     {
 
+        public override bool SelfRun
+        {
+            get => base.SelfRun = true;
+            set => base.SelfRun = value;
+        }
+
         List<string> tags = new List<string> { "" };
 
         public NewGelbooruCommand(string Command, string[] tags, CommandRatings Rating)
@@ -38,21 +44,9 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 
         }
 
-        public override async Task<bool> Evaluate(AbbybotCommandArgs aca)
-        {
-            bool Referenced = aca.Message.ToLower().Contains(Command.ToLower());
-            bool isGuild = aca.abbybotGuild != null;
-            bool istextchannel = aca.channel is ITextChannel;
-            bool guilduser = aca.author is SocketGuildUser;
-            bool hasperms = aca.abbybotUser.userPerms.Ratings.Contains(Rating);
-            bool dmchannel = aca.channel is SocketDMChannel;
-            
-            return Referenced && ((isGuild && istextchannel && guilduser && hasperms) || dmchannel);
-         }
-
         public override async Task DoWork(AbbybotCommandArgs aca)
         {
-            if (aca.Message.Contains("%say"))
+            if (aca.Message.Contains("%say") || aca.Message.Contains("%dm"))
                 return;
 
             List<AbbybotUser> mentionedUsers = await aca.GetMentionedUsers();
@@ -167,20 +161,9 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
             return fc;
         }
 
-        public override bool ShowHelp(AbbybotCommandArgs aca)
-        {
-            bool isGuild = aca.abbybotGuild != null;
-            bool istextchannel = aca.channel is ITextChannel;
-            bool guilduser = aca.author is SocketGuildUser;
-            bool hasperms = aca.abbybotUser.userPerms.Ratings.Contains(Rating);
-            bool dmchannel = aca.channel is SocketDMChannel;
-
-            return ((isGuild && istextchannel && guilduser && hasperms) || dmchannel);
-        }
-
         public override async Task<string> toHelpString(AbbybotCommandArgs aca)
         {
-
+            await Task.CompletedTask;
             return $"{Command} shows a picture of {aca.abbybotUser.userFavoriteCharacter.FavoriteCharacter} {Command.Replace("%", "")}ing someone!";
         }
     }

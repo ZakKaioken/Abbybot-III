@@ -23,10 +23,9 @@ namespace Abbybot_III.Commands.Normal
 
             var mu = a.mentionedUserIds;
             StringBuilder sb = new StringBuilder();
-            await a.Send($"you are sending messages to: ");
             foreach (var muz in mu)
             {
-                //await muz.SendMessageAsync(FavoriteCharacter.ToString());
+                await muz.SendMessageAsync(FavoriteCharacter.ToString());
                 await Task.Delay(100);
             }
             sb.Append("Sent a dm to ");
