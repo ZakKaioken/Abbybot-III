@@ -24,8 +24,6 @@ namespace Abbybot_III.Apis.Discord
                 DiscordApiKey dak = DiscordApiKey.Load(@"ApiKeys\Discord.json");
                 await _client.LoginAsync(TokenType.Bot, dak.ApiKey);
                 await _client.StartAsync();
-                await Task.Delay(-1);
-                await _client.StopAsync();
                     o = false;
                 } catch
                 {
@@ -33,6 +31,12 @@ namespace Abbybot_III.Apis.Discord
                     await Task.Delay(10000);
                 }
             } while (o);
+        }
+
+        internal static async Task IndefinitelyWaitUntilClose()
+        {
+            await Task.Delay(-1);
+            await _client.StopAsync();
         }
 
         internal static async Task DiscordMainAsync()
