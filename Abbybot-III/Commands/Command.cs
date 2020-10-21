@@ -57,8 +57,12 @@ namespace Abbybot_III.Commands
 
         public virtual async Task<bool> Evaluate(AbbybotCommandArgs aca)
         {
-            StringBuilder sb = new StringBuilder("running the base evaluate\n");
+            StringBuilder sb = new StringBuilder($"running the base evaluate on: {Command}\n");
 
+            sb.AppendLine($"Type: {(CommandType)this.Type}");
+            sb.AppendLine($"Rating: {(CommandRatings)this.Rating}");
+            sb.AppendLine($"multithreaded: {this.Multithreaded}");
+            sb.AppendLine($"HelpLine: {(await this.toHelpString(aca))}");
             bool hasperms = false;
             if (aca.abbybotUser.userPerms.Ratings != null)
                 hasperms = aca.abbybotUser.userPerms.Ratings.Contains(Rating);

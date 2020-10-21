@@ -30,7 +30,6 @@ namespace Abbybot_III.Commands.Reciever
                 string Comm = (row["Command"] is string comman) ? comman : "";
                 string Tags = (row["Tags"] is string tags) ? tags : "";
                 int RatingId = (int)row["RatingId"];
-
                 NewGelbooruCommand gc = new NewGelbooruCommand($"%{Comm}", Tags.Split(' '), (CommandRatings)RatingId);
                 cmds.Add(gc);
             }

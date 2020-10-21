@@ -5,7 +5,6 @@ using Abbybot_III.Core.Heart;
 using Abbybot_III.Core.Twitter;
 
 using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace Abbybot_III
@@ -14,16 +13,13 @@ namespace Abbybot_III
     {
         static async Task Main()
         {
-
-            await MysqlCore.CheckMysql(@"ApiKeys\mysqlbinpath.abbytxt");
-
-            await Apis.Discord.Discord.DiscordMainAsync();
+            MysqlCore.CheckMysql(@"ApiKeys\mysqlbinpath.abbytxt");
             await InitAll();
+            await Apis.Discord.Discord.DiscordMainAsync();
             AbbyHeart.Start();
             await Apis.Discord.Discord.IndefinitelyWaitUntilClose();
             Console.ReadLine(); 
         }
-
 
         private static async Task InitAll()
         {

@@ -23,7 +23,7 @@ namespace Abbybot_III.Apis.Booru
             new Lolibooru()
         };
 
-        public static string[] blacklist = { "beastiality", "furry", "vore", "blood", "sofra" };
+        public static string[] blacklist = { "beastiality", "suicide", "injury", "furry", "guro", "sofra" };
 
         public static async Task<SearchResult> Execute(string[] tags)
         {
@@ -43,10 +43,20 @@ namespace Abbybot_III.Apis.Booru
 
             SearchResult searchResult = new SearchResult(new Uri("https://img2.gelbooru.com/samples/ee/e2/sample_eee286783bfa37e088d1ffbcf8f098ba.jpg"), new Uri("https://img2.gelbooru.com/samples/ee/e2/sample_eee286783bfa37e088d1ffbcf8f098ba.jpg"), new Uri("https://gelbooru.com/index.php?page=post&s=view&id=4325788&tags=crying+abigail_williams_%28fate%2Fgrand_order%29"), Rating.Safe, new string[] { "abigail_williams_(fate/grand_order)" }, 0, null, 1000, 1000, null, null, null, "noimagefound", 1000000, "47");
             foreach (var booru in boorus)
-            {                
+            {
+                bool allowedtopost;
                 try
                 {
-                    searchResult = await booru.GetRandomPostAsync(tagz.ToArray());
+
+                    do {
+                        searchResult = await booru.GetRandomPostAsync(tagz.ToArray());
+                        allowedtopost = true;
+                        if (searchResult.source.Contains("sofra")) { //please eventually add twitter user block list, so we can skip artists that hate us.
+                            allowedtopost = false;
+                        }
+                    } while (!allowedtopost);
+                    
+
                     break;
                 } catch { }
             }

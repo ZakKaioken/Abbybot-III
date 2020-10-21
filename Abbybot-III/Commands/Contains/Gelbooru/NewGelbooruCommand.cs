@@ -51,7 +51,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 
             List<AbbybotUser> mentionedUsers = await aca.GetMentionedUsers();
 
-            string fc = await GetFavoriteCharacterTag(aca, mentionedUsers);
+            string fc = GetFavoriteCharacterTag(aca, mentionedUsers);
             List<string> tagz = await GenerateTags(aca, fc);
             
             var imgdata = await Apis.Booru.AbbyBooru.Execute(tagz.ToArray());
@@ -135,7 +135,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
             return tagz;
         }
 
-        private static async Task<string> GetFavoriteCharacterTag(AbbybotCommandArgs aca, List<AbbybotUser> mentionedUsers)
+        private static string GetFavoriteCharacterTag(AbbybotCommandArgs aca, List<AbbybotUser> mentionedUsers)
         {
             string fc;
             if (aca.abbybotSudoUser != null)

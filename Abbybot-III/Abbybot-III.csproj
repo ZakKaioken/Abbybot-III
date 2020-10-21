@@ -9,6 +9,8 @@
     <OutputPath>C:\Users\Zacha\Documents\GitHub\Abbybot-III\Release\Abbybot-III</OutputPath>
  
     <OutDir>Abbybot\III</OutDir>
+ 
+    <ApplicationIcon>Abby Kaioken Badge b.ico</ApplicationIcon>
 
   </PropertyGroup>
 
@@ -51,6 +53,12 @@
     <Reference Include="TweetSharp">
       <HintPath>Apis\Twitter\lib\TweetSharp.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Abby Kaioken Badge b.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
