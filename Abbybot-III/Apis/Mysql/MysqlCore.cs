@@ -16,10 +16,11 @@ namespace Abbybot_III.Apis.Mysql
        public static string mysqlbinpath;
         public static async Task CheckMysql(string localpath)
         {
-            Load(localpath);
             Process[] mysqls = Process.GetProcessesByName("mysqld");
             if (mysqls.Length > 0)
                 return;
+
+            Load(localpath);
             //mysql\bin\mysqld --defaults-file=mysql\bin\my.ini --standalone
 
             ProcessStartInfo psi = new ProcessStartInfo()
@@ -50,11 +51,11 @@ namespace Abbybot_III.Apis.Mysql
             }
 
             var text = File.ReadAllText(path);
+            mysqlbinpath = text;
             if (text.Contains("Replace") && text.Contains("bin folder"))
             {
-                Console.WriteLine($"AbbybotMemory: I can't find where abbybot's memory is... Did you forget to give me it? ({fileName} in {dir})");
+                Console.WriteLine($"AbbybotMemory: Abbybot's memory is not running and I can't find where abbybot's memory is to turn it back on... Did you forget to give me it? ({fileName} in {dir})");
             }
-            mysqlbinpath = text;
         }
 
     }

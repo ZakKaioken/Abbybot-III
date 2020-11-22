@@ -53,7 +53,12 @@ namespace Abbybot_III.Core.Twitter.Queue.sql
             int priority = v ? 1 : 0;
             var url = AbbysqlClient.EscapeString(I.url);
             var sourceurl = AbbysqlClient.EscapeString(I.sourceurl);
+
+            
             var message = AbbysqlClient.EscapeString(I.message);
+
+            if (message.Contains("new tweet just came in")) message = "Abby is a cutie!!";
+
 
             var table = await AbbysqlClient.FetchSQL($"SELECT * FROM `abbybottwitter`.`tweetarchive` WHERE `ImgUrl` = '{url}' AND `Description` = '{message}';");
             if (table.Count > 0)
