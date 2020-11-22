@@ -51,8 +51,8 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
                 {
                     SearchResult imgdata = await AbbyBooru.Execute(o);
 
-                    if (imgdata.rating == BooruSharp.Search.Post.Rating.Safe)
-                        pictureurl = imgdata.fileUrl.ToString();
+                    if (imgdata.Rating == BooruSharp.Search.Post.Rating.Safe)
+                        pictureurl = imgdata.FileUrl.ToString();
                     else
                     {
                         var e = o.ToList();
@@ -60,7 +60,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
                         try
                         {
                             var i = await AbbyBooru.Execute(e.ToArray());
-                            pictureurl = i.fileUrl.ToString();
+                            pictureurl = i.FileUrl.ToString();
                         }
                         catch { }
                     }

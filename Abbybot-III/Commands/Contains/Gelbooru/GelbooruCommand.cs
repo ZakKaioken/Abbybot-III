@@ -207,18 +207,18 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
                 }
 
 
-                im.loli = imgdata.tags.Contains("loli");
-                im.shot = imgdata.tags.Contains("shot");
-                im.nsfw = (imgdata.rating == BooruSharp.Search.Post.Rating.Explicit || imgdata.rating == BooruSharp.Search.Post.Rating.Explicit);
+                im.loli = imgdata.Tags.Contains("loli");
+                im.shot = imgdata.Tags.Contains("shot");
+                im.nsfw = (imgdata.Rating == BooruSharp.Search.Post.Rating.Explicit || imgdata.Rating == BooruSharp.Search.Post.Rating.Explicit);
            
 
-                if (imgdata.fileUrl != null)
+                if (imgdata.FileUrl != null)
                 {
-                    im.Imageurl = imgdata.fileUrl.ToString();
+                    im.Imageurl = imgdata.FileUrl.ToString();
                 }
-                if (imgdata.source != null)
+                if (imgdata.Source != null)
                 {
-                    im.source = imgdata.source;
+                    im.source = imgdata.Source;
                 }
             }
             catch (BooruSharp.Search.InvalidTags)

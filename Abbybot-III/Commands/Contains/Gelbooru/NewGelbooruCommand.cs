@@ -56,17 +56,17 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
             
             var imgdata = await Apis.Booru.AbbyBooru.Execute(tagz.ToArray());
 
-            if (imgdata.source == "noimagefound")
+            if (imgdata.Source == "noimagefound")
             {
                 await NoImageFoundEmbed.Build(aca, fc);
                 return;
             }
 
-            bool loli = imgdata.tags.Contains("loli");
-            bool shot = imgdata.tags.Contains("shota");
-            bool nsfw = imgdata.rating != BooruSharp.Search.Post.Rating.Safe;
-            string fileurl = imgdata.fileUrl.ToString();
-            string source = imgdata.source;
+            bool loli = imgdata.Tags.Contains("loli");
+            bool shot = imgdata.Tags.Contains("shota");
+            bool nsfw = imgdata.Rating != BooruSharp.Search.Post.Rating.Safe;
+            string fileurl = imgdata.FileUrl.ToString();
+            string source = imgdata.Source;
 
             if (nsfw && !await aca.IsNSFW())
             {

@@ -39,8 +39,8 @@ namespace Abbybot_III.Core.Twitter.Queue
 
                     Image img = new Image()
                     {
-                        url = e.fileUrl.ToString(),
-                        sourceurl = e.source
+                        url = e.FileUrl.ToString(),
+                        sourceurl = e.Source
                     };
 
                     await ImageQueueSql.Add(img);

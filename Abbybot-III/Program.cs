@@ -13,7 +13,7 @@ namespace Abbybot_III
     {
         static async Task Main()
         {
-            MysqlCore.CheckMysql(@"ApiKeys\mysqlbinpath.abbytxt");
+            await MysqlCore.CheckMysql(@"ApiKeys\mysqlbinpath.abbytxt");
             await InitAll();
             await Apis.Discord.Discord.DiscordMainAsync();
             AbbyHeart.Start();

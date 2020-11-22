@@ -59,13 +59,13 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
                 BooruSharp.Search.Post.SearchResult imgdata = await service(tags);
                 ImgData im = (new ImgData { });
 
-                if (imgdata.fileUrl != null)
+                if (imgdata.FileUrl != null)
                 {
-                    im.Imageurl = imgdata.fileUrl.ToString();
+                    im.Imageurl = imgdata.FileUrl.ToString();
                 }
-                if (imgdata.source != null)
+                if (imgdata.Source != null)
                 {
-                    im.source = imgdata.source;
+                    im.source = imgdata.Source;
                 }
 
 

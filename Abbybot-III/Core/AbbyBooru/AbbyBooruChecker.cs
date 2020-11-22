@@ -56,15 +56,15 @@ namespace Abbybot_III.Core.AbbyBooru
                     List<img> nngs = new List<img>();
                     var postIds = (await Character.GetLatestPostIdsAsync(character));
 
-                    SearchResult[] eeee = charpicx.Where(x => !postIds.Contains((ulong)x.id)).Take(5).ToArray();
+                    SearchResult[] eeee = charpicx.Where(x => !postIds.Contains((ulong)x.ID)).Take(5).ToArray();
 
                     foreach (var ex in eeee)
                     {
                         img nng = new img() { 
-                            Id = (ulong)ex.id, 
-                            imgurl = ex.fileUrl.ToString(), 
-                            source = ex.source, 
-                            safe = (ex.rating== Rating.Safe) 
+                            Id = (ulong)ex.ID, 
+                            imgurl = ex.FileUrl.ToString(), 
+                            source = ex.Source, 
+                            safe = (ex.Rating== Rating.Safe) 
                         };
                         nngs.Add(nng);
                     }

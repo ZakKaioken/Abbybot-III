@@ -51,7 +51,7 @@ namespace Abbybot_III.Apis.Booru
                     do {
                         searchResult = await booru.GetRandomPostAsync(tagz.ToArray());
                         allowedtopost = true;
-                        if (searchResult.source.Contains("sofra")) { //please eventually add twitter user block list, so we can skip artists that hate us.
+                        if (searchResult.Source.Contains("sofra")) { //please eventually add twitter user block list, so we can skip artists that hate us.
                             allowedtopost = false;
                         }
                     } while (!allowedtopost);
