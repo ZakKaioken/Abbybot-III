@@ -40,7 +40,21 @@ namespace Abbybot_III.Apis.Mysql
 
         public static void Load(string path)
         {
-            mysqlbinpath = File.ReadAllText(path);
+            var dir = Path.GetDirectoryName(path);
+            var fileName = Path.GetFileName(path);
+            var e = Path.GetFullPath(path).Replace(fileName, "");
+            if (!Directory.Exists(e)) Directory.CreateDirectory(e);
+            if (!File.Exists(path))
+            {
+                File.WriteAllText(path, "Replace this text with the path to your mysql bin folder.");
+            }
+
+            var text = File.ReadAllText(path);
+            if (text.Contains("Replace") && text.Contains("bin folder"))
+            {
+                Console.WriteLine($"AbbybotMemory: I can't find where abbybot's memory is... Did you forget to give me it? ({fileName} in {dir})");
+            }
+            mysqlbinpath = text;
         }
 
     }
