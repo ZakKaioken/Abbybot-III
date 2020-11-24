@@ -31,7 +31,8 @@ namespace Abbybot_III.Core.Mysql
             List<CommandRatings> cmdrts = new List<CommandRatings>();
             foreach (var rol in rolz)
                 cmdrts.AddRange(rol.allowedRatings);
-
+            if (!cmdrts.Contains(CommandRatings.cutie))
+                cmdrts.Add(CommandRatings.cutie);
             var e = cmdrts.GroupBy(o => o).Select(o => o.FirstOrDefault()).ToList();
             return await Task.FromResult(e);
         }

@@ -20,6 +20,10 @@ namespace Abbybot_III.Commands.Contains
            
             return v && await base.Evaluate(aca);
         }
+        public override Task<bool> ShowHelp(AbbybotCommandArgs aca)
+        {
+            return base.Evaluate(aca); 
+        }
         public override async Task DoWork(AbbybotCommandArgs aca)
         {
             var s = new StringBuilder(Command);

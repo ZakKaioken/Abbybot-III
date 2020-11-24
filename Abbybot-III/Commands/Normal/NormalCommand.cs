@@ -36,6 +36,11 @@ namespace Abbybot_III.Commands.Normal
 
             return e[0].ToLower() == Command.ToLower() && await base.Evaluate(aca);
         }
+
+        public override Task<bool> ShowHelp(AbbybotCommandArgs aca)
+        {
+            return base.Evaluate(aca);
+        }
         public override async Task<string> toHelpString(AbbybotCommandArgs aca)
         {
             await Task.CompletedTask;
