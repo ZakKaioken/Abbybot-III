@@ -59,35 +59,16 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
                 bool disact = fc.Contains(deactivatewords);
                 bool negative = fc.Contains(negativewords);
 
-                var all = act || disact || negative;
-                if (act || !all) {
-                FavoriteCharacter.Append($"**{activationwords.random()}** words: \n");
-                foreach(var acti in activationwords)
-                {
-                    FavoriteCharacter.Append("**").Append(acti).Append("** ");
-                }
-                    FavoriteCharacter.Append("\n");
-                }
-                if (disact || !all) {
-                FavoriteCharacter.Append($"**{deactivatewords.random()}** words: \n");
-                foreach (var acti in deactivatewords)
-                {
-                    FavoriteCharacter.Append("**").Append(acti).Append("** ");
-                }
-                    FavoriteCharacter.Append("\n");
-                }
-                if (negative || !all) {
-                FavoriteCharacter.Append($"**{negativewords.random()}** words: \n");
-                foreach (var acti in negativewords)
-                {
-                    FavoriteCharacter.Append("**").Append(acti).Append("** ");
-                }
-                    FavoriteCharacter.Append("\n");
-                    }
+                bool all = act || disact || negative;
+
+                AppendDefinition(FavoriteCharacter, activationwords, act, all);
+                AppendDefinition(FavoriteCharacter, deactivatewords, disact, all);
+                AppendDefinition(FavoriteCharacter, negativewords, negative, all);
+                
                 await a.Send(FavoriteCharacter);
                 return;
             }
-            
+
 
             bool wordused = false; bool state = false;
             foreach (var ac in activationwords){
@@ -132,8 +113,20 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
         
             await a.Send(eb);
         }
-        
-        
+
+        private void AppendDefinition(StringBuilder FavoriteCharacter, string[] activationwords, bool act, bool all)
+        {
+            if (act || !all)
+            {
+                FavoriteCharacter.Append($"**{activationwords.random()}** words: \n");
+                foreach (var acti in activationwords)
+                {
+                    FavoriteCharacter.Append("**").Append(acti).Append("** ");
+                }
+                FavoriteCharacter.Append("\n");
+            }
+        }
+
 
         public override async Task<string> toHelpString(AbbybotCommandArgs aca)
         {
