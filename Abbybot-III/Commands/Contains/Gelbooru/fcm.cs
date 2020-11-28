@@ -20,23 +20,23 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
     [Capi.Cmd("%fcm", 1, 1)]
     class fcm : ContainCommand
     {
+        string[] activationwords = new string[]
+        {
+                "on", "enabled", "enable", "true", "activate",
+                "activated", "yes", "go", "start"
+        };
+        string[] deactivatewords = new string[]
+        {
+                "off", "disabled", "disable", "false", "stop", "end",
+                "finish"
+        };
+        string[] negativewords = new string[]
+        {
+                "not", "negative", "-", "opposite", "undo"
+        };
         public override async Task DoWork(AbbybotCommandArgs a)
         {
             StringBuilder FavoriteCharacter = new StringBuilder(a.Message).Replace(Command, "");
-
-            var activationwords = new string[]
-            {
-                "on", "enabled", "enable", "true", "activate",
-                "activated", "yes"
-            };
-            var deactivatewords = new string[]
-            {
-                "off", "disabled", "disable", "false"
-            };
-            var negativewords = new string[]
-            {
-                "not", "negative", "-", "opposite"
-            };
 
             if (FavoriteCharacter.Length < 1)
             {
@@ -55,16 +55,9 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
             if (fc.Contains("words"))
             {
                 FavoriteCharacter.Clear();
-                bool act = false; bool disact = false; bool negative = false;
-                foreach (var aaa in activationwords)
-                    if (fc.Contains(aaa))
-                        act = true;
-                foreach (var aaa in deactivatewords)
-                    if (fc.Contains(aaa))
-                        disact = true;
-                foreach (var aaa in negativewords)
-                    if (fc.Contains(aaa))
-                        negative = true;
+                bool act = fc.Contains(activationwords);
+                bool disact = fc.Contains(deactivatewords);
+                bool negative = fc.Contains(negativewords);
 
                 var all = act || disact || negative;
                 if (act || !all) {
@@ -140,6 +133,8 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
             await a.Send(eb);
         }
         
+        
+
         public override async Task<string> toHelpString(AbbybotCommandArgs aca)
         {
             return $"{Command}: lets you set your favorite character mentions modifier. Usage (%fcm on) to use your mentioned user for pic commands";
