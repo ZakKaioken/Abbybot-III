@@ -24,7 +24,7 @@ namespace Abbybot_III
 
         private static async Task InitAll()
         {
- await ClockIniter.init();
+ //await ClockIniter.init();
  Twitter.init();
  AbbyBooruChecker.Init();
  AbbybotTwitter.init();
