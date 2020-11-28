@@ -52,14 +52,15 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 
             string fc = FavoriteCharacter.ToString().ToLower();
 
+            bool act = fc.Contains(activationwords);
+            bool disact = fc.Contains(deactivatewords);
+            bool negative = fc.Contains(negativewords);
+
+            bool all = act || disact || negative;
             if (fc.Contains("words"))
             {
                 FavoriteCharacter.Clear();
-                bool act = fc.Contains(activationwords);
-                bool disact = fc.Contains(deactivatewords);
-                bool negative = fc.Contains(negativewords);
 
-                bool all = act || disact || negative;
 
                 AppendDefinition(FavoriteCharacter, activationwords, act, all);
                 AppendDefinition(FavoriteCharacter, deactivatewords, disact, all);
@@ -71,21 +72,18 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 
 
             bool wordused = false; bool state = false;
-            foreach (var ac in activationwords){
-                if (fc.Contains(ac))
+                if (act)
                 {
                     wordused = true;
                     state = true;
                 }
-            }
-            foreach (var af in deactivatewords)
-            {
-                if (fc.Contains(af))
+            
+                if (disact)
                 {
                     wordused = true;
                     state = false;
                 }
-            }
+            
             if (!wordused)
             {
                 await a.Send("You're confusing me master... :(\ndid you forget an activation or disactivation word? (**on**, **off**, **true**, **false**, **enable**, **disable**)");
