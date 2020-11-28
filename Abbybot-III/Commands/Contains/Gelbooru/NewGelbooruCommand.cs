@@ -51,7 +51,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 
             List<AbbybotUser> mentionedUsers = await aca.GetMentionedUsers();
 
-            string fc = GetFavoriteCharacterTag(aca, mentionedUsers);
+            string fc = await GetFavoriteCharacterTagAsync(aca, mentionedUsers);
             List<string> tagz = await GenerateTags(aca, fc);
             
             var imgdata = await Apis.Booru.AbbyBooru.Execute(tagz.ToArray());
@@ -135,30 +135,21 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
             return tagz;
         }
 
-        private static string GetFavoriteCharacterTag(AbbybotCommandArgs aca, List<AbbybotUser> mentionedUsers)
+        private static async Task<string> GetFavoriteCharacterTagAsync(AbbybotCommandArgs aca, List<AbbybotUser> mentionedUsers)
         {
-            string fc;
+            
             if (aca.abbybotSudoUser != null)
-            {
-                fc = "Abigail_Williams*";
-            }
-            else
-            {
-                
-                if (mentionedUsers.Count > 0)
-                {
-                    var user = mentionedUsers.random();
-                    fc = user.userFavoriteCharacter.FavoriteCharacter;
-                }
-                else
-                {
-                    fc = aca.abbybotUser.userFavoriteCharacter.FavoriteCharacter;
-                    if (fc.Length < 2)
-                        fc = "abigail_williams*";
-                }
-            }
+                return "Abigail_Williams*";
 
-            return fc;
+            var ufcm = await FCMentionsSql.GetFCMAsync(aca.abbybotUser.Id);
+            if (ufcm&&mentionedUsers.Count > 0)
+                    return mentionedUsers.random().userFavoriteCharacter.FavoriteCharacter;
+            else
+                {
+                    return aca.abbybotUser.userFavoriteCharacter.FavoriteCharacter;
+                }
+
+            return "abigail_williams*";
         }
 
         public override async Task<string> toHelpString(AbbybotCommandArgs aca)

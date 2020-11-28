@@ -14,21 +14,21 @@ namespace Abbybot_III
     {
         static async Task Main()
         {
-            await MysqlCore.CheckMysql(@"ApiKeys\mysqlbinpath.abbytxt");
-            await InitAll();
-            await Apis.Discord.Discord.DiscordMainAsync();
-            AbbyHeart.Start();
-            await Apis.Discord.Discord.IndefinitelyWaitUntilClose();
-            Console.ReadLine(); 
+ await MysqlCore.CheckMysql(@"ApiKeys\mysqlbinpath.abbytxt");
+ await InitAll();
+ await Apis.Discord.Discord.DiscordMainAsync();
+ AbbyHeart.Start();
+ await Apis.Discord.Discord.IndefinitelyWaitUntilClose();
+ Console.ReadLine(); 
         }
 
         private static async Task InitAll()
         {
-            await ClockIniter.init();
-            Twitter.init();
-            AbbyBooruChecker.Init();
-            AbbybotTwitter.init();
-            AbbySql.AbbysqlClient.connectionstring = Apis.Mysql.ApiKeys.MysqlApiKeys.Load(@"ApiKeys\Mysql.json").ToString();
+ await ClockIniter.init();
+ Twitter.init();
+ AbbyBooruChecker.Init();
+ AbbybotTwitter.init();
+ AbbySql.AbbysqlClient.connectionstring = Apis.Mysql.ApiKeys.MysqlApiKeys.Load(@"ApiKeys\Mysql.json").ToString();
 }
     }
 }
