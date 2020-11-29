@@ -56,7 +56,7 @@ namespace Abbybot_III.Core.Users.sql
 
         private static async Task AddUser(AbbybotUser user)
         {
-            await AbbysqlClient.RunSQL($"INSERT INTO `discord`.`users`(Id) VALUES ('{user.Id}');");
+            await AbbysqlClient.RunSQL($"INSERT INTO `discord`.`users`(Id, FavoriteCharacter) VALUES ('{user.Id}','Abigail_Williams*');");
         }
     }
 }
