@@ -1,5 +1,6 @@
 ﻿using Abbybot_III.Core;
 using Abbybot_III.Core.CommandHandler;
+using Abbybot_III.Sql.Abbybot.User;
 
 using Discord;
 using Discord.WebSocket;
@@ -27,8 +28,8 @@ namespace Abbybot_III.Apis.Discord.Events
             var username = message.Author.Username;
       
             Console.WriteLine($"{guild}-{username}: {message.Content}");
-            
-            
+
+            await PassiveUserSql.IncStat(message.Author.Id, "MessagesSent");
             await CommandHandler.Handle(message);
         }
 

@@ -1,5 +1,6 @@
 ﻿using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
+using Abbybot_III.Sql.Abbybot.User;
 
 using Capi.Interfaces;
 
@@ -58,8 +59,7 @@ namespace Abbybot_III.Commands
         public virtual async Task<bool> Evaluate(AbbybotCommandArgs aca)
         {
             StringBuilder sb = new StringBuilder($"running the base evaluate on: {Command}\n");
-
-            sb.AppendLine($"Type: {(CommandType)this.Type}");
+             sb.AppendLine($"Type: {(CommandType)this.Type}");
             sb.AppendLine($"Rating: {(CommandRatings)this.Rating}");
             sb.AppendLine($"multithreaded: {this.Multithreaded}");
             sb.AppendLine($"HelpLine: {(await this.toHelpString(aca))}");
@@ -106,9 +106,13 @@ namespace Abbybot_III.Commands
             if (aca.Message.Contains("--debugmode") && !aca.Message.Contains("%say") && !aca.Message.Contains("%dm"))
                 await aca.Send(sb);
 
-            
-            return canRun && !isAbbybot || canRun && IsAbbybotRunnable;
-            
+            bool go = canRun && !isAbbybot || canRun && IsAbbybotRunnable;
+
+
+            if (go)
+                await PassiveUserSql.IncStat(aca.abbybotUser.Id, "CommandsSent");
+
+            return go;
         }
 
         public virtual async Task<string> toHelpString(AbbybotCommandArgs aca)
