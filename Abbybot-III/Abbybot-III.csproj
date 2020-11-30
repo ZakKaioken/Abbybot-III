@@ -27,6 +27,7 @@
   <ItemGroup>
     <Folder Include="Apis\Mysql\lib\" />
     <Folder Include="Apis\Twitter\lib\" />
+    <Folder Include="Commands\Contains\User\" />
     <Folder Include="Core\CommandHandler\lib\" />
     <Folder Include="Core\Users\extentions\" />
   </ItemGroup>

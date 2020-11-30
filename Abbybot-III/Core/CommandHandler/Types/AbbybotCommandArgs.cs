@@ -16,8 +16,15 @@ namespace Abbybot_III.Core.CommandHandler.Types
     {
         public string Message
         {
-            get;
-            set;
+            get
+            {
+                return msg;
+            }
+            set
+            {
+                msg = value.Replace("pussy", "usb c").Replace("Pussy", "Usb c").Replace("PUSSY", "USB C");
+            }
+            
         }
         public SocketUser author;
         public ISocketMessageChannel channel;
@@ -26,6 +33,8 @@ namespace Abbybot_III.Core.CommandHandler.Types
         public AbbybotGuild abbybotGuild;
         public AbbybotUser abbybotUser;
         public AbbybotUser abbybotSudoUser;
+
+        string msg;
 
         public static async Task<AbbybotCommandArgs> MakeArgsFromMessage(SocketMessage sm)
         {
