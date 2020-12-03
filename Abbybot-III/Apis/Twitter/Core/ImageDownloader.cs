@@ -15,10 +15,12 @@ namespace Abbybot_III.Apis.Twitter.Core
 
             string dir = $@"{Directory.GetCurrentDirectory()}\Temp\";
 
-            if (!Directory.Exists(dir))
-            {
-                Directory.CreateDirectory(dir);
-            }
+
+            if (Directory.Exists(dir))
+                Directory.Delete(dir);            
+            Directory.CreateDirectory(dir);
+            
+
             string name = Path.GetFileName(u.ToString());
             string location = $"{dir}{name}";
             client.DownloadFileAsync(new Uri(u), location);

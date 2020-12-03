@@ -6,6 +6,7 @@ using Abbybot_III.Core.Heart;
 using Abbybot_III.Core.Twitter;
 
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace Abbybot_III
@@ -14,6 +15,7 @@ namespace Abbybot_III
     {
         static async Task Main()
         {
+            Process.Start("AbbybotSleep.exe");
  await MysqlCore.CheckMysql(@"ApiKeys\mysqlbinpath.abbytxt");
  await InitAll();
  await Apis.Discord.Discord.DiscordMainAsync();
