@@ -16,7 +16,8 @@ timer.Elapsed += (a, b) =>
 {
     timer.Interval = milis;
     Process.GetProcessesByName("Abbybot-III").Sleep();
-    Console.WriteLine("Dosing off...");
+    timestr = TimeStringGenerator.MilistoTimeString(milis);
+    Console.WriteLine($"Dosing off... I'm back!! I'll probably dose off in {timestr}");
     Process.Start("Abbybot-III");
 };
 timer.Start();
