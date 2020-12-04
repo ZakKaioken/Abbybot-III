@@ -17,7 +17,7 @@ namespace Abbybot_III.Apis.Twitter.Core
 
 
             if (Directory.Exists(dir))
-                Directory.Delete(dir);            
+                Directory.Delete(dir,true);            
             Directory.CreateDirectory(dir);
             
 

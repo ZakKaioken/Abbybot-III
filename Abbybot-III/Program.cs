@@ -15,7 +15,9 @@ namespace Abbybot_III
     {
         static async Task Main()
         {
-            Process.Start("AbbybotSleep.exe");
+            Console.WriteLine("Abbybot III starting!");
+            if (Process.GetProcessesByName("AbbybotSleep").Length<1) 
+                Process.Start("AbbybotSleep.exe");
  await MysqlCore.CheckMysql(@"ApiKeys\mysqlbinpath.abbytxt");
  await InitAll();
  await Apis.Discord.Discord.DiscordMainAsync();

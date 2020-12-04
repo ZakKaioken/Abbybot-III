@@ -27,6 +27,7 @@ namespace Abbybot_III.Core.Twitter.Queue
         {
             if (TweetQueueBeat < time)
             {
+                Console.WriteLine("Sending Tweet");
                 TweetQueueBeat = TweetQueueBeat.AddMilliseconds(tweetQueueMilis.TotalMilliseconds);
                 await TweetSender.SendTweet();
             }
