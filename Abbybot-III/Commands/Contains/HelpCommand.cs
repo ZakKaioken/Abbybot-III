@@ -17,8 +17,17 @@ namespace Abbybot_III.Commands.Contains
     [Capi.Cmd("%help", 1, 1)]
     class HelpCommand : ContainCommand
     {
+        
+        public HelpCommand()
+        {
+            Multithreaded = true;
+        }
+
         public override async Task DoWork(AbbybotCommandArgs abd)
         {
+
+            await abd.Send("Hey cutie master! I'm gathering my list of commands for you now! I'll dm it to you when it's ready! 😁");
+
             var ratings = abd.abbybotUser.userPerms.Ratings;
             List<iCommand> commands = CommandHandler.capi.commands;
 
@@ -40,32 +49,35 @@ namespace Abbybot_III.Commands.Contains
             }
             else if (commands.Count > 0)
             {
-                var commandTypes = commands.ToList().Where(x => x.ShowHelp(abd).GetAwaiter().GetResult()).GroupBy(x => x.GetType());
+                List<iCommand> usableCommands = new List<iCommand>();
+                foreach (var i in commands.ToList())
+                    if (await i.ShowHelp(abd))
+                        usableCommands.Add(i);
+                var commandTypeGroups = usableCommands.GroupBy(x => x.GetType());
 
-                
                 StringBuilder sb = new StringBuilder();
-                foreach (var typegroups in commandTypes.Split(4))
+
+                foreach (var tg in commandTypeGroups.Split(4))
                 {
-                    sb.Clear();
-                    foreach (var typegroup in typegroups)
+                    foreach (var typegroup in tg)
                     {
                         if (typegroup.Count() > 1)
                         {
                             var typzcommands = typegroup.ToList();
                             var bse = typzcommands[0];
                             sb.Append(await bse.toHelpString(abd)).Append(":\n");
-                            sb.AppendJoin(", ", typzcommands.Select(x => x.Command));
+                            sb.AppendJoin(", ", typzcommands.Select(x => $"**{x.Command}**"));
                         }
                         else
                         {
                             foreach (var cmd in typegroup.ToList())
                             {
-                                sb.Append(await cmd.toHelpString(abd) + "\n");
+                                sb.Append((await cmd.toHelpString(abd)).Replace(cmd.Command, $"**{cmd.Command}**") + "\n");
                             }
                         }
-                        eb.AddField("\u200b", sb.ToString());
-                        sb.Clear();
                     }
+                    eb.AddField("\u200b", sb.ToString());
+                    sb.Clear();
                 }
             }
             else
@@ -76,8 +88,6 @@ namespace Abbybot_III.Commands.Contains
 
             if (abd.abbybotUser.userTrust.inTimeOut)
                 await abd.Send("I put it in our dms.");
-
-            await abd.Send("hey master i hope you don't mind i put the help page in our dms. \nif you ask me out and youre underage you're a bad gorl");
         }
 
         public override async Task<bool> Evaluate(AbbybotCommandArgs aca)
