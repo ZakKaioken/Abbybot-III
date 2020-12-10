@@ -109,8 +109,6 @@ namespace Abbybot_III.Commands
             bool go = canRun && !isAbbybot || canRun && IsAbbybotRunnable;
 
 
-            if (go)
-                await PassiveUserSql.IncStat(aca.abbybotUser.Id, "CommandsSent");
 
             return go;
         }
@@ -121,7 +119,6 @@ namespace Abbybot_III.Commands
             return $"{Command}: a contains command.";
         }
 
-
         public virtual async Task<bool> ShowHelp(AbbybotCommandArgs aca)
         {
             await Task.CompletedTask;
@@ -130,7 +127,9 @@ namespace Abbybot_III.Commands
 
         async Task iCommand.DoWork(iMsgData md)
         {
-            await DoWork(md as AbbybotCommandArgs);
+            var aca = (md as AbbybotCommandArgs);
+            await PassiveUserSql.IncStat(aca.abbybotUser.Id, "CommandsSent");
+            await DoWork(aca);
         }
 
         async Task<bool> iCommand.Evaluate(iMsgData message)
