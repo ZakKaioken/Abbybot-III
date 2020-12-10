@@ -2,6 +2,8 @@
 using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
 
+using Capi.Interfaces;
+
 using Discord;
 
 using System;
@@ -18,7 +20,7 @@ namespace Abbybot_III.Commands.Contains
         public override async Task DoWork(AbbybotCommandArgs abd)
         {
             var ratings = abd.abbybotUser.userPerms.Ratings;
-            List<string> commands = await CommandHandler.capi.GetHelp(abd);
+            List<iCommand> commands = CommandHandler.capi.commands;
 
             EmbedBuilder eb = new EmbedBuilder
             {
@@ -38,16 +40,32 @@ namespace Abbybot_III.Commands.Contains
             }
             else if (commands.Count > 0)
             {
-                var cancoman = commands.ToList().Split(4);
+                var commandTypes = commands.ToList().Where(x => x.ShowHelp(abd).GetAwaiter().GetResult()).GroupBy(x => x.GetType());
+
+                
                 StringBuilder sb = new StringBuilder();
-                foreach (var cancommand in cancoman)
+                foreach (var typegroups in commandTypes.Split(4))
                 {
                     sb.Clear();
-                    foreach (var cmd in cancommand)
+                    foreach (var typegroup in typegroups)
                     {
-                        sb.Append(cmd + "\n");
+                        if (typegroup.Count() > 1)
+                        {
+                            var typzcommands = typegroup.ToList();
+                            var bse = typzcommands[0];
+                            sb.Append(await bse.toHelpString(abd)).Append(":\n");
+                            sb.AppendJoin(", ", typzcommands.Select(x => x.Command));
+                        }
+                        else
+                        {
+                            foreach (var cmd in typegroup.ToList())
+                            {
+                                sb.Append(await cmd.toHelpString(abd) + "\n");
+                            }
+                        }
+                        eb.AddField("\u200b", sb.ToString());
+                        sb.Clear();
                     }
-                    eb.AddField("\u200b", sb.ToString());
                 }
             }
             else

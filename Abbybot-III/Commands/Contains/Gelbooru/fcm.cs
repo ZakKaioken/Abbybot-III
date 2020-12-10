@@ -4,6 +4,8 @@ using Abbybot_III.Core.CommandHandler.Types;
 using Abbybot_III.Core.Users.sql;
 using Abbybot_III.extentions;
 
+using AbbySql;
+
 using BooruSharp.Search.Post;
 
 using Discord;
@@ -23,16 +25,18 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
         string[] activationwords = new string[]
         {
                 "on", "enabled", "enable", "true", "activate",
-                "activated", "yes", "go", "start"
+                "activated", "yes", "go", "start", "1"
         };
         string[] deactivatewords = new string[]
         {
                 "off", "disabled", "disable", "false", "stop", "end",
-                "finish"
+                "finish", "0"
         };
         string[] negativewords = new string[]
         {
-                "not", "negative", "-", "opposite", "undo"
+                "not", "negative", "-", "opposite", "undo", "flip", 
+                "nevermind", "reverse"
+
         };
         public override async Task DoWork(AbbybotCommandArgs a)
         {
@@ -86,8 +90,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
             
             if (!wordused)
             {
-                await a.Send("You're confusing me master... :(\ndid you forget an activation or disactivation word? (**on**, **off**, **true**, **false**, **enable**, **disable**)");
-                return;
+                state = await FCMentionsSql.GetFCMAsync(a.abbybotUser.Id);
             }
             foreach (var ad in negativewords)
             {
