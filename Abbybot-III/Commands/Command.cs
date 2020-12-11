@@ -1,4 +1,5 @@
-﻿using Abbybot_III.Core.CommandHandler.extentions;
+﻿using Abbybot_III.Commands.Custom.PassiveUsage;
+using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
 using Abbybot_III.Sql.Abbybot.User;
 
@@ -128,8 +129,12 @@ namespace Abbybot_III.Commands
         async Task iCommand.DoWork(iMsgData md)
         {
             var aca = (md as AbbybotCommandArgs);
-            await PassiveUserSql.IncStat(aca.abbybotUser.Id, "CommandsSent");
+            
             await DoWork(aca);
+            if (!(this is PassiveCommand))
+            {
+                await PassiveUserSql.IncStat(aca.abbybotUser.Id, "CommandsSent");
+            }
         }
 
         async Task<bool> iCommand.Evaluate(iMsgData message)

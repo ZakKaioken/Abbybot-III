@@ -32,11 +32,11 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
             string fc = FavoriteCharacter.ToString();
 
             FavoriteCharacter.Replace(" ", "_").Replace("abbybot", "abigail_williams").Replace("abby", "abigail_williams").Replace("abby_kaioken", "abigail_williams");
-
+            FavoriteCharacter.Append("*");
             if (FavoriteCharacter.ToString().Contains("_~_") || FavoriteCharacter.ToString().Contains("_or_"))
             {
                 FavoriteCharacter.Insert(0, "{").Append("}");
-                FavoriteCharacter.Replace("_~_", " ~ ").Replace("_or_", " ~ ");
+                FavoriteCharacter.Replace("_~_", "* ~ ").Replace("_or_", "* ~ ");
             }
 
             FavoriteCharacter.Replace("_&&_", "* ").Replace("_and_", "* ");
@@ -74,7 +74,8 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
                 tries++;
             } while (tries <= 3);
             EmbedBuilder eb = new EmbedBuilder();
-            eb.ImageUrl = pictureurl;
+            var urirl = new Uri(pictureurl).AbsoluteUri;
+            eb.ImageUrl = urirl;
             var u = a.abbybotUser;
             if (canrun)
             {

@@ -20,7 +20,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
             {
                 ImageUrl = imgdata.Imageurl
             };
-            string fcn = sb.ToString().Replace("* ", " and ").Replace(" ~ ", " or ").Replace("{", "").Replace("}", "").Replace("_", " ");
+            string fcn = fcbuilder(sb.ToString());
 
             message.Clear();
             MentionsEmbed(imgdata, message);
@@ -64,7 +64,10 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
                 return source.Replace("/member_illust.php?mode=medium&amp;illust_id=", "/en/artworks/");
             return "";
         }
-
+        static string fcbuilder(string s)
+        {
+            return s.Replace("* ~ ", " or ").Replace("* ", " and ").Replace("{", "").Replace("}", "").Replace("_", " ").Replace("*","");
+        }
         internal static EmbedBuilder Build(string fileurl, string source, string fc, List<Core.Data.User.AbbybotUser> mentionedUsers, string command)
         {
             StringBuilder message = new StringBuilder();
@@ -72,7 +75,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
             {
                 ImageUrl = fileurl
             };
-            string fcn = fc.ToString().Replace("* ", " and ").Replace(" ~ ", " or ").Replace("{", "").Replace("}", "").Replace("_", " ");
+            string fcn = fcbuilder(fc.ToString());
 
             message.Clear();
             //MentionsEmbed(imgd, message);
@@ -91,7 +94,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
                 {
                     ImageUrl = imgdrata.Imageurl
                 };
-                string fcn = imgdrata.favoritecharacter.ToString().Replace("* ", " and ").Replace(" ~ ", " or ").Replace("{", "").Replace("}", "").Replace("_", " ");
+            string fcn = fcbuilder(imgdrata.favoritecharacter.ToString());
 
                 message.Clear();
                 MentionsEmbed(imgdrata, message);

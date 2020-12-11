@@ -17,7 +17,6 @@ namespace Abbybot_III.Apis.Booru
         {
             new Gelbooru(),
             new SankakuComplex(),
-            new Rule34(),
             new DanbooruDonmai(),
             new Safebooru(),
             new Lolibooru()

@@ -7,6 +7,8 @@ using Discord.WebSocket;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Apis.Discord.Events
@@ -23,15 +25,48 @@ namespace Abbybot_III.Apis.Discord.Events
 
         private static async Task Recieved(SocketMessage message)
         {
-            var guild = (message.Author is SocketGuildUser gu) ? gu.Guild.Name : "dms";
-          
-            var username = message.Author.Username;
-      
-            Console.WriteLine($"{guild}-{username}: {message.Content}");
+            
+            WriteMessage(message);
 
+            
             await PassiveUserSql.IncStat(message.Author.Id, "MessagesSent");
             await CommandHandler.Handle(message);
         }
+
+        private static void WriteMessage(SocketMessage message)
+        {
+            var guild = (message.Author is SocketGuildUser gu) ? gu.Guild.Name : "dms";
+
+            var username = message.Author.Username;
+            StringBuilder sb = new StringBuilder();
+            sb.Append(guild).Append("-").Append(username).Append(": ");
+
+            sb.AppendLine(message.Content);
+            
+            foreach (var embed in message.Embeds.ToList())
+                {
+                    if (embed.Title is string)
+                    sb.AppendLine($"[{embed.Title}]");
+                    
+                    if (embed.Description is string)
+                        sb.AppendLine($"[{embed.Description}]");
+                    if (embed.Image.HasValue)
+                        sb.AppendLine($"[{embed.Image.Value.Url}]");
+                    if (embed.Video.HasValue)
+                        sb.AppendLine($"[{embed.Video.Value}]");
+                    foreach (var field in embed.Fields)
+                    {
+                        sb.AppendLine($"-[{field.Name}]");
+                        sb.AppendLine($"-[{field.Value}]");
+                    }
+                    if (embed.Footer.HasValue) {
+                        var foot = embed.Footer.Value;
+                        sb.AppendLine($"[{foot.Text}]");
+                    }
+                }
+            
+            Console.WriteLine(sb.ToString());
+         }
 
         private static async Task Deleted(Cacheable<IMessage, ulong> message, ISocketMessageChannel channel)
         {
