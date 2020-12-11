@@ -2,6 +2,8 @@
 using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
 
+using Discord.WebSocket;
+
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -17,7 +19,9 @@ namespace Abbybot_III.Commands.Normal
             StringBuilder FavoriteCharacter = new StringBuilder(a.Message).Replace(Command, "").Replace("--debugmode", "");
             while (FavoriteCharacter[0] == ' ')
                 FavoriteCharacter.Remove(0, 1);
-            await a.Delete();
+
+            if (!(a.channel is SocketDMChannel))
+                await a.Delete();
             await a.Send(FavoriteCharacter);
         }
     }

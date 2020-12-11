@@ -29,7 +29,7 @@ namespace Abbybot_III
         private static async Task InitAll()
         {
  //await ClockIniter.init();
- Twitter.init();
+ await Twitter.init();
  AbbyBooruChecker.Init();
  AbbybotTwitter.init();
  AbbySql.AbbysqlClient.connectionstring = Apis.Mysql.ApiKeys.MysqlApiKeys.Load(@"ApiKeys\Mysql.json").ToString();

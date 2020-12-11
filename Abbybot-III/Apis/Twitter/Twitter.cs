@@ -14,7 +14,7 @@ namespace Abbybot_III.Apis.Twitter
     {
         public static TwitterService ts;
 
-        public static async void init()
+        public static async Task init()
         {
             var tk = TwitterApiKeys.Load(@"ApiKeys\Twitter.json");
             ts = new TwitterService(tk.ConsumerKey, tk.ConsumerSecret, tk.AccessToken, tk.AcessTokenSecret);

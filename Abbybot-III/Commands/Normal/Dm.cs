@@ -3,6 +3,7 @@ using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
 
 using Discord;
+using Discord.WebSocket;
 
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,6 @@ namespace Abbybot_III.Commands.Normal
             while (FavoriteCharacter[0] == ' ')
                 FavoriteCharacter.Remove(0, 1);
 
-
             var mu = a.mentionedUserIds;
             StringBuilder sb = new StringBuilder();
             foreach (var muz in mu)
@@ -31,7 +31,7 @@ namespace Abbybot_III.Commands.Normal
             sb.Append("Sent a dm to ");
             sb.AppendJoin(", ", mu);
 
-
+            if (!(a.channel is SocketDMChannel))
             await a.Delete();
             await a.Send(sb);
         }

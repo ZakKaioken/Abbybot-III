@@ -22,7 +22,7 @@ namespace Abbybot_III.Commands.Contains
         {
             Multithreaded = true;
         }
-
+        public override bool SelfRun { get => false; set => base.SelfRun = value; }
         public override async Task DoWork(AbbybotCommandArgs abd)
         {
 
