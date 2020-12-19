@@ -26,9 +26,14 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
                 List<string> tags = new List<string>();
                 FavoriteCharacter = FavoriteCharacter.Replace(" ", "_");
                 string fc = FavoriteCharacter.ToString().ToLower();
-                foreach (var item in fc.Replace("_and_", "&&").Split("&&"))
+                foreach (var item in fc.Replace("_and_", "&&").Replace(",", "&&").Split("&&"))
                 {
-                    tags.Add(item);
+                    FavoriteCharacter.Clear().Append(item);
+                    while (FavoriteCharacter[0] == '_')
+                        FavoriteCharacter.Remove(0, 1);
+                    while (FavoriteCharacter[^1] == '_')
+                        FavoriteCharacter.Remove(FavoriteCharacter.Length - 1, 1);
+                    tags.Add(FavoriteCharacter.ToString());
                 }
                 string reason = "";
                 FavoriteCharacter.Clear();

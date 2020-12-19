@@ -23,10 +23,15 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
             StringBuilder FavoriteCharacter = new StringBuilder(a.Message.Replace(Command, ""));
 
             if (FavoriteCharacter.Length < 1)
+            {
+
+                var fcfc = a.abbybotUser.userFavoriteCharacter.FavoriteCharacter;
+                await a.Send($"Your favorite character is: {fcfc}");
                 return;
+            }
             while (FavoriteCharacter[0] == ' ')
                 FavoriteCharacter.Remove(0, 1);
-            while (FavoriteCharacter[FavoriteCharacter.Length - 1] == ' ')
+            while (FavoriteCharacter[^1] == ' ')
                 FavoriteCharacter.Remove(FavoriteCharacter.Length - 1, 1);
 
             string fc = FavoriteCharacter.ToString();

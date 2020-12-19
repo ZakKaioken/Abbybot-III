@@ -12,7 +12,13 @@ namespace Abbybot_III.Core.Guilds.sql
     {
         public static async Task AddGuild(AbbybotGuild guild)
         {
-            await AbbysqlClient.RunSQL($"INSERT INTO `discord`.`guilds`(Id) VALUES ('{guild.GuildId}'); ");
+            var name =AbbysqlClient.EscapeString(guild.Name);
+            await AbbysqlClient.RunSQL($"INSERT INTO `discord`.`guilds`(Id, Name) VALUES ('{guild.GuildId}', '{name}'); ");
+        }
+        public static async Task UpdateGuildName(AbbybotGuild guild)
+        {
+            var name = AbbysqlClient.EscapeString(guild.Name);
+            await AbbysqlClient.RunSQL($"UPDATE `discord`.`guilds` SET `Name` = '{name}' WHERE `Id` ='{guild.GuildId}';");
         }
         public static async Task GetGuild(AbbybotGuild abg) 
         {

@@ -24,15 +24,21 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
         public override async Task DoWork(AbbybotCommandArgs a)
         {
             StringBuilder tagss = new StringBuilder(a.Message.Replace(Command, ""));
-            if (tagss.Length > 0)
+            if (tagss.Length < 1)
             {
-                while (tagss[0] == ' ')
-                    tagss.Remove(0, 1);
+                await a.Send("You gotta tell me some tags too silly!!!");
+                return;
             }
-            if(a.abbybotUser.userFavoriteCharacter != null) {
+            while (tagss[0] == ' ')
+                tagss.Remove(0, 1);
+            while (tagss[^1] == ' ')
+                tagss.Remove(tagss.Length - 1, 1);
+
+            if (a.abbybotUser.userFavoriteCharacter != null) {
             var fc = a.abbybotUser.userFavoriteCharacter.FavoriteCharacter;
             tagss.Replace("&fc", $"{fc}*");
             }
+
 
             var tags = tagss.ToString().Split(' ').ToList();
 
@@ -46,13 +52,13 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
                 tags.Add($"-{item}");
             }
 
-            var ratings = a.abbybotUser.userPerms.Ratings;
-
-            if (!sgc.IsNsfw || !a.abbybotUser.userFavoriteCharacter.IsLewd || !ratings.Contains(CommandRatings.hot))
-            {
-                tags.Add("rating:safe");
+            if (a.abbybotGuild != null) { 
+                var ratings = a.abbybotUser.userPerms.Ratings;
+                if (!sgc.IsNsfw || !a.abbybotUser.userFavoriteCharacter.IsLewd || !ratings.Contains(CommandRatings.hot))
+                {
+                    tags.Add("rating:safe");
+                }
             }
-
             EmbedBuilder eb = null;
             try
             {
@@ -71,7 +77,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 
                 try
                 {
-                    eb = Commands.Contains.Gelbooru.embed.GelEmbed.Build(im, new StringBuilder("abbybot"));
+                    eb = Contains.Gelbooru.embed.GelEmbed.Build(im, new StringBuilder("abbybot"));
                 }
                 catch
                 {
