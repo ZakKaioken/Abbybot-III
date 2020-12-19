@@ -64,7 +64,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
                 return source.Replace("/member_illust.php?mode=medium&amp;illust_id=", "/en/artworks/");
             return "";
         }
-        static string fcbuilder(string s)
+        public static string fcbuilder(string s)
         {
             return s.Replace("* ~ ", " or ").Replace("* ", " and ").Replace("{", "").Replace("}", "").Replace("_", " ").Replace("*","");
         }

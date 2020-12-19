@@ -1,4 +1,5 @@
 ﻿using Abbybot_III.Apis.Booru;
+using Abbybot_III.Commands.Contains.Gelbooru.embed;
 using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
 using Abbybot_III.Core.Users.sql;
@@ -25,7 +26,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
             if (FavoriteCharacter.Length < 1)
             {
 
-                var fcfc = a.abbybotUser.userFavoriteCharacter.FavoriteCharacter;
+                var fcfc =GelEmbed.fcbuilder(a.abbybotUser.userFavoriteCharacter.FavoriteCharacter);
                 await a.Send($"Your favorite character is: {fcfc}");
                 return;
             }
