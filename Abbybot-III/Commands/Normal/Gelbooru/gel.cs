@@ -42,8 +42,8 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 
             var tags = tagss.ToString().Split(' ').ToList();
 
-            var sgc = (ITextChannel)a.channel;
-            if (sgc == null) return;
+
+            
 
             var blacklisttags = await UserBlacklistSql.GetBlackListTags(a.abbybotUser.Id);
 
@@ -54,6 +54,8 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 
             if (a.abbybotGuild != null) { 
                 var ratings = a.abbybotUser.userPerms.Ratings;
+                var sgc = (ITextChannel)a.channel;
+                if (sgc == null) return;
                 if (!sgc.IsNsfw || !a.abbybotUser.userFavoriteCharacter.IsLewd || !ratings.Contains(CommandRatings.hot))
                 {
                     tags.Add("rating:safe");

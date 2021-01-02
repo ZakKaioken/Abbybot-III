@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Abbybot_III.Commands.Custom
 {
-    [Capi.Cmd("n", 2, 1)]
+    [Capi.Cmd("n", 1, 1)]
     class n : ContainCommand
     {
         StringBuilder nhen = new StringBuilder();

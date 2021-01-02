@@ -1,5 +1,6 @@
 ﻿using Abbybot_III.Commands.Contains.Gelbooru.dataobject;
 using Abbybot_III.Core.Data.User;
+using Abbybot_III.extentions;
 
 using Discord;
 
@@ -16,10 +17,13 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
         public static EmbedBuilder Build(ImgData imgdata, StringBuilder sb)
         {
             StringBuilder message = new StringBuilder();
-            EmbedBuilder embededodizer = new EmbedBuilder
-            {
-                ImageUrl = imgdata.Imageurl
-            };
+
+            EmbedBuilder embededodizer = new EmbedBuilder();
+            var iu = imgdata.Imageurl;
+            if (iu.Contains(new string[] { "mp4", "avi", "webm" }))
+                embededodizer.Url = iu;
+            else
+                embededodizer.ImageUrl = iu;
             string fcn = fcbuilder(sb.ToString());
 
             message.Clear();
@@ -71,10 +75,13 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
         internal static EmbedBuilder Build(string fileurl, string source, string fc, List<Core.Data.User.AbbybotUser> mentionedUsers, string command)
         {
             StringBuilder message = new StringBuilder();
-            EmbedBuilder embededodizer = new EmbedBuilder
-            {
-                ImageUrl = fileurl
-            };
+
+            EmbedBuilder embededodizer = new EmbedBuilder();
+            var iu = fileurl;
+            if (iu.Contains(new string[] { "mp4", "avi", "webm" }))
+                embededodizer.Url = iu;
+            else
+                embededodizer.ImageUrl = iu;
             string fcn = fcbuilder(fc.ToString());
 
             message.Clear();
@@ -90,13 +97,15 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
         internal static EmbedBuilder Build(ImgData imgdrata)
         {
                 StringBuilder message = new StringBuilder();
-                EmbedBuilder embededodizer = new EmbedBuilder
-                {
-                    ImageUrl = imgdrata.Imageurl
-                };
+            EmbedBuilder embededodizer = new EmbedBuilder();
+            var iu =new Uri(imgdrata.Imageurl).ToString();
+            if (iu.Contains(new string[] { "mp4", "avi", "webm" }))
+                message.AppendLine(iu);
+
+            else
+                embededodizer.ImageUrl = iu;
             string fcn = fcbuilder(imgdrata.favoritecharacter.ToString());
 
-                message.Clear();
                 MentionsEmbed(imgdrata, message);
                 string fixedsource = FixSource(imgdrata.source);
                 embededodizer.AddField($"{fcn}  :)", $"[Image Source]({fixedsource})");
