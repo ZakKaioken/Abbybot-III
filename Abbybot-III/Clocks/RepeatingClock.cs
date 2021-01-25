@@ -9,7 +9,7 @@ namespace Abbybot_III.Clocks
     {
         DateTime tick = DateTime.Now;
         public TimeSpan delay = TimeSpan.Zero;
-
+        bool firstrun = false;
         public override async Task OnTick(DateTime time)
         {
             if (delay == TimeSpan.Zero)
@@ -21,6 +21,8 @@ namespace Abbybot_III.Clocks
             if (time > tick)
             {
                 tick = time.Add(delay);
+                if (firstrun) { firstrun = false; return; }
+                
                 await OnWork(time);
             }
         }

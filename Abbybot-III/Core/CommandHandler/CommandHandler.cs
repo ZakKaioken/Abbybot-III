@@ -15,13 +15,9 @@ namespace Abbybot_III.Core.CommandHandler
         internal static async Task Handle(SocketMessage message)
         {
             AbbybotCommandArgs aca = await AbbybotCommandArgs.MakeArgsFromMessage(message);
-            await startcapi(aca);
-        }
-
-        async static Task startcapi(AbbybotCommandArgs aca)
-        {
             capi.Start(aca);
         }
+
 
     }
 }

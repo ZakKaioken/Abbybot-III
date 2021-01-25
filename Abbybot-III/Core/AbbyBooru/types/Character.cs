@@ -50,7 +50,6 @@ namespace Abbybot_III.Core.AbbyBooru.types
         internal static async Task AddLatestPostIdAsync(ulong CharId , ulong id)
         {
             await AbbysqlClient.RunSQL($"INSERT INTO CharacterPostIds (Id, CharId) VALUES ('{id}', '{CharId}');");
-        
         }
     }
 }

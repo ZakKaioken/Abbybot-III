@@ -75,6 +75,11 @@ namespace Abbybot_III.Core.Data.User
             await UserSql.GetUser(this);
         }
 
+        internal static object GetUserFromTwitterUser(string screenName)
+        {
+            throw new NotImplementedException();
+        }
+
         private async Task GetGuild(SocketUser author)
         {
             var sgu = author as SocketGuildUser;

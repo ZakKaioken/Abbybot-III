@@ -36,7 +36,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
                 FavoriteCharacter.Remove(FavoriteCharacter.Length - 1, 1);
 
             string fc = FavoriteCharacter.ToString();
-
+            
             FavoriteCharacter.Replace(" ", "_").Replace("abbybot", "abigail_williams").Replace("abby", "abigail_williams").Replace("abby_kaioken", "abigail_williams");
             FavoriteCharacter.Append("*");
             if (FavoriteCharacter.ToString().Contains("_~_") || FavoriteCharacter.ToString().Contains("_or_"))
@@ -48,13 +48,16 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
             FavoriteCharacter.Replace("_&&_", "* ").Replace("_and_", "* ");
             string pictureurl = "https://img2.gelbooru.com/samples/ee/e2/sample_eee286783bfa37e088d1ffbcf8f098ba.jpg";
             var o = new string[1];
-            o[0] = FavoriteCharacter.ToString() + "*";
+            o[0] = FavoriteCharacter.ToString();
+            
             bool canrun = false;
             int tries = 0;
             do
             {
                 try
                 {
+
+
                     SearchResult imgdata = await AbbyBooru.Execute(o);
 
                     if (imgdata.Rating == BooruSharp.Search.Post.Rating.Safe)

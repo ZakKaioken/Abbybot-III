@@ -17,8 +17,8 @@ namespace Abbybot_III.Commands.Contains
         public override async Task<bool> Evaluate(AbbybotCommandArgs aca)
         {
             bool v = (aca.Message.ToLower().Contains(Command.ToLower()));
-           
-            return v && await base.Evaluate(aca);
+            if (v) return await base.Evaluate(aca);
+            else return false;
         }
         public override Task<bool> ShowHelp(AbbybotCommandArgs aca)
         {

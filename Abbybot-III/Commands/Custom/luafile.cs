@@ -60,7 +60,10 @@ namespace Abbybot_III.Commands.Custom
                     break; 
                 }
             }
-            return oai && await base.Evaluate(cea);
+
+            if (oai)
+                return await base.Evaluate(cea);
+            else return false;
         }
     }
 

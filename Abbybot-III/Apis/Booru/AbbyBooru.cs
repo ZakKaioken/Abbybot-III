@@ -22,7 +22,7 @@ namespace Abbybot_III.Apis.Booru
             new Lolibooru()
         };
 
-        public static string[] blacklist = { "beastiality", "suicide", "injury", "furry", "guro", "sofra" };
+        public static string[] blacklist = { "bondage", "beastiality", "suicide", "injury", "furry", "guro", "sofra" };
 
         public static async Task<SearchResult> Execute(string[] tags)
         {

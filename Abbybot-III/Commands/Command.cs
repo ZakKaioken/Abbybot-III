@@ -60,16 +60,16 @@ namespace Abbybot_III.Commands
         public virtual async Task<bool> Evaluate(AbbybotCommandArgs aca)
         {
             StringBuilder sb = new StringBuilder($"running the base evaluate on: {Command.Replace("%","")}\n");
-             sb.AppendLine($"Type: {(CommandType)this.Type}");
-            sb.AppendLine($"Rating: {(CommandRatings)this.Rating}");
-            sb.AppendLine($"multithreaded: {this.Multithreaded}");
-            sb.AppendLine($"HelpLine: {(await this.toHelpString(aca))}");
+                sb.AppendLine($"Type: {(CommandType)this.Type}");
+                sb.AppendLine($"Rating: {(CommandRatings)this.Rating}");
+                sb.AppendLine($"multithreaded: {this.Multithreaded}");
+                sb.AppendLine($"HelpLine: {(await this.toHelpString(aca))}");
             bool hasperms = false;
             if (aca.abbybotUser.userPerms.Ratings != null)
                 hasperms = aca.abbybotUser.userPerms.Ratings.Contains(Rating);
-            sb.AppendLine($"has permissions: {hasperms}");
+                sb.AppendLine($"has permissions: {hasperms}");
             bool inTimeOut = aca.abbybotUser.userTrust.inTimeOut;
-            sb.AppendLine($"in time out: {inTimeOut}");
+                sb.AppendLine($"in time out: {inTimeOut}");
             if (inTimeOut)
                 await aca.Send($"You're in timeout for a little while. You did a mean thing and I can't stand for that. Check your time and details with %timeout. Sorry.");
                 
@@ -80,29 +80,29 @@ namespace Abbybot_III.Commands
             if (istextchannel)
             {
                 var aaa = aca.channel as ITextChannel;
-                sb.AppendLine($"channel is nsfw: {aaa.IsNsfw}");
+                    sb.AppendLine($"channel is nsfw: {aaa.IsNsfw}");
             }
 
             bool guild = isGuild && istextchannel && guilduser;
-            sb.AppendLine($"is in guild: {guild}");
+                sb.AppendLine($"is in guild: {guild}");
 
             bool dmchannel = aca.channel is SocketDMChannel;
-            sb.AppendLine($"is in dms: {dmchannel}");
+                sb.AppendLine($"is in dms: {dmchannel}");
             var canRun = ((isGuild && !inTimeOut && istextchannel && guilduser && hasperms) || dmchannel);
-            sb.AppendLine($"requirements met?: {canRun}");
+                sb.AppendLine($"requirements met?: {canRun}");
             var isAbbybot = aca.abbybotUser.Id == Apis.Discord.Discord._client.CurrentUser.Id;
             var IsAbbybotRunnable = isAbbybot && SelfRun;
             
-            sb.AppendLine($"isabbybotrunnable: {IsAbbybotRunnable}");
-            sb.AppendLine($"isabbybotrunnable = {isAbbybot} && {SelfRun}");
+                sb.AppendLine($"isabbybotrunnable: {IsAbbybotRunnable}");
+                sb.AppendLine($"isabbybotrunnable = {isAbbybot} && {SelfRun}");
             await Task.CompletedTask;
 
 
             var wecanrun = canRun && !isAbbybot || canRun && IsAbbybotRunnable;
-            sb.AppendLine($"wecanrun: {wecanrun}");
+                sb.AppendLine($"wecanrun: {wecanrun}");
 
-            sb.AppendLine($"canrun = (({isGuild} && {!inTimeOut} && {istextchannel} && {guilduser} && {hasperms}) OR {dmchannel})");
-            sb.AppendLine($"wecanrun = {canRun} && {!isAbbybot} OR {canRun} && {IsAbbybotRunnable} ");
+                sb.AppendLine($"canrun = (({isGuild} && {!inTimeOut} && {istextchannel} && {guilduser} && {hasperms}) OR {dmchannel})");
+                sb.AppendLine($"wecanrun = {canRun} && {!isAbbybot} OR {canRun} && {IsAbbybotRunnable} ");
 
             if (aca.Message.Contains("--debugmode") && !aca.Message.Contains("%say") && !aca.Message.Contains("%dm"))
                 await aca.Send(sb);

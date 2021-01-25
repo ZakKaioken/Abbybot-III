@@ -1,4 +1,5 @@
 ﻿using Abbybot_III.Commands.Contains;
+using Abbybot_III.Commands.Contains.Gelbooru.embed;
 using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
 using Abbybot_III.Core.Data.User;
@@ -33,14 +34,24 @@ namespace Abbybot_III.Commands.Custom
             Script script = new Script(CoreModules.Preset_HardSandbox); //no io/sys calls allowed
             script.Options.DebugPrint = async s =>
             {
-                if (azr > 3) return;
-                await message.Send(s); //when print is used send message
+                if (azr < 3)
+                    await message.Send(s); //when print is used send message
                 await Task.Delay(100);
             };
+            Console.WriteLine($"user {message.abbybotUser}, guild {message.abbybotGuild}");
             DynValue user = UserData.Create(message.abbybotUser);
-            DynValue guild = UserData.Create(message.abbybotGuild);
             script.Globals.Set("user", user);
-            script.Globals.Set("guild", guild);
+
+            if (message.abbybotGuild != null)
+            {
+                DynValue guild = UserData.Create(message.abbybotGuild);
+                script.Globals.Set("guild", guild);
+            }
+
+            script.Globals["buildfc"] = (Func<string, string>)GelEmbed.fcbuilder;
+
+            DynValue dada = script.DoString("say = print");
+
             var m = message.Message.Split("```");
             foreach (var item in m)
             {
@@ -66,8 +77,10 @@ namespace Abbybot_III.Commands.Custom
             Multithreaded = true;
             var v = cea.Message.Contains("```lua");
 
-
-            return v && await base.Evaluate(cea);
+            if (v)
+                return await base.Evaluate(cea);
+            else
+                return false;
         }
     }
 
