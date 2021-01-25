@@ -353,3 +353,4 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 Abbybot-III/Commands/Contains/DmSpy.cs
+Abbybot-III/Commands/Normal/ForceSendTweet.cs
