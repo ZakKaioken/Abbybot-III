@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Abbybot_III.Commands.Contains
 {
-    [Capi.Cmd("%help", 1, 1)]
+    [Capi.Cmd("abbybot help", 1, 1)]
     class HelpCommand : ContainCommand
     {
         
@@ -44,7 +44,7 @@ namespace Abbybot_III.Commands.Contains
                 eb.Description = "Your timeout commands.";
 
                 StringBuilder sb = new StringBuilder();
-                sb.Append("%help\n%timeout");
+                sb.Append("abbybot help\nabbybot timeout");
                 eb.AddField("\u200b", sb.ToString());
             }
             else if (commands.Count > 0)

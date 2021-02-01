@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Abbybot_III.Commands.Normal.Gelbooru
 {
-    [Capi.Cmd("%gel", 1, 1)]
+    [Capi.Cmd("abbybot gel", 1, 1)]
     class gel : NormalCommand
     {
 

@@ -134,7 +134,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
             else
             {
                 var fc = im.user.userFavoriteCharacter.FavoriteCharacter;
-                await msg.Send($"sorry master... I could not find the an {im.command.Replace("%", "")}ing picture for {fc}.. im sory");
+                await msg.Send($"sorry master... I could not find the an {im.command.Replace("abbybot ", "")}ing picture for {fc}.. im sory");
                 return;
             }
 
@@ -242,7 +242,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
             bool canrun = await CanRun(aca);
             if (aca.abbybotUser.userTrust.inTimeOut && canrun)
             {
-                await aca.Send($"You're in timeout for a little while. You did a mean thing and I can't stand for that. Check your time and details with %timeout. Sorry.");
+                await aca.Send($"You're in timeout for a little while. You did a mean thing and I can't stand for that. Check your time and details with abbybot timeout. Sorry.");
                 canrun = false;
             }
             return canrun;

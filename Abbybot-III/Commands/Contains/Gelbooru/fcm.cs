@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace Abbybot_III.Commands.Contains.Gelbooru
 {
-    [Capi.Cmd("%fcm", 1, 1)]
+    [Capi.Cmd("abbybot fcm", 1, 1)]
     class fcm : ContainCommand
     {
         string[] activationwords = new string[]
@@ -131,7 +131,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
         
         public override async Task<string> toHelpString(AbbybotCommandArgs aca)
         {
-            return $"{Command}: lets you set your favorite character mentions modifier. Usage (%fcm on) to use your mentioned user for pic commands";
+            return $"{Command}: lets you set your favorite character mentions modifier. Usage (abbybot fcm on) to use your mentioned user for pic commands";
         }
     }
 }

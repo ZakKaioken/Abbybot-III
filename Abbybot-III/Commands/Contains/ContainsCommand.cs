@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Abbybot_III.Commands.Contains
 {
-    [Capi.Cmd("%!contains", 1,1)]
+    [Capi.Cmd("abbybot !contains", 1,1)]
     public class ContainCommand : BaseCommand
     {
         public override async Task<bool> Evaluate(AbbybotCommandArgs aca)

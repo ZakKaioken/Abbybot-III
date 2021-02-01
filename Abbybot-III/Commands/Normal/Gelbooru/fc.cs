@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Abbybot_III.Commands.Normal.Gelbooru
 {
-    [Capi.Cmd("%fc", 1, 1)]
+    [Capi.Cmd("abbybot fc", 1, 1)]
     class fc : NormalCommand
     {
         public override async Task DoWork(AbbybotCommandArgs a)
@@ -106,7 +106,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 
         public override async Task<string> toHelpString(AbbybotCommandArgs aca)
         {
-            return $"{Command}: lets you set your favorite character. Usage (%fc abigail williams) to set the character to abigail williams";
+            return $"{Command}: lets you set your favorite character. Usage (abbybot fc abigail williams) to set the character to abigail williams";
         }
     }
 }

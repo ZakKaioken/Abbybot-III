@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Abbybot_III.Commands.Normal
 {
-    [Capi.Cmd("%!normal", 1, 1)]
+    [Capi.Cmd("abbybot !normal", 1, 1)]
     class NormalCommand : BaseCommand
     {
         public override async Task DoWork(AbbybotCommandArgs e)

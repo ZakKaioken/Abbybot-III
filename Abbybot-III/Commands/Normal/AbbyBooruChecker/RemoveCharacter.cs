@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Abbybot_III.Commands.Normal.AbbyBooruChecker
 {
-    [Capi.Cmd("%acremove", 5, 1)]
+    [Capi.Cmd("abbybot acremove", 5, 1)]
     class RemoveCharacter : NormalCommand
     {
 

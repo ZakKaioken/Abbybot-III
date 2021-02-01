@@ -59,7 +59,7 @@ namespace Abbybot_III.Commands
 
         public virtual async Task<bool> Evaluate(AbbybotCommandArgs aca)
         {
-            StringBuilder sb = new StringBuilder($"running the base evaluate on: {Command.Replace("%","")}\n");
+            StringBuilder sb = new StringBuilder($"running the base evaluate on: {Command.Replace("abbybot ","")}\n");
                 sb.AppendLine($"Type: {(CommandType)this.Type}");
                 sb.AppendLine($"Rating: {(CommandRatings)this.Rating}");
                 sb.AppendLine($"multithreaded: {this.Multithreaded}");
@@ -71,7 +71,7 @@ namespace Abbybot_III.Commands
             bool inTimeOut = aca.abbybotUser.userTrust.inTimeOut;
                 sb.AppendLine($"in time out: {inTimeOut}");
             if (inTimeOut)
-                await aca.Send($"You're in timeout for a little while. You did a mean thing and I can't stand for that. Check your time and details with %timeout. Sorry.");
+                await aca.Send($"You're in timeout for a little while. You did a mean thing and I can't stand for that. Check your time and details with ``abbybot timeout``. Sorry.");
                 
             bool isGuild = aca.abbybotGuild != null;
             bool istextchannel = aca.channel is ITextChannel;
@@ -104,7 +104,7 @@ namespace Abbybot_III.Commands
                 sb.AppendLine($"canrun = (({isGuild} && {!inTimeOut} && {istextchannel} && {guilduser} && {hasperms}) OR {dmchannel})");
                 sb.AppendLine($"wecanrun = {canRun} && {!isAbbybot} OR {canRun} && {IsAbbybotRunnable} ");
 
-            if (aca.Message.Contains("--debugmode") && !aca.Message.Contains("%say") && !aca.Message.Contains("%dm"))
+            if (aca.Message.Contains("--debugmode") && !aca.Message.Contains("abbybot say") && !aca.Message.Contains("abbybot dm"))
                 await aca.Send(sb);
 
             bool go = canRun && !isAbbybot || canRun && IsAbbybotRunnable;

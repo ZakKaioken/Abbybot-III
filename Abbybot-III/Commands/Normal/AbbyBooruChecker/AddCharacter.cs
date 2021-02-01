@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Abbybot_III.Commands.Normal.AbbyBooruChecker
 {
-    [Capi.Cmd("%acadd", 5, 1)]
+    [Capi.Cmd("abbybot acadd", 5, 1)]
     class AddCharacter : NormalCommand
     {
 

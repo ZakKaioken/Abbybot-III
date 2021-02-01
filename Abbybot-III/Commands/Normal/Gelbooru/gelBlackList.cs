@@ -14,7 +14,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 {
     class gelBlackList
     {
-        [Capi.Cmd("%blacklisttag", 1, 1)]
+        [Capi.Cmd("abbybot blacklisttag", 1, 1)]
         class blackListTag : NormalCommand
         {
             public override async Task DoWork(AbbybotCommandArgs message)

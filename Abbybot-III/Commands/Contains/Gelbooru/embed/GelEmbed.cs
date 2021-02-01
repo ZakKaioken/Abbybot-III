@@ -52,7 +52,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
                     }
 
                     message.Append("you were ");
-                    message.Append(imgd.command.Replace("%", ""));
+                    message.Append(imgd.command.Replace("abbybot ", ""));
                     message.Append("ed by **");
                     message.Append(imgd.user.userNames.PreferedName);
                     message.Append("**! :)");

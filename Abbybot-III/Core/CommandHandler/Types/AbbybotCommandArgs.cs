@@ -22,7 +22,7 @@ namespace Abbybot_III.Core.CommandHandler.Types
             }
             set
             {
-                msg = value.Replace("pussy", "usb c").Replace("Pussy", "Usb c").Replace("PUSSY", "USB C");
+                msg = value.Replace("pussy", "usb c").Replace("Pussy", "Usb c").Replace("PUSSY", "USB C").Replace("%", "abbybot ");
             }
             
         }
