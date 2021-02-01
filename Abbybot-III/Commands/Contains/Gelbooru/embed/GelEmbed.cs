@@ -98,12 +98,19 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
         {
                 StringBuilder message = new StringBuilder();
             EmbedBuilder embededodizer = new EmbedBuilder();
+
             var iu =new Uri(imgdrata.Imageurl).ToString();
             if (iu.Contains(new string[] { "mp4", "avi", "webm" }))
-                message.AppendLine(iu);
+                message.AppendLine(iu).Replace("%20", "\\%20");
 
             else
-                embededodizer.ImageUrl = iu;
+                try
+                {
+                    embededodizer.ImageUrl = iu;
+                } catch
+                {
+                    message.AppendLine(iu);
+                }
             string fcn = fcbuilder(imgdrata.favoritecharacter.ToString());
 
                 MentionsEmbed(imgdrata, message);

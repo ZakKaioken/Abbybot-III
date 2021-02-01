@@ -57,7 +57,7 @@ namespace Abbybot_III.Commands.Contains
 
                 StringBuilder sb = new StringBuilder();
 
-                foreach (var tg in commandTypeGroups.Split(4))
+                foreach (var tg in commandTypeGroups.Split(5))
                 {
                     foreach (var typegroup in tg)
                     {

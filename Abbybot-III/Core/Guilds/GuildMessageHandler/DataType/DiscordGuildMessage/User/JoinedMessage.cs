@@ -1,6 +1,7 @@
 ﻿using Abbybot_III.Core.Guilds.DataType;
 
 using Discord;
+using Discord.Rest;
 using Discord.WebSocket;
 
 using System;
@@ -13,15 +14,18 @@ namespace Abbybot_III.Core.Guilds.GuildMessageHandler.DataType.DiscordGuildMessa
     class JoinedMessage : GuildMessage
     {
         SocketGuildUser user;
-
+        string invitecode;
         public override string BuildDescription(string msg)
         {
-            return msg.Replace("[server]", user.Guild.Name).Replace("[user]", user.Username);
+            
+            return msg.Replace("[server]", user.Guild.Name).Replace("[user]", user.Username).Replace("[code]", invitecode);
+            
         }
 
-        internal static async Task<JoinedMessage> CreateFromUser(SocketGuildUser user)
+        internal static async Task<JoinedMessage> CreateFromUser(SocketGuildUser user, string code)
         {
-            var e = await Get(user.Guild, "welcome");
+            
+            var e = await Get(user.Guild,  "welcome");
 
             JoinedMessage jm = null;
 
@@ -33,6 +37,7 @@ namespace Abbybot_III.Core.Guilds.GuildMessageHandler.DataType.DiscordGuildMessa
                     imgurl = e.imgurl,
                     type = e.type,
                     user = user,
+                    invitecode = code,
                     message = e.message,
                     color = Color.Green
             };

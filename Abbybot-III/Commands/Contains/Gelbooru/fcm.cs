@@ -128,7 +128,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
             }
         }
 
-
+        
         public override async Task<string> toHelpString(AbbybotCommandArgs aca)
         {
             return $"{Command}: lets you set your favorite character mentions modifier. Usage (%fcm on) to use your mentioned user for pic commands";

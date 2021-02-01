@@ -242,7 +242,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
             bool canrun = await CanRun(aca);
             if (aca.abbybotUser.userTrust.inTimeOut && canrun)
             {
-                await aca.Send($"You're in timeout for a little while. You did a mean thing and I can't stand for that. Check your time and details with %timeout. Sorry.");
+                await aca.Send($"You're in timeout for a little while. You did a mean thing and I can't stand for that. Check your time and details with {Program.comstring}timeout. Sorry.");
                 canrun = false;
             }
             return canrun;

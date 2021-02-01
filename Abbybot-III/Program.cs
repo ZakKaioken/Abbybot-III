@@ -14,6 +14,7 @@ namespace Abbybot_III
 {
     class Program
     {
+        
         static async Task Main()
         {
             Console.WriteLine("Abbybot III starting!");
@@ -36,6 +37,7 @@ namespace Abbybot_III
             await ClockIniter.init();
             await Twitter.init();
             AbbyBooruChecker.Init();
+            if (Twitter.tson)
             AbbybotTwitter.init();
             AbbySql.AbbysqlClient.connectionstring = Apis.Mysql.ApiKeys.MysqlApiKeys.Load(@"ApiKeys\Mysql.json").ToString();
         }

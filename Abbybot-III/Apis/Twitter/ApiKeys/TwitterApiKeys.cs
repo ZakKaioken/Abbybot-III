@@ -46,6 +46,7 @@ namespace Abbybot_III.Apis.Twitter.ApiKeys
             if (text.Contains("\"\""))
             {
                 Console.WriteLine($"uh master... I can't post on twitter without my api keys... Check {fileName} in {dir} for my api keys for me...");
+                throw new Exception();
             }
 
             TwitterApiKeys api = JsonConvert.DeserializeObject<TwitterApiKeys>(File.ReadAllText(path));

@@ -3,6 +3,7 @@ using Abbybot_III.Apis.Twitter.Core;
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,12 +14,20 @@ namespace Abbybot_III.Apis.Twitter
     class Twitter
     {
         public static TwitterService ts;
-
+        public static bool tson = false;
         public static async Task init()
         {
-            var tk = TwitterApiKeys.Load(@"ApiKeys\Twitter.json");
-            ts = new TwitterService(tk.ConsumerKey, tk.ConsumerSecret, tk.AccessToken, tk.AcessTokenSecret);
-            TweetReciever.init();
+            try
+            {
+                var tk = TwitterApiKeys.Load(@"ApiKeys\Twitter.json");
+                ts = new TwitterService(tk.ConsumerKey, tk.ConsumerSecret, tk.AccessToken, tk.AcessTokenSecret);
+                TweetReciever.init();
+                tson = true;
+            } catch
+            {
+
+            }
+                
         }
     }
 }

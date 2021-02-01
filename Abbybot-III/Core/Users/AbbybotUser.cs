@@ -91,6 +91,7 @@ namespace Abbybot_III.Core.Data.User
                 userGuild.GuildId = sgu.Guild.Id;
                 userNames.Nickname = sgu.Nickname;
                 userGuild.Roles = await RoleManager.GetUserRoles(sgu);
+                userGuild.admin = sgu.Roles.ToList().Any(rs => rs.Permissions.Administrator);
                 userPerms.Ratings = (await RoleManager.GetRatings(userGuild.Roles)).ToList();
                 //userPerms.Ratings.Add(Capi.Interfaces.CommandRatings.cutie);
             }
