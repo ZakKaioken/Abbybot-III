@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace Abbybot_III.Commands.Normal
 {
     [Capi.Cmd("abbybot dm", 1, 1)]
-    class dm : NormalCommand
+    class dm : Contains.ContainCommand
     {
         public override async Task DoWork(AbbybotCommandArgs a)
         {

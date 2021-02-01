@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace Abbybot_III.Commands.Normal
 {
     [Capi.Cmd("abbybot say", 1, 1)]
-    class Say : NormalCommand
+    class Say : Contains.ContainCommand
     {
         public override async Task DoWork(AbbybotCommandArgs a)
         {
@@ -22,6 +22,7 @@ namespace Abbybot_III.Commands.Normal
 
             if (!(a.channel is SocketDMChannel))
                 await a.Delete();
+            Console.WriteLine("tried to run say");
             await a.Send(FavoriteCharacter);
         }
     }
