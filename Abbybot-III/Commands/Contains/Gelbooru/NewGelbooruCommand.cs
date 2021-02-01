@@ -155,7 +155,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
         public override async Task<string> toHelpString(AbbybotCommandArgs aca)
         {
             await Task.CompletedTask;
-            return $"These commands will show a picture of your favorite character ({aca.abbybotUser.userFavoriteCharacter.FavoriteCharacter}) doing what's in the command. (for example: {Program.comstring}hug has hugging inside it)";
+            return $"These commands will show a picture of your favorite character ({aca.abbybotUser.userFavoriteCharacter.FavoriteCharacter}) doing what's in the command. (for example: %hug has hugging inside it)";
         }
     }
 }
