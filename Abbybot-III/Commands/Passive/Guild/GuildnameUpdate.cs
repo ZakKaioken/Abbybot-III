@@ -6,6 +6,7 @@ using Capi;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,7 +18,10 @@ namespace Abbybot_III.Commands.Custom.PassiveUsage
         public override async Task DoWork(AbbybotCommandArgs aca)
         {
             if (aca.abbybotGuild != null)
-            await GuildSql.UpdateGuildName(aca.abbybotGuild);
+            {
+               if (!aca.abbybotGuild.AbbybotIsHere)
+                await GuildSql.UpdateGuildName(aca.abbybotGuild);
+            }
         }
     }
 }

@@ -29,6 +29,7 @@ namespace Abbybot_III.Commands.Custom
 
         public override async Task<bool> Evaluate(AbbybotCommandArgs cea)
         {
+            if (cea.abbybotGuild.AbbybotIsHere) return false;
             books.Clear();
             var msg = cea.Message.ToLower().Split(" ");
             var cmd = Command.ToLower();

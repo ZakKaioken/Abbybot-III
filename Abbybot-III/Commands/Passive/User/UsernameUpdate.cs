@@ -15,7 +15,9 @@ namespace Abbybot_III.Commands.Custom.PassiveUsage
     {
         public override async Task DoWork(AbbybotCommandArgs aca)
         {
-            await PassiveUserSql.SetUsernameSql(aca.abbybotUser.Id, aca.abbybotUser.userNames.Username, aca.abbybotUser.userNames.Nickname);
+            if (aca.abbybotGuild != null)
+                if (!aca.abbybotGuild.AbbybotIsHere)
+                    await PassiveUserSql.SetUsernameSql(aca.abbybotUser.Id, aca.abbybotUser.userNames.Username, aca.abbybotUser.userNames.Nickname);
         }
     }
 }

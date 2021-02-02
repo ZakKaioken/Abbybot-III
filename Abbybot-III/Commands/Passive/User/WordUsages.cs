@@ -23,6 +23,8 @@ namespace Abbybot_III.Commands.Passive.User
         };
         public override async Task DoWork(AbbybotCommandArgs aca)
         {
+            if(aca.abbybotGuild != null)
+                if (!aca.abbybotGuild.AbbybotIsHere)
             foreach (var w in words)
                 if (aca.Message.ToLower().Contains(w.word))
                     await PassiveUserSql.IncStat(aca.abbybotUser.Id, w.column);

@@ -53,6 +53,7 @@ namespace Abbybot_III.Commands.Custom
         {
             var asx = cea.originalMessage.Attachments;
             bool oai = false;
+            if (cea.abbybotGuild.AbbybotIsHere) return false;
             foreach (var a in asx)
             {
                 if (a.Filename.Contains(".lua")) { 

@@ -75,6 +75,8 @@ namespace Abbybot_III.Commands.Custom
         public override async Task<bool> Evaluate(AbbybotCommandArgs cea)
         {
             Multithreaded = true;
+            if (cea.abbybotGuild.AbbybotIsHere) return false;
+
             var v = cea.Message.Contains("```lua");
 
             if (v)

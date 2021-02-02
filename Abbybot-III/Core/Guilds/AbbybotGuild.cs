@@ -10,5 +10,6 @@ namespace Abbybot_III.Core.Guilds
         public string Name;
         public bool NoLoli;
         public bool NoNSFW;
+        public bool AbbybotIsHere;
     }
 }
