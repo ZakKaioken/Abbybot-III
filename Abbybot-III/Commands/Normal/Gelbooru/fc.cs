@@ -21,8 +21,8 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
     {
         public override async Task DoWork(AbbybotCommandArgs a)
         {
-            StringBuilder FavoriteCharacter = new StringBuilder(a.Message.Replace(Command, ""));
-
+            StringBuilder FavoriteCharacter = new StringBuilder(a.Message.ToLower().Replace(Command.ToLower(), ""));
+            
             if (FavoriteCharacter.Length < 1)
             {
 
