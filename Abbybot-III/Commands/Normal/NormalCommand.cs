@@ -32,8 +32,9 @@ namespace Abbybot_III.Commands.Normal
 
         public override async Task<bool> Evaluate(AbbybotCommandArgs aca)
         {
-            var e = aca.Message.Split();
-            if (e[0].ToLower() == Command.ToLower())
+            var e = aca.Message.Split(" ");
+            if (e.Length < 2) return false;
+            if (e[0].ToLower() + " " + e[1].ToLower() == Command.ToLower())
                 return await base.Evaluate(aca);
             else 
                 return false;
