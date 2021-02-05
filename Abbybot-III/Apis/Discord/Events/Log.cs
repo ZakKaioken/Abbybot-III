@@ -16,7 +16,7 @@ namespace Abbybot_III.Apis.Discord.Events
          static async Task Recieved(LogMessage log)
         {
             await Task.CompletedTask;
-            Console.WriteLine(log.ToString());
+            Abbybot.print(log.ToString());
             //throw new NotImplementedException();
         }
     }

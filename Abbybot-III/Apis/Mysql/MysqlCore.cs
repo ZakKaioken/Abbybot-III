@@ -54,7 +54,7 @@ namespace Abbybot_III.Apis.Mysql
             mysqlbinpath = text;
             if (text.Contains("Replace") && text.Contains("bin folder"))
             {
-                Console.WriteLine($"AbbybotMemory: Abbybot's memory is not running and I can't find where abbybot's memory is to turn it back on... Did you forget to give me it? ({fileName} in {dir})");
+                Abbybot.print($"AbbybotMemory: Abbybot's memory is not running and I can't find where abbybot's memory is to turn it back on... Did you forget to give me it? ({fileName} in {dir})");
             }
         }
 

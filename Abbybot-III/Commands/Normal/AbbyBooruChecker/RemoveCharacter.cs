@@ -31,17 +31,21 @@ namespace Abbybot_III.Commands.Normal.AbbyBooruChecker
             while (FavoriteCharacter[FavoriteCharacter.Length - 1] == ' ')
                 FavoriteCharacter.Remove(FavoriteCharacter.Length - 1, 1);
 
+
             string fc = FavoriteCharacter.ToString();
 
             FavoriteCharacter.Replace(" ", "_").Replace("abbybot", "abigail_williams").Replace("abby", "abigail_williams").Replace("abby_kaioken", "abigail_williams");
-
+            if (FavoriteCharacter[^1] != '~')
+                FavoriteCharacter.Append("*");
+            else
+                FavoriteCharacter.Remove(FavoriteCharacter.Length - 1, 1);
             if (FavoriteCharacter.ToString().Contains("_~_") || FavoriteCharacter.ToString().Contains("_or_"))
             {
                 FavoriteCharacter.Insert(0, "{").Append("}");
-                FavoriteCharacter.Replace("_~_", " ~ ").Replace("_or_", " ~ ");
+                FavoriteCharacter.Replace("~_or_", " ~ ").Replace("~_~_", " ~ ").Replace("_~_", "* ~ ").Replace("_or_", "* ~ ");
             }
+            FavoriteCharacter.Replace("~_&&_", " ").Replace("~_and_", " ").Replace("_&&_", "* ").Replace("_and_", "* ");
 
-            FavoriteCharacter.Replace("_&&_", "* ").Replace("_and_", "* ");
 
             var o = new string[1];
             o[0] = FavoriteCharacter.ToString() + "*";
@@ -67,7 +71,7 @@ namespace Abbybot_III.Commands.Normal.AbbyBooruChecker
 
         public override async Task<string> toHelpString(AbbybotCommandArgs aca)
         {
-            return $"{Command}: removes a character from the Auto Character Poster on this channel. Usage ({Command} abigail williams) to remove the character abigail williams";
+            return $"remove a gelbooru tag feed from a channel";
         }
 
     }

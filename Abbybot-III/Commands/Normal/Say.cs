@@ -22,8 +22,12 @@ namespace Abbybot_III.Commands.Normal
 
             if (!(a.channel is SocketDMChannel))
                 await a.Delete();
-            Console.WriteLine("tried to run say");
+            Abbybot.print("tried to run say");
             await a.Send(FavoriteCharacter);
+        }
+        public override async Task<string> toHelpString(AbbybotCommandArgs aca)
+        {
+            return $"make me say something!!!";
         }
     }
 }

@@ -15,7 +15,7 @@ namespace Abbybot_III.Core.Users.sql
             var abisb = new StringBuilder();
             abisb.Append($"SELECT * FROM `usergelblacklist` WHERE `userId` = '{did}' && `tag`= '{item}';");
             var table = await AbbysqlClient.FetchSQL(abisb.ToString());
-            //Console.WriteLine(table.Count);
+            //Abbybot.print(table.Count);
             if (table.Count > 0)
                 throw new Exception($"You already have {item} blacklisted...");
 

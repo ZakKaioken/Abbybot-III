@@ -26,6 +26,7 @@ namespace Abbybot_III.Apis.Booru
 
         public static async Task<SearchResult> Execute(string[] tags)
         {
+            
             var e = ExecuteAsync(tags).GetAwaiter();
 
             while (!e.IsCompleted)
@@ -34,7 +35,26 @@ namespace Abbybot_III.Apis.Booru
             return e.GetResult();
         }
 
+        public static async Task<int> GetPostCount(string[] tags)
+        {
+            int totalposts = 0;
 
+            foreach (var booru in boorus)
+            {
+                try
+                {
+                    totalposts += await booru.GetPostCountAsync(tags);
+                    break;
+                } catch (Exception e)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(e.ToString());
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+            }
+
+            return totalposts;
+        }
 
         static async Task<SearchResult> ExecuteAsync (string[] tags)
         {
@@ -46,7 +66,7 @@ namespace Abbybot_III.Apis.Booru
                 bool allowedtopost;
                 try
                 {
-
+                    
                     do {
                         searchResult = await booru.GetRandomPostAsync(tagz.ToArray());
                         allowedtopost = true;

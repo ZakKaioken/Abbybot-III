@@ -1,5 +1,6 @@
 ﻿using Abbybot_III.Core;
 using Abbybot_III.Core.CommandHandler;
+using Abbybot_III.Sql.Abbybot.Abbybot;
 using Abbybot_III.Sql.Abbybot.User;
 
 using Discord;
@@ -25,10 +26,16 @@ namespace Abbybot_III.Apis.Discord.Events
 
         private static async Task Recieved(SocketMessage message)
         {
-            
-            WriteMessage(message);
+            bool nowrite = false;
+            var cs = await AbbybotSql.GetAbbybotChannelIdAsync();
+            foreach (var (guildId, channelId) in cs) {
+            if (message.Channel.Id != channelId)
+                nowrite = true;
+            }
+            if (!nowrite)
+                WriteMessage(message);
 
-            
+
             await PassiveUserSql.IncStat(message.Author.Id, "MessagesSent");
             await CommandHandler.Handle(message);
         }
@@ -65,7 +72,7 @@ namespace Abbybot_III.Apis.Discord.Events
                     }
                 }
             
-            Console.WriteLine(sb.ToString());
+            Abbybot.print(sb.ToString());
          }
 
         private static async Task Deleted(Cacheable<IMessage, ulong> message, ISocketMessageChannel channel)

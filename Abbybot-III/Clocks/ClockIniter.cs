@@ -12,6 +12,7 @@ namespace Abbybot_III.Clocks
         static BaseClock[] clocks = new BaseClock[]
         {
             //new TwitterMentionClock()
+            new PingAbbybotClock()
         };
 
         public static async Task init()

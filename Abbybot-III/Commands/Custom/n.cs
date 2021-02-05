@@ -84,7 +84,10 @@ namespace Abbybot_III.Commands.Custom
             }
             return isbook;
         }
-
+        public override async Task<string> toHelpString(AbbybotCommandArgs aca)
+        {
+            return "just add an n in front of an nhentai number and i will give you it's link. It doesn't work with numbers that aren't hentais on nhentai";
+        }
     }
 
 }

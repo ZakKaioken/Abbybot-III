@@ -16,11 +16,12 @@ namespace Abbybot_III.Sql.Abbybot.User
             
             string u = (username.Length > 1) ? AbbysqlClient.EscapeString(username) : "";
             string n = (nickname.Length >1)? AbbysqlClient.EscapeString(nickname):"";
-            string ss = $"UPDATE `discord`.`users` SET `Name`= '{n}', `Username`='{u}' WHERE  `Id`= {userId};";
-            
+            string ss = $"UPDATE `discord`.`users` SET `Username`='{u}'";
+            if (n.Length > 1) ss += $", `Name`= '{n}'";
+                ss += $" WHERE  `Id`= {userId}; ";
             await AbbysqlClient.RunSQL(ss);
 
-            }
+        }
 
         public static async Task IncStat(ulong userId, string item)
         {

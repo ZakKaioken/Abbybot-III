@@ -1,4 +1,5 @@
-﻿using Abbybot_III.Commands.Contains.Gelbooru.dataobject;
+﻿using Abbybot_III.Apis.Booru;
+using Abbybot_III.Commands.Contains.Gelbooru.dataobject;
 using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
 using Abbybot_III.Core.Users.sql;
@@ -16,9 +17,9 @@ using System.Threading.Tasks;
 
 namespace Abbybot_III.Commands.Normal.Gelbooru
 {
-    [Capi.Cmd("abbybot gel", 1, 1)]
-    class gel : NormalCommand
-    {
+    [Capi.Cmd("abbybot gelcount", 1, 1)]
+    class gelcount : NormalCommand
+    {   
 
 
         public override async Task DoWork(AbbybotCommandArgs a)
@@ -61,34 +62,14 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
                     tags.Add("rating:safe");
                 }
             }
-            EmbedBuilder eb = null;
             try
             {
-                BooruSharp.Search.Post.SearchResult imgdata = await service(tags);
-                ImgData im = (new ImgData { });
-
-                if (imgdata.FileUrl != null)
-                {
-                    im.Imageurl = imgdata.FileUrl.ToString();
-                }
-                if (imgdata.Source != null)
-                {
-                    im.source = imgdata.Source;
-                }
-
-
-                try
-                {
-                    eb = Contains.Gelbooru.embed.GelEmbed.Build(im, new StringBuilder("abbybot"));
-                }
-                catch
-                {
-                    eb = new EmbedBuilder { Description = "It didn't work... :(" };
-                }
+                int o = await AbbyBooru.GetPostCount(tags.ToArray());
+                await a.Send($"There are {o} posts by those tags.");
             }
             catch { }
 
-            await a.Send(eb);
+            
         }
 
         public virtual async Task<BooruSharp.Search.Post.SearchResult> service(List<string> tags)

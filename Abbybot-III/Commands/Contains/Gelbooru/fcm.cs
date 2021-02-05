@@ -127,11 +127,9 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
                 FavoriteCharacter.Append("\n");
             }
         }
-
-        
         public override async Task<string> toHelpString(AbbybotCommandArgs aca)
         {
-            return $"{Command}: lets you set your favorite character mentions modifier. Usage (abbybot fcm on) to use your mentioned user for pic commands";
+            return $"Turn on or off the ability to use the mentioned person's fc instead for pictures commands";
         }
     }
 }

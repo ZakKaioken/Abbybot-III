@@ -14,7 +14,7 @@ namespace Abbybot_III.Clocks
         {
             if (delay == TimeSpan.Zero)
             {
-                Console.WriteLine($"A {this.GetType()} has a delay of 0 which is bad pls fix");
+                Abbybot.print($"A {this.GetType()} has a delay of 0 which is bad pls fix");
                 return;
             }
 

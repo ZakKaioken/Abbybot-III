@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Abbybot_III.Commands.Normal
 {
-    [Capi.Cmd("abbybot !normal", 1, 1)]
+    //[Capi.Cmd("abbybot !normal", 1, 1)]
     class NormalCommand : BaseCommand
     {
         public override async Task DoWork(AbbybotCommandArgs e)
@@ -47,7 +47,7 @@ namespace Abbybot_III.Commands.Normal
         public override async Task<string> toHelpString(AbbybotCommandArgs aca)
         {
             await Task.CompletedTask;
-            return $"{Command}: a normal command.";
+            return $"a normal command.";
         }
 
     }

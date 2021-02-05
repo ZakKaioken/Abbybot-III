@@ -23,5 +23,9 @@ namespace Abbybot_III.Commands.Normal
                 return;
             await a.Send(mu[0].GetAvatarUrl());
         }
+        public override async Task<string> toHelpString(AbbybotCommandArgs aca)
+        {
+            return "~~Steal~~ I mean, get somebody's profile picture";
+        }
     }
 }

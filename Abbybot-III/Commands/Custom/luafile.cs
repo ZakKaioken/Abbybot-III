@@ -65,6 +65,10 @@ namespace Abbybot_III.Commands.Custom
                 return await base.Evaluate(cea);
             else return false;
         }
+        public override async Task<string> toHelpString(AbbybotCommandArgs aca)
+        {
+            return "I can run the lua files you upload into a server";
+        }
     }
 
 }

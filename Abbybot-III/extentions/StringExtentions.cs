@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Abbybot_III.extentions
 {
@@ -16,6 +17,10 @@ namespace Abbybot_III.extentions
                     f = true;
             }
             return f;
+        }
+        public static string ReplaceA(this string s, string word, string replacement)
+        {
+            return Regex.Replace(s, word, replacement, RegexOptions.IgnoreCase);
         }
     }
 }

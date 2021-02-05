@@ -17,10 +17,11 @@ namespace Abbybot_III
         
         static async Task Main()
         {
-            Console.WriteLine("Abbybot III starting!");
+            Abbybot.print("Abbybot III starting!");
             if (Process.GetProcessesByName("AbbybotSleep").Length<1) 
                 Process.Start("AbbybotSleep.exe");
             await MysqlCore.CheckMysql(@"ApiKeys\mysqlbinpath.abbytxt");
+            AbbySql.AbbysqlClient.connectionstring = Apis.Mysql.ApiKeys.MysqlApiKeys.Load(@"ApiKeys\Mysql.json").ToString();
             await InitAll();
             await Apis.Discord.Discord.DiscordMainAsync();
             AbbyHeart.Start();
@@ -34,12 +35,11 @@ namespace Abbybot_III
 
         private static async Task InitAll()
         {
-            await ClockIniter.init();
+            
             await Twitter.init();
             AbbyBooruChecker.Init();
             if (Twitter.tson)
             AbbybotTwitter.init();
-            AbbySql.AbbysqlClient.connectionstring = Apis.Mysql.ApiKeys.MysqlApiKeys.Load(@"ApiKeys\Mysql.json").ToString();
         }
     }
 }

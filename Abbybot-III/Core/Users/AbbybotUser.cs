@@ -83,10 +83,10 @@ namespace Abbybot_III.Core.Data.User
         private async Task GetGuild(SocketUser author)
         {
             var sgu = author as SocketGuildUser;
-            //Console.WriteLine(sgu.Guild.Name);
+            //Abbybot.print(sgu.Guild.Name);
             if (sgu != null)
             {
-                //Console.WriteLine("found guild");
+                //Abbybot.print("found guild");
                 userGuild = new UserGuild();
                 userGuild.GuildId = sgu.Guild.Id;
                 userNames.Nickname = sgu.Nickname;

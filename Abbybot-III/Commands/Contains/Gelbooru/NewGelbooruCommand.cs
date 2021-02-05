@@ -7,6 +7,8 @@ using Abbybot_III.Core.Data.User;
 using Abbybot_III.Core.Users.sql;
 using Abbybot_III.extentions;
 
+using BooruSharp.Search.Post;
+
 using Capi.Interfaces;
 
 using Discord;
@@ -51,15 +53,68 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 
             List<AbbybotUser> mentionedUsers = await aca.GetMentionedUsers();
 
+            var cfc = "NO";
+            if (aca.abbybotGuild != null)
+                cfc = await ChannelFCOverride.GetFCMAsync(aca.abbybotGuild.GuildId, aca.channel.Id);
             string fc = await GetFavoriteCharacterTagAsync(aca, mentionedUsers);
-            List<string> tagz = await GenerateTags(aca, fc);
-            
-            var imgdata = await Apis.Booru.AbbyBooru.Execute(tagz.ToArray());
+            List<string> tagz;
+            SearchResult imgdata = new SearchResult();
 
-            if (imgdata.Source == "noimagefound")
+            var ufc = "abigail_williams*";
+            try
             {
-                await NoImageFoundEmbed.Build(aca, fc);
-                return;
+                if (cfc == "NO") throw new Exception("cfc not set");
+                tagz = await GenerateTags(aca, fc, cfc);
+
+                imgdata = await Apis.Booru.AbbyBooru.Execute(tagz.ToArray());
+
+                if (imgdata.Source == "noimagefound")
+                {
+                    throw new Exception("CFC+FC FAILED");
+                }
+                ufc = GelEmbed.fcbuilder($"{fc} {cfc}");
+            }
+            catch
+            {
+                try
+                {
+                    if (cfc == "NO") throw new Exception("cfc not set");
+                    tagz = await GenerateTags(aca, cfc);
+
+                    imgdata = await Apis.Booru.AbbyBooru.Execute(tagz.ToArray());
+
+                    if (imgdata.Source == "noimagefound")
+                    {
+                        throw new Exception("CFC FAILED");
+                        ufc = GelEmbed.fcbuilder($"{cfc}");
+                    }
+                }
+                catch
+                {
+                    try
+                    {
+                        tagz = await GenerateTags(aca, fc);
+
+                        imgdata = await Apis.Booru.AbbyBooru.Execute(tagz.ToArray());
+
+                        if (imgdata.Source == "noimagefound")
+                        {
+                            throw new Exception("FC FAILED");
+                        }
+                        ufc = GelEmbed.fcbuilder($"{fc}");
+                    }
+                    catch
+                    {
+                        tagz = await GenerateTags(aca, "abigail_williams*");
+
+                        imgdata = await Apis.Booru.AbbyBooru.Execute(tagz.ToArray());
+
+                        if (imgdata.Source == "noimagefound")
+                        {
+                            throw new Exception("FC FAILED");
+                        }
+                    }
+                }
             }
 
             bool loli = imgdata.Tags.Contains("loli");
@@ -108,22 +163,24 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 
         }
 
-        private async Task<List<string>> GenerateTags(AbbybotCommandArgs aca, string fc)
+        private async Task<List<string>> GenerateTags(AbbybotCommandArgs aca, string fc, string cfc = "NO")
         {
             var tagz = tags.ToList();
 
-            
+            if (cfc != "NO")
+                tagz.Add($"{cfc}*");
             tagz.Add($"{fc}*");
 
-            if (!(aca.channel is SocketDMChannel sdc)) {
-            if (!aca.abbybotUser.userPerms.Ratings.Contains((CommandRatings)2) || !await aca.IsNSFW())
+            if (!(aca.channel is SocketDMChannel sdc))
             {
-                tagz.Add("rating:safe");
-            }
-            if (!aca.abbybotUser.userPerms.Ratings.Contains((CommandRatings)3))
-            {
-                tagz.Add("-loli");
-            }
+                if (!aca.abbybotUser.userPerms.Ratings.Contains((CommandRatings)2) || !await aca.IsNSFW())
+                {
+                    tagz.Add("rating:safe");
+                }
+                if (!aca.abbybotUser.userPerms.Ratings.Contains((CommandRatings)3))
+                {
+                    tagz.Add("-loli");
+                }
             }
 
             var blacklisttags = await UserBlacklistSql.GetBlackListTags(aca.abbybotUser.Id);

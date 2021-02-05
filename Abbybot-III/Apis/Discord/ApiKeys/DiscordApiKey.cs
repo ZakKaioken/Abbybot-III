@@ -40,7 +40,7 @@ namespace Abbybot_III.Apis.Discord.ApiKeys
             var text = File.ReadAllText(path);
             if (text.Contains("\"\""))
             {
-                Console.WriteLine($"Master I can't talk to my friends without my discord token... It's the {fileName} file in {dir}!!!");
+                Abbybot.print($"Master I can't talk to my friends without my discord token... It's the {fileName} file in {dir}!!!");
             }
 
 
