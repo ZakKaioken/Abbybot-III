@@ -1,11 +1,13 @@
-﻿using Discord.WebSocket;
+﻿using Abbybot_III.Clocks;
+
+using Discord.WebSocket;
 
 using System;
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Apis.Discord.Events
 {
-    internal class Abbybot
+    internal class AbbybotIII
     {
         internal static void Init(DiscordSocketClient _client)
         {
@@ -31,6 +33,7 @@ namespace Abbybot_III.Apis.Discord.Events
         private static async Task LoggedIn()
         {
             await Task.CompletedTask;
+
             //throw new NotImplementedException();
         }
 
@@ -43,8 +46,7 @@ namespace Abbybot_III.Apis.Discord.Events
         private static async Task Ready()
         {
             await Task.CompletedTask;
-            
-            //throw new NotImplementedException();
+            await ClockIniter.init();
         }
     }
 }

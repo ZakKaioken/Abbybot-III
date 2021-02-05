@@ -95,5 +95,9 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
         {
             return await Apis.Booru.AbbyBooru.Execute(tags.ToArray());
         }
+        public override async Task<string> toHelpString(AbbybotCommandArgs aca)
+        {
+            return $"a random picture finder, 1 to 1 ratio to gelbooru's own search bar";
+        }
     }
 }

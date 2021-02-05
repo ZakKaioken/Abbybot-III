@@ -20,7 +20,7 @@ namespace Abbybot_III.Apis.Twitter.Core
 
         static void p(object st) 
         {
-            Console.WriteLine($"[Tweet Sender Core]: {st}");
+            Abbybot.print($"[Tweet Sender Core]: {st}");
         }
         static bool sendingtweet = false;
         public static async Task SendTweet()
@@ -63,15 +63,15 @@ namespace Abbybot_III.Apis.Twitter.Core
                 TwitterAsyncResult<TwitterUploadedMedia> media = await Twitter.ts.UploadMediaAsync(new UploadMediaOptions { Media = m });
                 if (media == null)
                 {
-                    Console.WriteLine("failed to upload media");
+                    Abbybot.print("failed to upload media");
                     return;
                 }
                 file.Dispose();
-                Console.WriteLine(media.Response.Response);
+                Abbybot.print(media.Response.Response);
 
                 if (media.Response.Response.ToLower().Contains("unrecognized"))
                 {
-                    Console.WriteLine("media type unregognized");
+                    Abbybot.print("media type unregognized");
                     await TweetQueueSql.Remove(tweet);
                     await SendTweet();
                     return;
@@ -111,7 +111,7 @@ namespace Abbybot_III.Apis.Twitter.Core
 
             if (tweetvalue != null)
             {
-                Console.WriteLine("sent tweet");
+                Abbybot.print("sent tweet");
                 SaveTweet(tweetvalue, tweet);
             }
 

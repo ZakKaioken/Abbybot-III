@@ -8,7 +8,8 @@ using System.Timers;
 
 int milis = 1000 * 60 *30;
 double twtqueueinitialstart = milis - ((DateTime.Now - DateTime.Today).TotalMilliseconds % (milis));
-twtqueueinitialstart -= 60000;
+if (twtqueueinitialstart > 61000*2)
+twtqueueinitialstart -= 60000*2;
 var timestr = TimeStringGenerator.MilistoTimeString((decimal)twtqueueinitialstart);
 Console.WriteLine($"Starting abbybot sleep process: {timestr}");
 Timer timer = new Timer(twtqueueinitialstart);

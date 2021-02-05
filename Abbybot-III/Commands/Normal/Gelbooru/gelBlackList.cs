@@ -12,8 +12,6 @@ using System.Threading.Tasks;
 
 namespace Abbybot_III.Commands.Normal.Gelbooru
 {
-    class gelBlackList
-    {
         [Capi.Cmd("abbybot blacklisttag", 1, 1)]
         class blackListTag : NormalCommand
         {
@@ -86,7 +84,11 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 
                 await message.Send(eb);
             }
+        public override async Task<string> toHelpString(AbbybotCommandArgs aca)
+        {
+            return $"blacklist tags you don't like. Personally, i hate large breasts, but you do you.";
         }
-
     }
+
+
 }

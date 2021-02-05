@@ -29,7 +29,8 @@ namespace Abbybot_III.Commands.Custom
 
         public override async Task<bool> Evaluate(AbbybotCommandArgs cea)
         {
-            if (cea.abbybotGuild.AbbybotIsHere) return false;
+            if (cea.abbybotGuild != null)
+                if (cea.abbybotGuild.AbbybotIsHere) return false;
             books.Clear();
             var msg = cea.Message.ToLower().Split(" ");
             var cmd = Command.ToLower();
@@ -85,7 +86,10 @@ namespace Abbybot_III.Commands.Custom
             }
             return isbook;
         }
-
+        public override async Task<string> toHelpString(AbbybotCommandArgs aca)
+        {
+            return "just add an n in front of an nhentai number and i will give you it's link. It doesn't work with numbers that aren't hentais on nhentai";
+        }
     }
 
 }

@@ -72,7 +72,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
         {
             return s.Replace("* ~ ", " or ").Replace("* ", " and ").Replace("{", "").Replace("}", "").Replace("_", " ").Replace("*","");
         }
-        internal static EmbedBuilder Build(string fileurl, string source, string fc, List<Core.Data.User.AbbybotUser> mentionedUsers, string command)
+        internal static EmbedBuilder Build(string fileurl, string source, string fc)
         {
             StringBuilder message = new StringBuilder();
 
@@ -102,7 +102,6 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
             var iu =new Uri(imgdrata.Imageurl).ToString();
             if (iu.Contains(new string[] { "mp4", "avi", "webm" }))
                 message.AppendLine(iu).Replace("%20", "\\%20");
-
             else
                 try
                 {
@@ -120,7 +119,6 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
                 embededodizer.Description = message.ToString();
 
                 return embededodizer;
-            
         }
     }
 }

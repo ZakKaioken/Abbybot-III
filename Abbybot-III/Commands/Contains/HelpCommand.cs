@@ -25,69 +25,117 @@ namespace Abbybot_III.Commands.Contains
         public override bool SelfRun { get => false; set => base.SelfRun = value; }
         public override async Task DoWork(AbbybotCommandArgs abd)
         {
-
-            await abd.Send("Hey cutie master! I'm gathering my list of commands for you now! I'll dm it to you when it's ready! 😁");
-
-            var ratings = abd.abbybotUser.userPerms.Ratings;
-            List<iCommand> commands = CommandHandler.capi.commands;
-
             EmbedBuilder eb = new EmbedBuilder
             {
-                Title = "Commands",
-                Description = "Almost every command i will listen to",
+                Title = "Almost every command i will listen to",
                 Color = Color.Teal
             };
 
             if (abd.abbybotUser.userTrust.inTimeOut)
             {
                 eb.Color = Color.Red;
-                eb.Description = "Your timeout commands.";
-
+                eb.Title = "Your timeout commands.";
+                eb.Description = "You've been mean to me...";
                 StringBuilder sb = new StringBuilder();
                 sb.Append("abbybot help\nabbybot timeout");
                 eb.AddField("\u200b", sb.ToString());
+                await abd.SendDM(eb);
+                return;
             }
-            else if (commands.Count > 0)
+            if (CommandHandler.capi.commands.Count == 1)
             {
-                List<iCommand> usableCommands = new List<iCommand>();
-                foreach (var i in commands.ToList())
-                    if (await i.ShowHelp(abd))
-                        usableCommands.Add(i);
-                var commandTypeGroups = usableCommands.GroupBy(x => x.GetType());
+                eb.Color = Color.Red;
+                eb.Title =
+                eb.Description = "Aawawawa!!! master!! I lost all my commands... Help me... I'M PANICING!!!!";
+                await abd.Send(eb);
+                return;
+            }
+            await abd.Send("Hey cutie master! I'll give you my commands when i find them all!! 😁");
 
-                StringBuilder sb = new StringBuilder();
+            var ratings = abd.abbybotUser.userPerms.Ratings;
+            List<iCommand> commands = CommandHandler.capi.commands.ToList();
 
-                foreach (var tg in commandTypeGroups.Split(5))
+            StringBuilder currentitem = new StringBuilder();
+            bool groupnameadded = false;
+            List<StringBuilder> fields = new List<StringBuilder>();
+
+            var groups = commands.OrderBy(x => x.Type).GroupBy(x => x.toHelpString(abd).GetAwaiter().GetResult()).ToList(); ;
+
+            fields.Add(new StringBuilder());
+
+            foreach (var group in groups.ToList())
+            {
+                var groop = group.ToList().OrderBy(xx => xx.Command.Replace("abbybot ", "")).ToList();
+                if (group.Count() > 1)
                 {
-                    foreach (var typegroup in tg)
+                    groupnameadded = false;
+                    for (int ooo = 0; ooo < groop.Count; ooo++)
                     {
-                        if (typegroup.Count() > 1)
+                        var item = groop[ooo];
+                        if (!await item.ShowHelp(abd))
+                            continue;
+                        if (!groupnameadded)
                         {
-                            var typzcommands = typegroup.ToList();
-                            var bse = typzcommands[0];
-                            sb.Append(await bse.toHelpString(abd)).Append(":\n");
-                            sb.AppendJoin(", ", typzcommands.Select(x => $"**{x.Command}**"));
+                            var helpstring = (await groop[0].toHelpString(abd)).Replace("abbybot ", "ab!");
+                            fields[^1].AppendLine(helpstring);
+                            groupnameadded = true;
                         }
-                        else
-                        {
-                            foreach (var cmd in typegroup.ToList())
-                            {
-                                sb.Append((await cmd.toHelpString(abd)).Replace(cmd.Command, $"**{cmd.Command}**") + "\n");
-                            }
-                        }
+
+                        currentitem.Clear();
+                        var cos = item.Command.Replace("abbybot ", "ab!");
+                        currentitem.Append($"**{cos}**");
+                        if (ooo < groop.Count - 1)
+                            currentitem.Append(", ");
+                        else currentitem.Append("\n");
+
+                        NewMethod();
+                        if (!fields[^1].ToString().Contains(currentitem.ToString()))
+                            fields[^1].Append(currentitem);
                     }
-                    eb.AddField("\u200b", sb.ToString());
-                    sb.Clear();
                 }
+                else
+                {
+                    if (!await groop[0].ShowHelp(abd)) continue;
+
+                    currentitem.Clear();
+                    var command = groop[0].Command.Replace("abbybot ", "ab!");
+                    var helpstring = (await groop[0].toHelpString(abd)).Replace("abbybot ", "ab!");
+                    currentitem.Append("\n").Append(command).Append(": ").Append(helpstring);
+                    currentitem.Replace(command, $"**{command}**");
+                    NewMethod();
+
+                    if (!fields[^1].ToString().Contains(currentitem.ToString()))
+                        fields[^1].Append(currentitem);
+                    currentitem.Clear();
+                }
+                if (currentitem.Length > 1)
+                {
+                    NewMethod();
+                    if (fields.Count > 1)
+                        if (!fields[^2].ToString().Contains(currentitem.ToString()))
+                            fields[^1].Append(currentitem).Append("\n");
+                    currentitem.Clear();
+                }
+
             }
-            else
-            {
-                eb.AddField("I'mm sso dizzzy?! help me master!!", "!");
+            foreach(var f in fields) {
+                 eb.AddField("\u200b", f);
             }
+            //eb.AddField("\u200b", fields[^1]);
             await abd.SendDM(eb);
 
             if (abd.abbybotUser.userTrust.inTimeOut)
                 await abd.Send("I put it in our dms.");
+
+            void NewMethod()
+            {
+                var e = (currentitem.Length + fields[^1].Length);
+                if (e > 1000)
+                {
+                    fields.Add(new StringBuilder());
+                    groupnameadded = false;
+                }
+            }
         }
 
         public override async Task<bool> Evaluate(AbbybotCommandArgs aca)
@@ -101,7 +149,7 @@ namespace Abbybot_III.Commands.Contains
 
         public override async Task<string> toHelpString(AbbybotCommandArgs aca)
         {
-            return $"{Command} displays a list of possible commands to your dms. if you're seeing this, you likely ran the help command!";
+            return $"get a list of my commands to your dms. if you're seeing this, you likely ran the help command!";
         }
 
     }

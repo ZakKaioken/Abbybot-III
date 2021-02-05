@@ -53,6 +53,7 @@ namespace Abbybot_III.Commands.Custom
         {
             var asx = cea.originalMessage.Attachments;
             bool oai = false;
+            if (cea.abbybotGuild != null)
             if (cea.abbybotGuild.AbbybotIsHere) return false;
             foreach (var a in asx)
             {
@@ -65,6 +66,10 @@ namespace Abbybot_III.Commands.Custom
             if (oai)
                 return await base.Evaluate(cea);
             else return false;
+        }
+        public override async Task<string> toHelpString(AbbybotCommandArgs aca)
+        {
+            return "I can run the lua files you upload into a server";
         }
     }
 

@@ -27,7 +27,7 @@ namespace Abbybot_III.Apis.Discord
                     o = false;
                 } catch
                 {
-                    Console.WriteLine("Failed to start discord. Trying again in 10 seconds.");
+                    Abbybot.print("Failed to start discord. Trying again in 10 seconds.");
                     await Task.Delay(10000);
                 }
             } while (o);

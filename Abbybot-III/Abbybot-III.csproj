@@ -11,6 +11,8 @@
     <OutDir>Abbybot\III</OutDir>
  
     <ApplicationIcon>Abby Kaioken Badge b.ico</ApplicationIcon>
+ 
+    <AssemblyName>Nanobot</AssemblyName>
 
   </PropertyGroup>
 

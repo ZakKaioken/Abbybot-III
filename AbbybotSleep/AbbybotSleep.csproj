@@ -3,7 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
-    <AssemblyName>AbbybotSleep</AssemblyName>
+    <AssemblyName>NanobotSleep</AssemblyName>
     <OutDir>..\Abbybot-III\Abbybot\III</OutDir>
   </PropertyGroup>
 

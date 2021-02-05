@@ -31,6 +31,8 @@ namespace Abbybot_III.Commands.Contains
 
         public override async Task DoWork(AbbybotCommandArgs md)
         {
+            if (md.abbybotGuild!=null)
+            if (md.abbybotGuild.AbbybotIsHere) return;
             string o = Chance.Roll(Min, Max) ? Reply : string.Empty;
             await md.Send(o);
         }

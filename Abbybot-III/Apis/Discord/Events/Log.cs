@@ -16,7 +16,11 @@ namespace Abbybot_III.Apis.Discord.Events
          static async Task Recieved(LogMessage log)
         {
             await Task.CompletedTask;
-            Console.WriteLine(log.ToString());
+
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Abbybot.print(log.ToString());
+            Console.ForegroundColor = ConsoleColor.White;
             //throw new NotImplementedException();
         }
     }

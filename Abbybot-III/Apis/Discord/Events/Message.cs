@@ -25,8 +25,8 @@ namespace Abbybot_III.Apis.Discord.Events
 
         private static async Task Recieved(SocketMessage message)
         {
-            
-            WriteMessage(message);
+            if (message.Channel.Id != 806556997234327563)
+                WriteMessage(message);
 
             
             await PassiveUserSql.IncStat(message.Author.Id, "MessagesSent");
@@ -65,7 +65,7 @@ namespace Abbybot_III.Apis.Discord.Events
                     }
                 }
             
-            Console.WriteLine(sb.ToString());
+            Abbybot.print(sb.ToString());
          }
 
         private static async Task Deleted(Cacheable<IMessage, ulong> message, ISocketMessageChannel channel)

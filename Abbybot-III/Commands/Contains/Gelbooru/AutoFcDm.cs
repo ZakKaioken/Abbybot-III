@@ -1,10 +1,13 @@
 ﻿using Abbybot_III.Apis.Booru;
+using Abbybot_III.Clocks;
 using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
 using Abbybot_III.Core.Users.sql;
 using Abbybot_III.extentions;
 
 using AbbySql;
+
+using Abyplay;
 
 using BooruSharp.Search.Post;
 
@@ -19,18 +22,18 @@ using System.Threading.Tasks;
 
 namespace Abbybot_III.Commands.Contains.Gelbooru
 {
-    [Capi.Cmd("abbybot fcm", 1, 1)]
-    class fcm : ContainCommand
+    [Capi.Cmd("abbybot autofcdm", 1, 1)]
+    class autofcdm : ContainCommand
     {
         string[] activationwords = new string[]
         {
                 "on", "enabled", "enable", "true", "activate",
-                "activated", "yes", "go", "start", "1"
+                "activated", "yes", "go", "start"
         };
         string[] deactivatewords = new string[]
         {
                 "off", "disabled", "disable", "false", "stop", "end",
-                "finish", "0"
+                "finish"
         };
         string[] negativewords = new string[]
         {
@@ -44,9 +47,9 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 
             if (FavoriteCharacter.Length < 1)
             {
-                var e = await FCMentionsSql.GetFCMAsync(a.abbybotUser.Id);
+                var e = await AutoFcDmSqls.GetAutoFcDmAsync(a.abbybotUser.Id);
                 var word = (e) ? activationwords.random() : deactivatewords.random();
-                await a.Send($"your favorite character mentions modifier is {word}");
+                await a.Send($"your auto favorite character dm is {word}");
                 return;
             }
             while (FavoriteCharacter[0] == ' ')
@@ -100,16 +103,16 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
                 }
             }
 
-            await FCMentionsSql.SetFCMAsync(a.abbybotUser.Id, state);
+            await AutoFcDmSqls.SetAutoFcDmAsync(a.abbybotUser.Id, state);
             EmbedBuilder eb = new EmbedBuilder();
             if (state) {
-                eb.Title =$"Favorite Character Mentions {activationwords.random()}";
+                eb.Title =$"Auto Favorite character Dms {activationwords.random()}";
                 eb.Color = Color.Green;
-                eb.Description = "Hehe master! I will now use whoever you mention's fc when you use a picture command!";
+                eb.Description = $"Hehe master! I will now send you pictures of {a.abbybotUser.userFavoriteCharacter.FavoriteCharacter} every 15 minutes!!";
             } else {
-                eb.Title = $"Favorite Character Mentions {deactivatewords.random()}";
+                eb.Title = $"Auto Favorite character Dms  {deactivatewords.random()}";
                 eb.Color = Color.Red;
-                eb.Description = "oh master! I will not use whoever you mention's fc when you use a picture command anymore...";
+                eb.Description = $"oh master! I understand... I will not send you pictures of {a.abbybotUser.userFavoriteCharacter.FavoriteCharacter} every 15 minutes anymore...";
             }
         
             await a.Send(eb);
@@ -131,7 +134,12 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
         
         public override async Task<string> toHelpString(AbbybotCommandArgs aca)
         {
-            return $"Turn on or off the ability to use the mentioned person's fc instead for pictures commands";
+
+            var autofcdm = ClockIniter.clocks.Where(x => x.name == "autofcdm").ToList();
+            if (autofcdm.Count() < 1) return "get random pics of your waifu in the dms at a certain time";
+            var dt = TimeStringGenerator.MilistoTimeString((decimal)(autofcdm[0] as AutoFcDmClock).delay.TotalMilliseconds);
+
+            return $"Get random pictures of your waifu every {dt}";
         }
     }
 }

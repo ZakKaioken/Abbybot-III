@@ -30,7 +30,7 @@ namespace Abbybot_III.Clocks
             var atmms =await Twitter.ts.ListTweetsMentioningMeAsync(new TweetSharp.ListTweetsMentioningMeOptions{ Count=5, IncludeEntities = true });
 
             TwitterRateLimitStatus rate = Twitter.ts.Response.RateLimitStatus;
-            Console.WriteLine("You have used " + rate.RemainingHits + " out of your " + rate.HourlyLimit);
+            Abbybot.print("You have used " + rate.RemainingHits + " out of your " + rate.HourlyLimit);
 
             var tsmm = atmms.Value.ToArray();
             foreach (var tmm in tsmm)
@@ -47,7 +47,7 @@ namespace Abbybot_III.Clocks
                 //atca.abbybotUser = (AbbybotUser)twitteruser;
             
 
-                Console.WriteLine($"[\n{t}\n]");
+                Abbybot.print($"[\n{t}\n]");
             }
         }
     }

@@ -7,6 +7,8 @@ using Abbybot_III.Core.Data.User;
 using Abbybot_III.Core.Users.sql;
 using Abbybot_III.extentions;
 
+using BooruSharp.Search.Post;
+
 using Capi.Interfaces;
 
 using Discord;
@@ -51,16 +53,67 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 
             List<AbbybotUser> mentionedUsers = await aca.GetMentionedUsers();
 
+            var cfc = await ChannelFCOverride.GetFCMAsync(aca.abbybotGuild.GuildId, aca.channel.Id);
             string fc = await GetFavoriteCharacterTagAsync(aca, mentionedUsers);
-            List<string> tagz = await GenerateTags(aca, fc);
-            
-            var imgdata = await Apis.Booru.AbbyBooru.Execute(tagz.ToArray());
+            List<string> tagz;
+            SearchResult imgdata = new SearchResult();
 
-            if (imgdata.Source == "noimagefound")
-            {
-                await NoImageFoundEmbed.Build(aca, fc);
-                return;
+            var ufc = "abigail_williams*";
+                try
+                {
+                    if (cfc == "NO") throw new Exception("cfc not set");
+                    tagz = await GenerateTags(aca, fc, cfc);
+                    
+                    imgdata = await Apis.Booru.AbbyBooru.Execute(tagz.ToArray());
+
+                    if (imgdata.Source == "noimagefound")
+                    {
+                        throw new Exception("CFC+FC FAILED");
+                    }
+                ufc = GelEmbed.fcbuilder($"{fc} {cfc}");
             }
+                catch 
+                {
+                    try
+                    {
+                        if (cfc == "NO") throw new Exception("cfc not set");
+                        tagz = await GenerateTags(aca, cfc);
+
+                        imgdata = await Apis.Booru.AbbyBooru.Execute(tagz.ToArray());
+
+                        if (imgdata.Source == "noimagefound")
+                        {
+                            throw new Exception("CFC FAILED");
+                        ufc = GelEmbed.fcbuilder($"{cfc}");
+                    }
+                    }
+                    catch
+                    {
+                    try
+                    {
+                        tagz = await GenerateTags(aca, fc);
+
+                        imgdata = await Apis.Booru.AbbyBooru.Execute(tagz.ToArray());
+
+                        if (imgdata.Source == "noimagefound")
+                        {
+                            throw new Exception("FC FAILED");
+                        }
+                        ufc = GelEmbed.fcbuilder($"{fc}");
+                    } catch
+                    {
+                        tagz = await GenerateTags(aca, "abigail_williams*");
+
+                        imgdata = await Apis.Booru.AbbyBooru.Execute(tagz.ToArray());
+
+                        if (imgdata.Source == "noimagefound")
+                        {
+                            throw new Exception("FC FAILED");
+                        }
+                    }
+                    }
+                }
+
 
             bool loli = imgdata.Tags.Contains("loli");
             bool shot = imgdata.Tags.Contains("shota");
@@ -97,7 +150,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
                     source = source,
                     user = aca.abbybotUser,
                     sudouser = aca.abbybotSudoUser,
-                    favoritecharacter = fc
+                    favoritecharacter = ufc
                 };
 
                 var e = GelEmbed.Build(imgdrata);
@@ -108,11 +161,12 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 
         }
 
-        private async Task<List<string>> GenerateTags(AbbybotCommandArgs aca, string fc)
+        private async Task<List<string>> GenerateTags(AbbybotCommandArgs aca, string fc, string cfc = "NO")
         {
             var tagz = tags.ToList();
 
-            
+            if (cfc != "NO")
+                tagz.Add($"{cfc}*");
             tagz.Add($"{fc}*");
 
             if (!(aca.channel is SocketDMChannel sdc)) {
@@ -155,7 +209,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
         public override async Task<string> toHelpString(AbbybotCommandArgs aca)
         {
             await Task.CompletedTask;
-            return $"These commands will show a picture of your favorite character ({aca.abbybotUser.userFavoriteCharacter.FavoriteCharacter}) doing what's in the command. (for example: abbybot hug has hugging inside it)";
+            return $"ab!gel picture commands";
         }
     }
 }

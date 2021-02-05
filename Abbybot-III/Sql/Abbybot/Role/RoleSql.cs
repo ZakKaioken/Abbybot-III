@@ -41,7 +41,7 @@ namespace Abbybot_III.Core.Roles.sql
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message + e.StackTrace);
+                Abbybot_III.Abbybot.print(e.Message + e.StackTrace);
             }
             return ran;
         }

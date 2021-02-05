@@ -12,7 +12,6 @@ namespace Abbybot_III.Clocks
         public string name = "base clock";
         public async Task Init()
         {
-
             await OnInit(DateTime.Now);
             AbbyHeart.heartBeat += async (time) => await Tick(time);
         }

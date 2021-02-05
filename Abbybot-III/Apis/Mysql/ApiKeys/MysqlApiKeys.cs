@@ -50,7 +50,7 @@ namespace Abbybot_III.Apis.Mysql.ApiKeys
             var text = File.ReadAllText(path);
             if (text.Contains("\"\""))
             {
-                Console.WriteLine($"Pls help me master... I forgot how to remember... Will you please check the {fileName} file in {dir} to make sure i have my connection info set?");
+                Abbybot.print($"Pls help me master... I forgot how to remember... Will you please check the {fileName} file in {dir} to make sure i have my connection info set?");
             }
 
             return JsonConvert.DeserializeObject<MysqlApiKeys>(File.ReadAllText(path));

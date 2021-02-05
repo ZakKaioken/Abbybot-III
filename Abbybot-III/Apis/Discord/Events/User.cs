@@ -1,4 +1,5 @@
-﻿using Abbybot_III.Core.Guilds;
+﻿using Abbybot_III.Core.Abbybot;
+using Abbybot_III.Core.Guilds;
 using Abbybot_III.Core.Guilds.GuildMessageHandler;
 using Abbybot_III.Core.Guilds.GuildMessageHandler.DataType.DiscordGuildMessage.User;
 using Abbybot_III.Sql.Abbybot.Guild;
@@ -17,6 +18,8 @@ namespace Abbybot_III.Apis.Discord.Events
         
         private static async Task Joined(SocketGuildUser user)
         {
+            if (await AbbybotData.IsAbbybotHere(user.Guild.Id)) return;
+
             var g = user.Guild;
             var isx = (await g.GetInvitesAsync()).ToList();
             string code = "nocode";
@@ -40,6 +43,7 @@ namespace Abbybot_III.Apis.Discord.Events
 
         private static async Task Left(SocketGuildUser user)
         {
+            if (await AbbybotData.IsAbbybotHere(user.Guild.Id)) return;
             LeftMessage lm = await LeftMessage.CreateFromUser(user);
             await MessageHandler.DoGuildMessage(lm);
         }

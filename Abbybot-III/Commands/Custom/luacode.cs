@@ -38,7 +38,7 @@ namespace Abbybot_III.Commands.Custom
                     await message.Send(s); //when print is used send message
                 await Task.Delay(100);
             };
-            Console.WriteLine($"user {message.abbybotUser}, guild {message.abbybotGuild}");
+            Abbybot.print($"user {message.abbybotUser}, guild {message.abbybotGuild}");
             DynValue user = UserData.Create(message.abbybotUser);
             script.Globals.Set("user", user);
 
@@ -75,6 +75,7 @@ namespace Abbybot_III.Commands.Custom
         public override async Task<bool> Evaluate(AbbybotCommandArgs cea)
         {
             Multithreaded = true;
+            if (cea.abbybotGuild != null)
             if (cea.abbybotGuild.AbbybotIsHere) return false;
 
             var v = cea.Message.Contains("```lua");
@@ -83,6 +84,10 @@ namespace Abbybot_III.Commands.Custom
                 return await base.Evaluate(cea);
             else
                 return false;
+        }
+        public override async Task<string> toHelpString(AbbybotCommandArgs aca)
+        {
+            return "I can run your lua blocks of code";
         }
     }
 

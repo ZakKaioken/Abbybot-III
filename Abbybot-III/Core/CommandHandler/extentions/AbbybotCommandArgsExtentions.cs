@@ -17,7 +17,7 @@ namespace Abbybot_III.Core.CommandHandler.extentions
     {
         public static async Task<RestUserMessage> Send(this AbbybotCommandArgs arg, object st)
         {
-            //Console.WriteLine(st);
+            //Abbybot.print(st);
             if (st.ToString().Length < 1)
                 return null;
             return await arg.channel.SendMessageAsync(st.ToString());
@@ -32,7 +32,7 @@ namespace Abbybot_III.Core.CommandHandler.extentions
 
         public static async Task<RestUserMessage> Send(this AbbybotCommandArgs arg, StringBuilder sb)
         {
-            //Console.WriteLine(sb);
+            //Abbybot.print(sb);
             if (sb.Length < 1)
                 return null;
             return await arg.channel.SendMessageAsync(sb.ToString());

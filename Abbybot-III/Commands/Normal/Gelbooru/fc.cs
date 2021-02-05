@@ -34,18 +34,20 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
                 FavoriteCharacter.Remove(0, 1);
             while (FavoriteCharacter[^1] == ' ')
                 FavoriteCharacter.Remove(FavoriteCharacter.Length - 1, 1);
-
             string fc = FavoriteCharacter.ToString();
-            
+
             FavoriteCharacter.Replace(" ", "_").Replace("abbybot", "abigail_williams").Replace("abby", "abigail_williams").Replace("abby_kaioken", "abigail_williams");
-            FavoriteCharacter.Append("*");
+            if (FavoriteCharacter[^1] != '~')
+                FavoriteCharacter.Append("*");
+            else
+                FavoriteCharacter.Remove(FavoriteCharacter.Length - 1, 1);
             if (FavoriteCharacter.ToString().Contains("_~_") || FavoriteCharacter.ToString().Contains("_or_"))
             {
                 FavoriteCharacter.Insert(0, "{").Append("}");
-                FavoriteCharacter.Replace("_~_", "* ~ ").Replace("_or_", "* ~ ");
+                FavoriteCharacter.Replace("~_or_", " ~ ").Replace("~_~_", " ~ ").Replace("_~_", "* ~ ").Replace("_or_", "* ~ ");
             }
+            FavoriteCharacter.Replace("~_&&_", " ").Replace("~_and_", " ").Replace("_&&_", "* ").Replace("_and_", "* ");
 
-            FavoriteCharacter.Replace("_&&_", "* ").Replace("_and_", "* ");
             string pictureurl = "https://img2.gelbooru.com/samples/ee/e2/sample_eee286783bfa37e088d1ffbcf8f098ba.jpg";
             var o = new string[1];
             o[0] = FavoriteCharacter.ToString();
@@ -106,7 +108,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 
         public override async Task<string> toHelpString(AbbybotCommandArgs aca)
         {
-            return $"{Command}: lets you set your favorite character. Usage (abbybot fc abigail williams) to set the character to abigail williams";
+            return $"set your favorite character. (all pictures are of your favorite character)";
         }
     }
 }

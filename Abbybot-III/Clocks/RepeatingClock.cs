@@ -14,7 +14,7 @@ namespace Abbybot_III.Clocks
         {
             if (delay == TimeSpan.Zero)
             {
-                Console.WriteLine($"A {this.GetType()} has a delay of 0 which is bad pls fix");
+                Abbybot.print($"A {this.GetType()} has a delay of 0 which is bad pls fix");
                 return;
             }
 
@@ -25,6 +25,20 @@ namespace Abbybot_III.Clocks
                 
                 await OnWork(time);
             }
+        }
+
+        public override async Task OnInit(DateTime time)
+        {
+            var now = DateTime.Now;
+            double twtqueueinitialstart = HowLongLeftInMS(now);
+
+            tick = now.AddMilliseconds(twtqueueinitialstart);
+
+        }
+
+        public double HowLongLeftInMS(DateTime now)
+        {
+            return delay.TotalMilliseconds - ((now - DateTime.Today).TotalMilliseconds % (delay.TotalMilliseconds));
         }
     }
 }

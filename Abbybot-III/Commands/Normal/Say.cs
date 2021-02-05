@@ -19,11 +19,20 @@ namespace Abbybot_III.Commands.Normal
             StringBuilder FavoriteCharacter = new StringBuilder(a.Message).Replace(Command, "").Replace("--debugmode", "");
             while (FavoriteCharacter[0] == ' ')
                 FavoriteCharacter.Remove(0, 1);
+            try
+            {
+                if (!(a.channel is SocketDMChannel))
+                    await a.Delete();
+            } catch
+            {
 
-            if (!(a.channel is SocketDMChannel))
-                await a.Delete();
-            Console.WriteLine("tried to run say");
+            }
+            Abbybot.print("tried to run say");
             await a.Send(FavoriteCharacter);
+        }
+        public override async Task<string> toHelpString(AbbybotCommandArgs aca)
+        {
+            return $"make me say something!!!";
         }
     }
 }

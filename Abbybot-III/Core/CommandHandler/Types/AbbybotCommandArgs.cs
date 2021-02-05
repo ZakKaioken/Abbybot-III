@@ -1,6 +1,8 @@
-﻿using Abbybot_III.Core.Data.User;
+﻿using Abbybot_III.Core.Abbybot;
+using Abbybot_III.Core.Data.User;
 using Abbybot_III.Core.Guilds;
 using Abbybot_III.Core.Guilds.sql;
+using Abbybot_III.Sql.Abbybot.Abbybot;
 
 using Discord.WebSocket;
 
@@ -22,7 +24,11 @@ namespace Abbybot_III.Core.CommandHandler.Types
             }
             set
             {
-                msg = value.Replace("pussy", "usb c").Replace("Pussy", "Usb c").Replace("PUSSY", "USB C").Replace("abbybot ", "cute sister ").Replace("ab!", "nanobot ").Replace("nanobot ", "abbybot ");
+                var a = value.Replace("pussy", "usb c").Replace("Pussy", "Usb c");
+                a = a.Replace("PUSSY", "USB C").Replace("abbybot ", "cute sister ");
+                a=a.Replace("ab!", "nanobot ").Replace("nanobot ", "abbybot ");
+                a=a.Replace("nano ", "abbybot ");
+                msg = a;
             }
             
         }
@@ -56,14 +62,8 @@ namespace Abbybot_III.Core.CommandHandler.Types
 
 
             if (sm.Author is SocketGuildUser sgux) {
-                aca.abbybotGuild = new AbbybotGuild { GuildId = sgux.Guild.Id, Name = sgux.Guild.Name };
-
-                var u = Apis.Discord.Discord._client.GetUser(595308053448884294);
-                bool b = false;
-                foreach (var g in u.MutualGuilds.ToList())
-                    if (g.Id == aca.abbybotGuild.GuildId)
-                        b = true;
-                aca.abbybotGuild.AbbybotIsHere = b;
+                aca.abbybotGuild = new AbbybotGuild { GuildId = sgux.Guild.Id, Name = sgux.Guild.Name};
+                aca.abbybotGuild.AbbybotIsHere = await AbbybotData.IsAbbybotHere(sgux.Guild.Id);
                 await GuildSql.GetGuild(aca.abbybotGuild);
             }
             return aca;

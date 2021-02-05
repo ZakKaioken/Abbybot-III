@@ -1,5 +1,6 @@
 ﻿using Abbybot_III.Apis.Twitter.Core;
 using Abbybot_III.Core.AbbyBooru.types;
+using Abbybot_III.Core.Guilds;
 using Abbybot_III.Core.Heart;
 using Abbybot_III.Core.Twitter.Queue.sql;
 using Abbybot_III.Core.Twitter.Queue.types;
@@ -24,28 +25,38 @@ namespace Abbybot_III.Core.AbbyBooru
         public static void Init()
         {
             AbbyHeart.heartBeat += async (time) => await RequestBeat(time);
-            CheckTime = DateTime.Now.AddSeconds(10);
+            CheckTime = DateTime.Now.AddMinutes(2);
         }
 
         private static async Task RequestBeat(DateTime time)
         {
             if (time > CheckTime)
             {
+                //Abbybot.print("running abc!!");
                 CheckTime = CheckTime.AddMinutes(1);
                 SocketTextChannel channel = null;
-              List <Character> characters = await Character.GetListFromSqlAsync();
+                List <Character> characters = await Character.GetListFromSqlAsync();
 
                 foreach(var character in characters) {
+                    //Abbybot.print("{}");
+                    //AbbybotGuild
                     bool safe = true;
                     List<string> tags = new List<string>();
                     try {
+                        var Gl = Apis.Discord.Discord._client.Guilds.ToList().Any(x => x.Id == character.guildId);
+                        
+                        if (!Gl)
+                            continue;
+                        //Console.WriteLine($"{character.tag}, guild found!");
+                        var G = Apis.Discord.Discord._client.GetGuild(character.guildId);
+                        channel = G.GetTextChannel(character.channelId);
+                        
                         tags.Add(character.tag);
-                      channel = (SocketTextChannel)Apis.Discord.Discord._client.GetGuild(character.guildId).GetChannel(character.channelId);
-                     safe = !channel.IsNsfw || !character.IsLewd;
+                        safe = !channel.IsNsfw || !character.IsLewd;
                     }
-                    catch
+                    catch (Exception e)
                     {
-
+                        Console.WriteLine(e.ToString());
                         continue;
                     }
                     if (safe)
@@ -85,11 +96,12 @@ namespace Abbybot_III.Core.AbbyBooru
                             if (sr.source != null)
                              fixedsource = sr.source.Replace("/member_illust.php?mode=medium&amp;illust_id=", "/en/artworks/");
                             
-                        embededodizer.AddField($"New picture of {character.tag.Replace("_", " ")} :)", $"[Source]({fixedsource})");
+                            embededodizer.AddField($"New picture of {character.tag.Replace("_", " ")} :)", $"[Source]({fixedsource})");
                             embededodizer.Color = Color.LightOrange;
 
                             await channel.SendMessageAsync("", false, embededodizer.Build());
                         } catch { }
+
                         await Character.AddLatestPostIdAsync(character.Id, sr.Id);
 
                         if (character.Id == 3)
@@ -101,7 +113,7 @@ namespace Abbybot_III.Core.AbbyBooru
                                 sourceurl = fixedsource
                             };
 
-                            await TweetQueueSql.Add(tweet, true);
+                            //await TweetQueueSql.Add(tweet, true);
                             }
 
 
