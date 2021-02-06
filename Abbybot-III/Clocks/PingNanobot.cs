@@ -17,11 +17,12 @@ namespace Abbybot_III.Clocks
         public override async Task OnInit(DateTime time)
         {
             name = "ping nanobot";
-            delay = TimeSpan.FromMinutes(2);
+            delay = TimeSpan.FromMinutes(1);
             await base.OnInit(time);
         }
 
         public static int o = 0;
+        static int o2 = 0;
         Random r = new Random();
         public override async Task OnWork(DateTime time)
         {
@@ -29,7 +30,8 @@ namespace Abbybot_III.Clocks
             var er = r.Next(0, abbybotchannels.Count);
             var ch = abbybotchannels[er];
             var c = Apis.Discord.Discord._client.GetGuild(ch.guildId).GetTextChannel(ch.channelId);
-                if (o == 0)
+                
+            if (o == 0)
                 {
                     var abbybot = Process.GetProcessesByName("Nanobot");
                     if (abbybot.Length == 0)
@@ -51,8 +53,16 @@ namespace Abbybot_III.Clocks
                     await c.SendMessageAsync("good morning nano");
 
                     o = 1;
+                } else if (o == 5)
+                {
+                    if (o2 > 4)
+                    {
+                        await c.SendMessageAsync("I failed at work nano...");
+                        o = 1;
+                    }
+                o2++;
                 }
-            }
+        }
         
 
         private static void WakeAbbybot()

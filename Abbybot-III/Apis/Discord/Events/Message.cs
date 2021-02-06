@@ -32,7 +32,7 @@ namespace Abbybot_III.Apis.Discord.Events
             if (message.Channel.Id != channelId)
                 nowrite = true;
             }
-            if (!nowrite)
+            if (nowrite)
                 WriteMessage(message);
 
 

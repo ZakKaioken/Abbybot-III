@@ -1,7 +1,9 @@
 ﻿
+using Abbybot_III.Clocks;
 using Abbybot_III.Core.Twitter.Queue;
 using Abbybot_III.Core.Twitter.Queue.sql;
 using Abbybot_III.Core.Twitter.Queue.types;
+using Abbybot_III.Sql.Abbybot.Abbybot;
 
 using System;
 using System.Collections.Generic;
@@ -15,6 +17,7 @@ namespace Abbybot_III.Apis.Twitter.Core
 {
     class TweetSender
     {
+
         static int id;
         static int trycount;
 
@@ -23,8 +26,16 @@ namespace Abbybot_III.Apis.Twitter.Core
             Abbybot.print($"[Tweet Sender Core]: {st}");
         }
         static bool sendingtweet = false;
+        static Random r = new Random();
         public static async Task SendTweet()
         {
+            Abbybot.print("ayo");
+            var abbybotchannels = await AbbybotSql.GetAbbybotChannelIdAsync();
+            var er = r.Next(0, abbybotchannels.Count);
+            var ch = abbybotchannels[er];
+            var c = Discord.Discord._client.GetGuild(ch.guildId).GetTextChannel(ch.channelId);
+            await c.SendMessageAsync("nano gonna work");
+            PingAbbybotClock.o = 6; //6 is the working state
             Tweet tweet = null;
             try {
             tweet = await TweetQueueSql.Peek();
@@ -39,6 +50,8 @@ namespace Abbybot_III.Apis.Twitter.Core
             if (tweet == null)
             {
                 p("no tweet was found");
+                await c.SendMessageAsync("I'm done working nano");
+                PingAbbybotClock.o = 1;
                 return;
             }
 
@@ -47,6 +60,8 @@ namespace Abbybot_III.Apis.Twitter.Core
             if (tempfilepath == null)
             {
                p("no image found.");
+                await c.SendMessageAsync("I'm done working nano");
+                PingAbbybotClock.o = 1;
                 return;
             }
 
@@ -64,6 +79,8 @@ namespace Abbybot_III.Apis.Twitter.Core
                 if (media == null)
                 {
                     Abbybot.print("failed to upload media");
+                    await c.SendMessageAsync("I'm done working nano");
+                    PingAbbybotClock.o = 1;
                     return;
                 }
                 file.Dispose();
@@ -74,6 +91,8 @@ namespace Abbybot_III.Apis.Twitter.Core
                     Abbybot.print("media type unregognized");
                     await TweetQueueSql.Remove(tweet);
                     await SendTweet();
+                    await c.SendMessageAsync("I'm done working nano");
+                    PingAbbybotClock.o = 1;
                     return;
                 }
                 me = media.Value;
@@ -84,6 +103,8 @@ namespace Abbybot_III.Apis.Twitter.Core
                 await TweetArchiveSql.Add(tweet, true);
                 await TweetQueueSql.Remove(tweet);
                 await SendTweet();
+                await c.SendMessageAsync("I'm done working nano");
+                PingAbbybotClock.o = 1;
                 return;
             }
 
@@ -121,8 +142,12 @@ namespace Abbybot_III.Apis.Twitter.Core
             if (tweetvalue == null)
             {
                 await SendTweet();
+                await c.SendMessageAsync("I'm done working nano");
+                PingAbbybotClock.o = 1;
                 return;
             }
+            await c.SendMessageAsync("I'm done working nano");
+            PingAbbybotClock.o = 1; //6 is the working state
         }
 
         private static void SaveTweet(TwitterStatus tweetvalue, Tweet id)

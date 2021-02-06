@@ -37,7 +37,8 @@ namespace Abyplay
 
             if (milstr > 0)
             {
-                sb.Append($"{milstr} milenias");
+                sb.Append($"{milstr} milenia");
+                if (milstr > 1) sb.Append("s");
                 if (centstr > 0) sb.Append(", ");
             }
 
@@ -46,63 +47,71 @@ namespace Abyplay
 
             if (centstr > 0)
             {
-                sb.Append($"{centstr} centuries");
+                sb.Append($"{centstr} centurie");
+                if (centstr > 1) sb.Append("s");
                 if (decastr > 0) sb.Append(", ");
             }
 
 
             if (decastr > 0)
             {
-                sb.Append($"{decastr} decades");
+                sb.Append($"{decastr} decade");
+                if (decastr > 1) sb.Append("s");
                 if (yearstr > 0) sb.Append(", ");
             }
 
             if (yearstr > 0)
             {
-                sb.Append($"{yearstr} years");
+                sb.Append($"{yearstr} year");
+                if (yearstr > 1) sb.Append("s");
                 if (monstr > 0) sb.Append(", ");
             }
 
             if (monstr > 0)
             {
-                sb.Append($"{monstr} months");
+                sb.Append($"{monstr} month");
+                if (monstr > 1) sb.Append("s");
                 if (weekstr > 0) sb.Append(", ");
             }
 
             if (weekstr > 0)
             {
-                sb.Append($"{weekstr} weeks");
+                sb.Append($"{weekstr} week");
+                if (weekstr > 1) sb.Append("s");
                 if (daystr > 0) sb.Append(", ");
             }
 
             if (daystr > 0)
             {
-                sb.Append($"{daystr} days");
+                sb.Append($"{daystr} day");
+                if (daystr > 1) sb.Append("s");
                 if (hrstr > 0) sb.Append(", ");
             }
 
             if (hrstr > 0)
             {
-                sb.Append($"{hrstr} hours");
+                sb.Append($"{hrstr} hour");
+                if (hrstr > 1) sb.Append("s");
                 if (minstr > 0) sb.Append(", ");
             }
 
             if (minstr > 0)
             {
-                sb.Append($"{minstr} mins");
+                sb.Append($"{minstr} min");
+                if (minstr > 1) sb.Append("s");
                 if (secstr > 0) sb.Append(", ");
             }
-
             if (secstr > 0)
             {
-                sb.Append($"{secstr} secs");
+                sb.Append($"{secstr} sec");
+                if (secstr > 1) sb.Append("s");
                 if (milistr > 0) sb.Append(", ");
             }
             if (milistr > 0)
             {
-                sb.Append($"{milistr} milis");
+                sb.Append($"{milistr} mili");
+                if (milistr > 1) sb.Append("s");
             }
-            sb.Append('!');
             return sb.ToString();
 
         }
