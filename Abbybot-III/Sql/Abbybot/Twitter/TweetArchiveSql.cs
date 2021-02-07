@@ -47,7 +47,7 @@ namespace Abbybot_III.Core.Twitter.Queue.sql
             return tweet;
         }
 
-        internal static async Task Add(Tweet I, bool v)
+        public static async Task Add(Tweet I, bool v)
         {
 
             int priority = v ? 1 : 0;

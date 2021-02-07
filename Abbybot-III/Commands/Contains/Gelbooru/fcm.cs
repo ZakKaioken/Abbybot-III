@@ -115,7 +115,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
             await a.Send(eb);
         }
 
-        private void AppendDefinition(StringBuilder FavoriteCharacter, string[] activationwords, bool act, bool all)
+        void AppendDefinition(StringBuilder FavoriteCharacter, string[] activationwords, bool act, bool all)
         {
             if (act || !all)
             {

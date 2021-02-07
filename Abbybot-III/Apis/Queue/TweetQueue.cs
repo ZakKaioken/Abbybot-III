@@ -23,7 +23,7 @@ namespace Abbybot_III.Core.Twitter.Queue
             AbbyHeart.heartBeat += (time) => beat(time).GetAwaiter().GetResult();
         }
         
-        private  async Task beat(DateTime time)
+         async Task beat(DateTime time)
         {
             if (TweetQueueBeat < time)
             {

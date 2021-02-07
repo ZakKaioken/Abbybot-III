@@ -14,9 +14,9 @@ using System.Threading.Tasks;
 
 namespace Abbybot_III.Apis.Discord.Events
 {
-    internal class Message
+    public class Message
     {
-        internal static void Init(DiscordSocketClient _client)
+        public static void Init(DiscordSocketClient _client)
         {
             _client.MessageReceived += async (message) => await Recieved(message);
             _client.MessageDeleted += async (message, channel) => await Deleted(message, channel);
@@ -24,7 +24,7 @@ namespace Abbybot_III.Apis.Discord.Events
             _client.MessagesBulkDeleted += async (messages, channel) => await BulkDeleted(messages, channel);
         }
 
-        private static async Task Recieved(SocketMessage message)
+        static async Task Recieved(SocketMessage message)
         {
             bool nowrite = false;
             var cs = await AbbybotSql.GetAbbybotChannelIdAsync();
@@ -48,7 +48,7 @@ namespace Abbybot_III.Apis.Discord.Events
             await CommandHandler.Handle(message);
         }
 
-        private static void WriteMessage(SocketMessage message)
+        static void WriteMessage(SocketMessage message)
         {
             var guild = (message.Author is SocketGuildUser gu) ? gu.Guild.Name : "dms";
 
@@ -83,19 +83,19 @@ namespace Abbybot_III.Apis.Discord.Events
             Abbybot.print(sb.ToString());
          }
 
-        private static async Task Deleted(Cacheable<IMessage, ulong> message, ISocketMessageChannel channel)
+        static async Task Deleted(Cacheable<IMessage, ulong> message, ISocketMessageChannel channel)
         {
             await Task.CompletedTask;
             //throw new NotImplementedException();
         }
 
-        private static async Task Updated(Cacheable<IMessage, ulong> oldmessage, SocketMessage newmessage, ISocketMessageChannel channel)
+        static async Task Updated(Cacheable<IMessage, ulong> oldmessage, SocketMessage newmessage, ISocketMessageChannel channel)
         {
             await Task.CompletedTask;
             //throw new NotImplementedException();
         }
 
-        private static async Task BulkDeleted(IReadOnlyCollection<Cacheable<IMessage, ulong>> messages, ISocketMessageChannel channel)
+        static async Task BulkDeleted(IReadOnlyCollection<Cacheable<IMessage, ulong>> messages, ISocketMessageChannel channel)
         {
             await Task.CompletedTask;
             //throw new NotImplementedException();

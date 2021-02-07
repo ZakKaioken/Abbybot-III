@@ -28,7 +28,7 @@ namespace Abbybot_III.Core.AbbyBooru
             CheckTime = DateTime.Now.AddMinutes(2);
         }
 
-        private static async Task RequestBeat(DateTime time)
+        static async Task RequestBeat(DateTime time)
         {
             if (time > CheckTime)
             {

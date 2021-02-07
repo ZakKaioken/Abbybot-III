@@ -15,7 +15,7 @@ namespace Abbybot_III.Core.AbbyBooru.sql
 {
     class AbbyBooruSql
     {
-        internal static async Task AddCharacterAsync(ISocketMessageChannel channel, AbbybotGuild abbybotGuild, string v)
+        public static async Task AddCharacterAsync(ISocketMessageChannel channel, AbbybotGuild abbybotGuild, string v)
         {
             var tag = AbbysqlClient.EscapeString(v);
             var nsf = (channel as ITextChannel).IsNsfw ? 0 : 1;
@@ -31,7 +31,7 @@ namespace Abbybot_III.Core.AbbyBooru.sql
             await AbbysqlClient.RunSQL($"INSERT INTO `discord`.`abbyboorucharacters` ( `tag`,`channelId`, `guildId`, `IsLewd` ) VALUES ('{tag}','{channel.Id}','{abbybotGuild.GuildId}', '{nsf}'); ");
         }
 
-        internal static async Task RemoveCharacterAsync(ISocketMessageChannel channel, string v)
+        public static async Task RemoveCharacterAsync(ISocketMessageChannel channel, string v)
         {
             var tag = AbbysqlClient.EscapeString(v);
 

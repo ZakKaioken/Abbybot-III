@@ -16,7 +16,7 @@ namespace Abbybot_III.Core.AbbyBooru.types
         public ulong guildId;
         public ulong channelId;
 
-        internal static async Task<List<Character>> GetListFromSqlAsync()
+        public static async Task<List<Character>> GetListFromSqlAsync()
         {
             List<Character> characters = new List<Character>();
 
@@ -35,7 +35,7 @@ namespace Abbybot_III.Core.AbbyBooru.types
             return characters;
         }
 
-        internal static async Task<List<ulong>> GetLatestPostIdsAsync(Character character)
+        public static async Task<List<ulong>> GetLatestPostIdsAsync(Character character)
         {
             List<ulong> ids = new List<ulong>();
 
@@ -47,7 +47,7 @@ namespace Abbybot_III.Core.AbbyBooru.types
             return ids;
         }
 
-        internal static async Task AddLatestPostIdAsync(ulong CharId , ulong id)
+        public static async Task AddLatestPostIdAsync(ulong CharId , ulong id)
         {
             await AbbysqlClient.RunSQL($"INSERT INTO CharacterPostIds (Id, CharId) VALUES ('{id}', '{CharId}');");
         }

@@ -15,7 +15,7 @@ namespace Abbybot_III.Apis.Discord
         public static DiscordSocketClient _client;
 
 
-        private static async Task StartDiscord()
+        static async Task StartDiscord()
         {
             bool o = true;
             do
@@ -33,13 +33,13 @@ namespace Abbybot_III.Apis.Discord
             } while (o);
         }
 
-        internal static async Task IndefinitelyWaitUntilClose()
+        public static async Task IndefinitelyWaitUntilClose()
         {
             await Task.Delay(-1);
             await _client.StopAsync();
         }
 
-        internal static async Task DiscordMainAsync()
+        public static async Task DiscordMainAsync()
         {
             _client = new DiscordSocketClient();
             EventInitializer.Init(_client);

@@ -59,7 +59,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 
         }
 
-        private static async Task<int> GetImageCount(AbbybotCommandArgs msg)
+        static async Task<int> GetImageCount(AbbybotCommandArgs msg)
         {
             int count = 1;
             var s = msg.Message.Split(" ");
@@ -87,7 +87,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
             return count;
         }
 
-        private static bool IsChannelNsfw(AbbybotCommandArgs msg)
+        static bool IsChannelNsfw(AbbybotCommandArgs msg)
         {
             bool isnsf = true;
             if (msg.channel is ITextChannel itc)
@@ -95,7 +95,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
             return isnsf;
         }
 
-        private static async Task<List<AbbybotUser>> GetMentionedUsers(AbbybotCommandArgs msg)
+        static async Task<List<AbbybotUser>> GetMentionedUsers(AbbybotCommandArgs msg)
         {
             List<AbbybotUser> mentionedUsers = new List<AbbybotUser>();
 
@@ -116,7 +116,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
             return mentionedUsers;
         }
 
-        private async Task PostImages(AbbybotCommandArgs msg, ImgData im)
+        async Task PostImages(AbbybotCommandArgs msg, ImgData im)
         {
             await GetImage(im);
 
@@ -148,7 +148,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
             }
         }
 
-        private static async Task<bool> IsNsfworLoli(AbbybotCommandArgs msg, ImgData im, EmbedBuilder data)
+        static async Task<bool> IsNsfworLoli(AbbybotCommandArgs msg, ImgData im, EmbedBuilder data)
         {
             bool loli = msg.abbybotGuild.NoLoli && im.loli;
             bool shot = msg.abbybotGuild.NoLoli && im.shot;
@@ -184,7 +184,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
             return comb;
         }
 
-        private async Task GetImage(ImgData im)
+        async Task GetImage(ImgData im)
         {
             try
             {
@@ -248,7 +248,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
             return canrun;
         }
 
-        private async Task<bool> CanRun(AbbybotCommandArgs md)
+        async Task<bool> CanRun(AbbybotCommandArgs md)
         {
             bool canrun = false;
 

@@ -65,7 +65,7 @@ namespace Abbybot_III.Clocks
         }
         
 
-        private static void WakeAbbybot()
+        static void WakeAbbybot()
         {
             var abbybotsleep = Process.GetProcessesByName("NanobotSleep");
             if (abbybotsleep.Length > 0)

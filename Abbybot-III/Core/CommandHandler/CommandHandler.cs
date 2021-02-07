@@ -13,7 +13,7 @@ namespace Abbybot_III.Core.CommandHandler
     class CommandHandler
     {
         public static Capi.Command_Handler capi = new Capi.Command_Handler();
-        internal static async Task Handle(SocketMessage message)
+        public static async Task Handle(SocketMessage message)
         {
             AbbybotCommandArgs aca = await AbbybotCommandArgs.MakeArgsFromMessage(message);
             await UserTrustSql.GetUserTimeout(aca.abbybotUser);

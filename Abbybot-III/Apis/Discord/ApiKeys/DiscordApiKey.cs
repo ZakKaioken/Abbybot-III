@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 
-using System;
 using System.IO;
 
 namespace Abbybot_III.Apis.Discord.ApiKeys
@@ -22,7 +21,6 @@ namespace Abbybot_III.Apis.Discord.ApiKeys
         {
             DiscordApiKey api = null;
 
-
             var dir = Path.GetDirectoryName(path);
             var fileName = Path.GetFileName(path);
             var e = Path.GetFullPath(path).Replace(fileName, "");
@@ -43,10 +41,8 @@ namespace Abbybot_III.Apis.Discord.ApiKeys
                 Abbybot.print($"Master I can't talk to my friends without my discord token... It's the {fileName} file in {dir}!!!");
             }
 
-
             api = JsonConvert.DeserializeObject<DiscordApiKey>(File.ReadAllText(path));
             return api;
         }
-
     }
 }

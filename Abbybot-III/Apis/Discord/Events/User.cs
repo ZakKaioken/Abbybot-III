@@ -12,10 +12,10 @@ using System.Threading.Tasks;
 
 namespace Abbybot_III.Apis.Discord.Events
 {
-    internal class User
+    public class User
     {
         
-        private static async Task Joined(SocketGuildUser user)
+        static async Task Joined(SocketGuildUser user)
         {
             var g = user.Guild;
             var isx = (await g.GetInvitesAsync()).ToList();
@@ -38,30 +38,30 @@ namespace Abbybot_III.Apis.Discord.Events
             await MessageHandler.DoGuildMessage(jm);
         }
 
-        private static async Task Left(SocketGuildUser user)
+        static async Task Left(SocketGuildUser user)
         {
             LeftMessage lm = await LeftMessage.CreateFromUser(user);
             await MessageHandler.DoGuildMessage(lm);
         }
 
-        private static async Task Banned(SocketUser user, SocketGuild guild)
+        static async Task Banned(SocketUser user, SocketGuild guild)
         {
             BannedMessage bm = await BannedMessage.CreateFromUser(user, guild);
         }
 
-        private static async Task Unbanned(SocketUser user, SocketGuild guild)
+        static async Task Unbanned(SocketUser user, SocketGuild guild)
         {
             UnbannedMessage bm = await UnbannedMessage.CreateFromUser(user, guild);
         }
 
-        private static async Task Updated(SocketUser olduser, SocketUser newuser)
+        static async Task Updated(SocketUser olduser, SocketUser newuser)
         {
             await Task.CompletedTask;
             //throw new NotImplementedException();
         }
 
 
-        internal static void Init(DiscordSocketClient _client)
+        public static void Init(DiscordSocketClient _client)
         {
 
             _client.UserJoined += async (user) => await Joined(user);

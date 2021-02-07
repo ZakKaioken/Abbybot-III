@@ -54,7 +54,7 @@ namespace Abbybot_III.Core.Users.sql
              };*/
             return user;
         }
-        private static async Task AddUser(ulong Id)
+        static async Task AddUser(ulong Id)
         {
             }
     }

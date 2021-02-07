@@ -19,7 +19,7 @@ namespace Abbybot_III.Core.Guilds.GuildMessageHandler.DataType.DiscordGuildMessa
             return msg.Replace("[server]", user.Guild.Name).Replace("[user]", user.Username);
         }
 
-        internal static async Task<LeftMessage> CreateFromUser(SocketGuildUser user)
+        public static async Task<LeftMessage> CreateFromUser(SocketGuildUser user)
         {
             var e = await Get(user.Guild, "bye");
 

@@ -15,7 +15,7 @@ namespace Abbybot_III.Apis.Twitter.Core
             
         }
 
-        private static async Task RequestBeat(DateTime time)
+        static async Task RequestBeat(DateTime time)
         {
             //
         }

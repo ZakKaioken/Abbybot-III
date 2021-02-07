@@ -39,7 +39,7 @@ namespace Abbybot_III.Commands
             }
         }
 
-        private bool selfrun = false;
+        bool selfrun = false;
 
         public bool Multithreaded
         {

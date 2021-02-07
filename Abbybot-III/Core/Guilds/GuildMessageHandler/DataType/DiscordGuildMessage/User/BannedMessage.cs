@@ -19,7 +19,7 @@ namespace Abbybot_III.Core.Guilds.GuildMessageHandler.DataType.DiscordGuildMessa
             return msg.Replace("[user]", user.Username);
         }
 
-        internal static async Task<BannedMessage> CreateFromUser(SocketUser user, SocketGuild guild)
+        public static async Task<BannedMessage> CreateFromUser(SocketUser user, SocketGuild guild)
         {
             var e = await Get(guild, "banned");
 

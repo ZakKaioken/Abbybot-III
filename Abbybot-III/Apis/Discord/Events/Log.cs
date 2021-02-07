@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Abbybot_III.Apis.Discord.Events
 {
-     internal class Log
+     public class Log
     {
-         internal static void Init(DiscordSocketClient _client)
+         public static void Init(DiscordSocketClient _client)
         {
             _client.Log += async (log) => await Log.Recieved(log);
         }

@@ -15,7 +15,7 @@ namespace Abbybot_III.Core.RequestSystem
             AbbyHeart.heartBeat +=async (time) => await RequestBeat(time);
         }
 
-        private static async Task RequestBeat(DateTime time)
+        static async Task RequestBeat(DateTime time)
         {
             foreach (RequestObject requestObject in requestObjects)
             if (requestObject.time < time)

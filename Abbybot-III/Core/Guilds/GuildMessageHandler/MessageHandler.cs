@@ -14,7 +14,7 @@ namespace Abbybot_III.Core.Guilds.GuildMessageHandler
     class MessageHandler
     {
 
-        internal static async Task DoGuildMessage(GuildMessage gm)
+        public static async Task DoGuildMessage(GuildMessage gm)
         {
             if (gm == null)
                 return;

@@ -1,12 +1,8 @@
-﻿using Abbybot_III.Core.AbbyBooru.types;
-
-using BooruSharp.Booru;
+﻿using BooruSharp.Booru;
 using BooruSharp.Search.Post;
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Apis.Booru
@@ -26,7 +22,6 @@ namespace Abbybot_III.Apis.Booru
 
         public static async Task<SearchResult> Execute(string[] tags)
         {
-            
             var e = ExecuteAsync(tags).GetAwaiter();
 
             while (!e.IsCompleted)
@@ -45,7 +40,8 @@ namespace Abbybot_III.Apis.Booru
                 {
                     totalposts += await booru.GetPostCountAsync(tags);
                     break;
-                } catch (Exception e)
+                }
+                catch (Exception e)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine(e.ToString());
@@ -56,7 +52,7 @@ namespace Abbybot_III.Apis.Booru
             return totalposts;
         }
 
-        static async Task<SearchResult> ExecuteAsync (string[] tags)
+        static async Task<SearchResult> ExecuteAsync(string[] tags)
         {
             List<string> tagz = GetTags(tags);
 
@@ -66,35 +62,36 @@ namespace Abbybot_III.Apis.Booru
                 bool allowedtopost;
                 try
                 {
-                    
-                    do {
+                    do
+                    {
                         searchResult = await booru.GetRandomPostAsync(tagz.ToArray());
                         allowedtopost = true;
-                        if (searchResult.Source.Contains("sofra")) { //please eventually add twitter user block list, so we can skip artists that hate us.
+                        if (searchResult.Source.Contains("sofra"))
+                        { //please eventually add twitter user block list, so we can skip artists that hate us.
                             allowedtopost = false;
                         }
                     } while (!allowedtopost);
-                    
 
                     break;
-                } catch { }
+                }
+                catch { }
             }
             return searchResult;
         }
 
-
-        internal static async Task<SearchResult[]> GetLatest(string[] tags)
+        public static async Task<SearchResult[]> GetLatest(string[] tags)
         {
-
             SearchResult[] e = null;
-            
-            try {
+
+            try
+            {
                 e = await boorus[0].GetLastPostsAsync(tags);
-            } catch {}
+            }
+            catch { }
             return e;
         }
 
-        private static List<string> GetTags(string[] tags)
+        static List<string> GetTags(string[] tags)
         {
             List<string> tagz = new List<string>();
             foreach (string item in tags)

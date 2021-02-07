@@ -27,7 +27,7 @@ namespace Abbybot_III.Commands.Reciever
                 return cmds;
             }
 
-            private static async Task ReadCommands(StringBuilder sb, List<iCommand> cmds)
+            static async Task ReadCommands(StringBuilder sb, List<iCommand> cmds)
             {
 
                 var table = await AbbysqlClient.FetchSQL(sb.ToString());

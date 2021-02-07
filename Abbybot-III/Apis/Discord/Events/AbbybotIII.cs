@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Abbybot_III.Apis.Discord.Events
 {
-    internal class AbbybotIII
+    public class AbbybotIII
     {
-        internal static void Init(DiscordSocketClient _client)
+        public static void Init(DiscordSocketClient _client)
         {
             _client.Connected += async () => await Connected();
             _client.Disconnected += async (exception) => await Disconnected(exception);
@@ -18,31 +18,31 @@ namespace Abbybot_III.Apis.Discord.Events
             _client.Ready += async () => await Ready();
         }
 
-        private static async Task Connected()
+        static async Task Connected()
         {
             await Task.CompletedTask;
             //throw new NotImplementedException();
         }
 
-        private static async Task Disconnected(Exception exception)
+        static async Task Disconnected(Exception exception)
         {
             await Task.CompletedTask;
             //throw new NotImplementedException();
         }
 
-        private static async Task LoggedIn()
+        static async Task LoggedIn()
         {
             await Task.CompletedTask;
             //throw new NotImplementedException();
         }
 
-        private static async Task LoggedOut()
+        static async Task LoggedOut()
         {
             await Task.CompletedTask;
             //throw new NotImplementedException();
         }
 
-        private static async Task Ready()
+        static async Task Ready()
         {
             await Task.CompletedTask;
 

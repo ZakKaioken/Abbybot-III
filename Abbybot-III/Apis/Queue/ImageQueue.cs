@@ -26,7 +26,7 @@ namespace Abbybot_III.Core.Twitter.Queue
 
         }
 
-        private static async Task beat(DateTime time)
+        static async Task beat(DateTime time)
         {
             if (ImageQueueBeat < time)
             {

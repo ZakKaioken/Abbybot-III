@@ -45,7 +45,7 @@ namespace Abbybot_III.Core.Data.User
             return abbybotuser;
         }
 
-        private async Task Init(SocketUser author)
+        async Task Init(SocketUser author)
         {
             
             if (author == null)
@@ -81,12 +81,12 @@ namespace Abbybot_III.Core.Data.User
             userTrust = u.userTrust;
         }
 
-        internal static object GetUserFromTwitterUser(string screenName)
+        public static object GetUserFromTwitterUser(string screenName)
         {
             throw new NotImplementedException();
         }
 
-        private async Task GetGuild(SocketUser author)
+        async Task GetGuild(SocketUser author)
         {
             var sgu = author as SocketGuildUser;
             //Abbybot.print(sgu.Guild.Name);

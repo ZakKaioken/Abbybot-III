@@ -12,7 +12,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
 {
     class NoImageFoundEmbed
     {
-        internal static async Task Build(AbbybotCommandArgs aca, string fc)
+        public static async Task Build(AbbybotCommandArgs aca, string fc)
         {
             EmbedBuilder eb = new EmbedBuilder();
             eb.Title = "No image found... :(";

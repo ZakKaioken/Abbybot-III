@@ -33,7 +33,7 @@ namespace Abbybot_III
  
         }
 
-        private static async Task InitAll()
+        static async Task InitAll()
         {
             
             await Twitter.init();

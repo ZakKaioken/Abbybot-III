@@ -150,7 +150,7 @@ namespace Abbybot_III.Apis.Twitter.Core
             PingAbbybotClock.o = 1; //6 is the working state
         }
 
-        private static void SaveTweet(TwitterStatus tweetvalue, Tweet id)
+        static void SaveTweet(TwitterStatus tweetvalue, Tweet id)
         {
             string dir = @".\Tweets\";
             if (!Directory.Exists(dir))

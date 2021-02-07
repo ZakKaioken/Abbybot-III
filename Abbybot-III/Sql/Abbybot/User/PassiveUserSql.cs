@@ -45,7 +45,7 @@ namespace Abbybot_III.Sql.Abbybot.User
 
         }
 
-        internal static async Task<List<(ulong channel, ulong stat)>> GetChannelsinGuildStats(ulong abbybotId, ulong guildId, ulong userId, string v)
+        public static async Task<List<(ulong channel, ulong stat)>> GetChannelsinGuildStats(ulong abbybotId, ulong guildId, ulong userId, string v)
         {
             List<(ulong, ulong)> statchannels = new List<(ulong, ulong)>();
 

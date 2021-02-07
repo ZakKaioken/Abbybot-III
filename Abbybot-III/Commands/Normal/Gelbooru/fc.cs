@@ -99,7 +99,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
             await a.Send(eb);
         }
 
-        private static void FCBuilder(StringBuilder FavoriteCharacter)
+        static void FCBuilder(StringBuilder FavoriteCharacter)
         {
             FavoriteCharacter.Replace(" ", "_").Replace("abbybot", "abigail_williams").Replace("abby_kaioken", "abigail_williams");
             if (FavoriteCharacter[^1] != '~')
@@ -115,7 +115,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
             FavoriteCharacter.Replace("~_&&_", " ").Replace("~_and_", " ").Replace("_&&_", "* ").Replace("_and_", "* ");
         }
 
-        private static string InvertName(string sbsb)
+        static string InvertName(string sbsb)
         {
             var sb = new StringBuilder();
             var orchars = sbsb.Split(" ~ ");

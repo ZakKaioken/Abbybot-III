@@ -22,7 +22,7 @@ namespace Abbybot_III.Core.Guilds.GuildMessageHandler.DataType.DiscordGuildMessa
             
         }
 
-        internal static async Task<JoinedMessage> CreateFromUser(SocketGuildUser user, string code)
+        public static async Task<JoinedMessage> CreateFromUser(SocketGuildUser user, string code)
         {
             
             var e = await Get(user.Guild,  "welcome");

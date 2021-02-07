@@ -36,7 +36,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
             return embededodizer;
         }
 
-        private static void MentionsEmbed(ImgData imgd, StringBuilder message)
+        static void MentionsEmbed(ImgData imgd, StringBuilder message)
         {
             if (imgd.mentions != null)
             {
@@ -60,7 +60,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
             }
         }
 
-        private static string FixSource(string source)
+        static string FixSource(string source)
         {
             //https://www.pixiv.net/en/artworks/77911151
             //http://www.pixiv.net/member_illust.php?mode=medium&amp;illust_id=66620949
@@ -72,7 +72,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
         {
             return s.Replace("* ~ ", " or ").Replace("* ", " and ").Replace("{", "").Replace("}", "").Replace("_", " ").Replace("*","");
         }
-        internal static EmbedBuilder Build(string fileurl, string source, string fc, List<Core.Data.User.AbbybotUser> mentionedUsers, string command)
+        public static EmbedBuilder Build(string fileurl, string source, string fc, List<Core.Data.User.AbbybotUser> mentionedUsers, string command)
         {
             StringBuilder message = new StringBuilder();
 
@@ -94,7 +94,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
             return embededodizer;
         }
 
-        internal static EmbedBuilder Build(ImgData imgdrata)
+        public static EmbedBuilder Build(ImgData imgdrata)
         {
                 StringBuilder message = new StringBuilder();
             EmbedBuilder embededodizer = new EmbedBuilder();

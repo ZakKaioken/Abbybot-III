@@ -12,7 +12,7 @@ namespace Abbybot_III.Sql.Abbybot.Abbybot
 {
     class FunAbbybotFactsSql
     {
-        internal static async Task<List<FunAbbybotFact>> GetLatestMentionIdsAsync(bool v)
+        public static async Task<List<FunAbbybotFact>> GetLatestMentionIdsAsync(bool v)
         {
             List<FunAbbybotFact> faf = new List<FunAbbybotFact>();
             StringBuilder sb = new StringBuilder($"SELECT * FROM funabbybotfacts");

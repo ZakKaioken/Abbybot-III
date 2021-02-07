@@ -163,7 +163,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 
         }
 
-        private async Task<List<string>> GenerateTags(AbbybotCommandArgs aca, string fc, string cfc = "NO")
+        async Task<List<string>> GenerateTags(AbbybotCommandArgs aca, string fc, string cfc = "NO")
         {
             var tagz = tags.ToList();
 
@@ -192,7 +192,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
             return tagz;
         }
 
-        private static async Task<string> GetFavoriteCharacterTagAsync(AbbybotCommandArgs aca, List<AbbybotUser> mentionedUsers)
+        static async Task<string> GetFavoriteCharacterTagAsync(AbbybotCommandArgs aca, List<AbbybotUser> mentionedUsers)
         {
             
             if (aca.abbybotSudoUser != null)

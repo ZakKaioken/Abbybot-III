@@ -14,19 +14,19 @@ namespace Abbybot_III.Apis.Discord.Events
             _client.RoleUpdated += async (oldrole, newrole) => await Role.Updated(oldrole, newrole);
         }
 
-        private static async Task Created(SocketRole role)
+        static async Task Created(SocketRole role)
         {
             await Task.CompletedTask;
             //throw new NotImplementedException();
         }
 
-        private static async Task Deleted(SocketRole role)
+        static async Task Deleted(SocketRole role)
         {
             await Task.CompletedTask;
             //throw new NotImplementedException();
         }
 
-        private static async Task Updated(SocketRole oldrole, SocketRole newrole)
+        static async Task Updated(SocketRole oldrole, SocketRole newrole)
         {
             await Task.CompletedTask;
             //throw new NotImplementedException();

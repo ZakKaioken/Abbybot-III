@@ -12,7 +12,7 @@ namespace Abbybot_III.Core.Guilds.sql
 {
     class GuildMessageSql
     {
-        internal static async Task<GuildMessage> GetGuildMessage(ulong id, string type)
+        public static async Task<GuildMessage> GetGuildMessage(ulong id, string type)
         {
             StringBuilder abisb = new StringBuilder("SELECT * FROM servermessages WHERE ");
             abisb.Append($"guildId ='{id}' && ");

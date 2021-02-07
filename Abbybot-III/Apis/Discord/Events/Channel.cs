@@ -5,27 +5,27 @@ using System.Threading.Tasks;
 
 namespace Abbybot_III.Apis.Discord.Events
 {
-    internal class Channel
+    public class Channel
     {
-        internal static async Task Created(SocketChannel channel)
+        public static async Task Created(SocketChannel channel)
         {
             await Task.CompletedTask;
             //throw new NotImplementedException();
         }
 
-        internal static async Task Destroyed(SocketChannel channel)
+        public static async Task Destroyed(SocketChannel channel)
         {
             await Task.CompletedTask;
             //throw new NotImplementedException();
         }
 
-        internal static async Task Updated(SocketChannel oldchannel, SocketChannel newchannel)
+        public static async Task Updated(SocketChannel oldchannel, SocketChannel newchannel)
         {
             await Task.CompletedTask;
             //throw new NotImplementedException();
         }
 
-        internal static void Init(DiscordSocketClient _client)
+        public static void Init(DiscordSocketClient _client)
         {
             _client.ChannelCreated += async (channel) => await Created(channel);
             _client.ChannelDestroyed += async (channel) => await Destroyed(channel);

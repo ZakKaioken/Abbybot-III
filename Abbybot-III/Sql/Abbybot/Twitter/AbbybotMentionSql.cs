@@ -15,7 +15,7 @@ namespace Abbybot_III.Core.AbbyBooru.sql
 {
     class AbbybotMentionSql
     {
-        internal static async Task<List<ulong>> GetLatestMentionIdsAsync(ulong id)
+        public static async Task<List<ulong>> GetLatestMentionIdsAsync(ulong id)
         {
             List<ulong> ids = new List<ulong>();
 
@@ -27,7 +27,7 @@ namespace Abbybot_III.Core.AbbyBooru.sql
             return ids;
         }
 
-        internal static async Task AddLatestMentionIdAsync(ulong id)
+        public static async Task AddLatestMentionIdAsync(ulong id)
         {
             await AbbysqlClient.RunSQL($"INSERT INTO heardtweets (Id) VALUES ('{id}');");
         }
