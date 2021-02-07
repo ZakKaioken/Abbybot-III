@@ -1,14 +1,11 @@
-﻿using Abbybot_III.Apis.Discord.Events;
-using Abbybot_III.Core.Data.User.Subsets;
+﻿using Abbybot_III.Core.Data.User.Subsets;
 using Abbybot_III.Core.Mysql;
 using Abbybot_III.Core.Users.sql;
 
 using Discord.WebSocket;
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -47,10 +44,8 @@ namespace Abbybot_III.Core.Data.User
 
         async Task Init(SocketUser author)
         {
-            
             if (author == null)
                 throw new Exception("author is null");
-            
 
             Id = author.Id;
 
@@ -60,9 +55,11 @@ namespace Abbybot_III.Core.Data.User
             };
             userPerms = new UserPerms();
 
-            try {
-            await GetGuild(author);
-            }catch{ }
+            try
+            {
+                await GetGuild(author);
+            }
+            catch { }
 
             var eeeer = (userGuild != null && userNames.Nickname != null) ? userNames.Nickname : userNames.Username;
 

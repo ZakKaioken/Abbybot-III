@@ -4,14 +4,11 @@ using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
 using Abbybot_III.Sql.Abbybot.Abbybot;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Commands.Contains.Abbybot
 {
-    [Capi.Cmd("Good morning cute sister abbybot", 1,1)]
+    [Capi.Cmd("Good morning cute sister abbybot", 1, 1)]
     class GmNano : PassiveCommand
     {
         public override async Task<bool> Evaluate(AbbybotCommandArgs aca)
@@ -28,17 +25,20 @@ namespace Abbybot_III.Commands.Contains.Abbybot
 
             return e && listenChannel && await Eval(aca);
         }
+
         public override async Task DoWork(AbbybotCommandArgs aca)
         {
             await aca.Send("thank you for waking me up cutie nano!!");
             PingAbbybotClock.o = 1;
         }
+
         public async Task<bool> Eval(AbbybotCommandArgs aca)
         {
             bool v = (aca.Message.ToLower().Contains(Command.ToLower()));
             if (v) return await base.Evaluate(aca);
             else return false;
         }
+
         public override async Task<bool> ShowHelp(AbbybotCommandArgs aca)
         {
             return true;

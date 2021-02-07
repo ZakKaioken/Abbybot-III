@@ -15,7 +15,6 @@ namespace Abbybot_III.Apis.Discord.Events
             Log.Init(_client);
             Guild.Init(_client);
             AbbybotIII.Init(_client);
-
         }
     }
 }

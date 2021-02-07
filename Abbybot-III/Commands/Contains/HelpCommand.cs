@@ -1,13 +1,11 @@
 ﻿using Abbybot_III.Core.CommandHandler;
 using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
-using Abbybot_III.Core.Users.sql;
 
 using Capi.Interfaces;
 
 using Discord;
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,12 +16,13 @@ namespace Abbybot_III.Commands.Contains
     [Capi.Cmd("abbybot help", 1, 1)]
     class HelpCommand : ContainCommand
     {
-        
         public HelpCommand()
         {
             Multithreaded = true;
         }
+
         public override bool SelfRun { get => false; set => base.SelfRun = value; }
+
         public override async Task DoWork(AbbybotCommandArgs abd)
         {
             EmbedBuilder eb = new EmbedBuilder
@@ -60,7 +59,7 @@ namespace Abbybot_III.Commands.Contains
             bool groupnameadded = false;
             List<StringBuilder> fields = new List<StringBuilder>();
 
-            foreach(var command in commands)
+            foreach (var command in commands)
             {
                 await command.RegenHelpString(abd);
             }
@@ -122,11 +121,9 @@ namespace Abbybot_III.Commands.Contains
                             fields[^1].Append(currentitem).Append("\n");
                     currentitem.Clear();
                 }
-
             }
             foreach (var f in fields)
             {
-                
                 eb.AddField("\u200b", f.Replace("ab!", "%"));
             }
             //eb.AddField("\u200b", fields[^1]);
@@ -150,6 +147,7 @@ namespace Abbybot_III.Commands.Contains
         {
             return aca.Message.ToLower().Contains(Command.ToLower());
         }
+
         public override async Task<bool> ShowHelp(AbbybotCommandArgs aca)
         {
             return true;
@@ -159,8 +157,8 @@ namespace Abbybot_III.Commands.Contains
         {
             return $"{Command} displays a list of possible commands to your dms. if you're seeing this, you likely ran the help command!";
         }
-
     }
+
     static class LinqExtensions
     {
         public static IEnumerable<IEnumerable<T>> Split<T>(this IEnumerable<T> list, int parts)
@@ -172,5 +170,4 @@ namespace Abbybot_III.Commands.Contains
             return splits;
         }
     }
-
 }

@@ -1,18 +1,13 @@
-﻿using Abbybot_III.Commands.Contains;
-using Abbybot_III.Commands.Contains.Gelbooru.embed;
+﻿using Abbybot_III.Commands.Contains.Gelbooru.embed;
 using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
 using Abbybot_III.Core.Data.User;
 using Abbybot_III.Core.Data.User.Subsets;
 using Abbybot_III.Core.Guilds;
 
-using Discord;
-using Discord.WebSocket;
-
 using MoonSharp.Interpreter;
 
 using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,7 +17,7 @@ namespace Abbybot_III.Commands.Custom
     class luacode : BaseCommand
     {
         int azr = 0;
-        
+
         public override async Task DoWork(AbbybotCommandArgs message)
         {
             azr = 0;
@@ -65,7 +60,7 @@ namespace Abbybot_III.Commands.Custom
                 {
                     DynValue d = script.DoString(sb.ToString());
                 }
-                catch 
+                catch
                 {
                     await message.Send("I had a hard time reading your lua master im sorry...");
                 }
@@ -82,10 +77,10 @@ namespace Abbybot_III.Commands.Custom
             else
                 return false;
         }
+
         public override async Task<string> toHelpString(AbbybotCommandArgs aca)
         {
             return "I can run your lua blocks of code";
         }
     }
-
 }

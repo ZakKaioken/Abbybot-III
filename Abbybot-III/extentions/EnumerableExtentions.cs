@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Abbybot_III.extentions
 {
@@ -18,6 +17,5 @@ namespace Abbybot_III.extentions
         {
             return ts[r.Next(0, ts.Count())];
         }
-
     }
 }

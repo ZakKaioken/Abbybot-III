@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Abbybot_III.Core.Twitter.Queue.types
+﻿namespace Abbybot_III.Core.Twitter.Queue.types
 {
     class Tweet
     {

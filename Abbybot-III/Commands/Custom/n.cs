@@ -5,7 +5,6 @@ using Abbybot_III.Core.CommandHandler.Types;
 using Discord;
 using Discord.WebSocket;
 
-using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +16,7 @@ namespace Abbybot_III.Commands.Custom
     {
         StringBuilder nhen = new StringBuilder();
         List<int> books = new List<int>();
+
         public override async Task DoWork(AbbybotCommandArgs message)
         {
             nhen.Clear();
@@ -68,7 +68,6 @@ namespace Abbybot_III.Commands.Custom
 
         public async Task<bool> IsHentai(int book)
         {
-
             StringBuilder sb = new StringBuilder();
             object o = null;
             try
@@ -84,10 +83,10 @@ namespace Abbybot_III.Commands.Custom
             }
             return isbook;
         }
+
         public override async Task<string> toHelpString(AbbybotCommandArgs aca)
         {
             return "just add an n in front of an nhentai number and i will give you it's link. It doesn't work with numbers that aren't hentais on nhentai";
         }
     }
-
 }

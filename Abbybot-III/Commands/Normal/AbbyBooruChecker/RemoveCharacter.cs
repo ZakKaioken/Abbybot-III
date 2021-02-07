@@ -1,16 +1,9 @@
-﻿using Abbybot_III.Apis.Booru;
-using Abbybot_III.Core.AbbyBooru.sql;
+﻿using Abbybot_III.Core.AbbyBooru.sql;
 using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
-using Abbybot_III.Core.Users.sql;
-
-using BooruSharp.Search.Post;
 
 using Discord;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,18 +12,16 @@ namespace Abbybot_III.Commands.Normal.AbbyBooruChecker
     [Capi.Cmd("abbybot acremove", 5, 1)]
     class RemoveCharacter : NormalCommand
     {
-
         public override async Task DoWork(AbbybotCommandArgs a)
         {
             StringBuilder FavoriteCharacter = new StringBuilder(a.Message.Replace(Command, ""));
-            
+
             if (FavoriteCharacter.Length < 1)
                 return;
             while (FavoriteCharacter[0] == ' ')
                 FavoriteCharacter.Remove(0, 1);
             while (FavoriteCharacter[FavoriteCharacter.Length - 1] == ' ')
                 FavoriteCharacter.Remove(FavoriteCharacter.Length - 1, 1);
-
 
             string fc = FavoriteCharacter.ToString();
 
@@ -46,26 +37,26 @@ namespace Abbybot_III.Commands.Normal.AbbyBooruChecker
             }
             FavoriteCharacter.Replace("~_&&_", " ").Replace("~_and_", " ").Replace("_&&_", "* ").Replace("_and_", "* ");
 
-
             var o = new string[1];
             o[0] = FavoriteCharacter.ToString() + "*";
-            
-            
+
             EmbedBuilder eb = new EmbedBuilder();
 
             var u = a.abbybotUser;
 
-                try {
-                    await AbbyBooruSql.RemoveCharacterAsync(a.channel, FavoriteCharacter.ToString());
-                    eb.Title = $"{fc} aww ok...";
-                    eb.Color = Color.Green;
-                    eb.Description = $"I removed the character from the channel {u.userNames.PreferedName} master...";
-                } catch
-                {
-                    eb.Title = $"silly!!! {fc}!!!";
-                    eb.Color = Color.Red;
-                    eb.Description = $"silly!! {fc} was not in the channel in the first place!!!";
-                }
+            try
+            {
+                await AbbyBooruSql.RemoveCharacterAsync(a.channel, FavoriteCharacter.ToString());
+                eb.Title = $"{fc} aww ok...";
+                eb.Color = Color.Green;
+                eb.Description = $"I removed the character from the channel {u.userNames.PreferedName} master...";
+            }
+            catch
+            {
+                eb.Title = $"silly!!! {fc}!!!";
+                eb.Color = Color.Red;
+                eb.Description = $"silly!! {fc} was not in the channel in the first place!!!";
+            }
             await a.Send(eb);
         }
 
@@ -73,6 +64,5 @@ namespace Abbybot_III.Commands.Normal.AbbyBooruChecker
         {
             return $"remove a gelbooru tag feed from a channel";
         }
-
     }
 }

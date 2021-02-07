@@ -1,14 +1,7 @@
-﻿using Abbybot_III.Core.Guilds;
-
-using AbbySql;
+﻿using AbbySql;
 using AbbySql.Types;
 
-using Discord;
-using Discord.WebSocket;
-
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Core.AbbyBooru.sql

@@ -9,7 +9,6 @@ using BooruSharp.Search.Post;
 using Discord;
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -82,7 +81,6 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
             var u = a.abbybotUser;
             if (canrun)
             {
-
                 await FavoriteCharacterSql.SetFavoriteCharacterAsync(u.Id, fc);
                 var foc = GelEmbed.fcbuilder(fc);
                 eb.Title = $"{foc} Yayy!!";
@@ -154,6 +152,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
             var s = sb.ToString();
             return s;
         }
+
         public override async Task<string> toHelpString(AbbybotCommandArgs aca)
         {
             return $"set your favorite character. (all pictures are of your favorite character)";

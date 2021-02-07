@@ -1,12 +1,9 @@
-﻿using Abbybot_III.Core.Guilds;
-using Abbybot_III.Core.Guilds.GuildMessageHandler;
+﻿using Abbybot_III.Core.Guilds.GuildMessageHandler;
 using Abbybot_III.Core.Guilds.GuildMessageHandler.DataType.DiscordGuildMessage.User;
 using Abbybot_III.Sql.Abbybot.Guild;
 
-using Discord.Rest;
 using Discord.WebSocket;
 
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,7 +11,6 @@ namespace Abbybot_III.Apis.Discord.Events
 {
     public class User
     {
-        
         static async Task Joined(SocketGuildUser user)
         {
             var g = user.Guild;
@@ -28,13 +24,13 @@ namespace Abbybot_III.Apis.Discord.Events
                     code = i.Code;
                     if (laststate < 1)
                         await InviteCounterSql.AddGuild(g, i);
-                    else 
+                    else
                         await InviteCounterSql.UpdateGuildName(g, i);
                 }
             }
             //this is where you use the code
             JoinedMessage jm = await JoinedMessage.CreateFromUser(user, code);
-            
+
             await MessageHandler.DoGuildMessage(jm);
         }
 
@@ -60,16 +56,13 @@ namespace Abbybot_III.Apis.Discord.Events
             //throw new NotImplementedException();
         }
 
-
         public static void Init(DiscordSocketClient _client)
         {
-
             _client.UserJoined += async (user) => await Joined(user);
             _client.UserLeft += async (user) => await Left(user);
             _client.UserBanned += async (user, guild) => await Banned(user, guild);
             _client.UserUnbanned += async (user, guild) => await Unbanned(user, guild);
             _client.UserUpdated += async (olduser, newuser) => await Updated(olduser, newuser);
         }
-
     }
 }

@@ -1,15 +1,12 @@
-﻿
-using Abbybot_III.Commands.Contains;
+﻿using Abbybot_III.Commands.Contains;
 using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
 
 using Abyplay;
 
-using Discord;
 using Discord.WebSocket;
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -67,13 +64,14 @@ namespace Abbybot_III.Commands.Normal
                     var ms = (TimeSpan)(DateTime.Now - zzz.JoinedAt.Value);
                     var ts = TimeStringGenerator.MilistoTimeString((decimal)ms.TotalMilliseconds);
                     await a.Send($"You joined {zoz.Name} exactly {ts} ago.");
-
                 }
             }
         }
+
         public override async Task<string> toHelpString(AbbybotCommandArgs aca)
         {
-            if (aca.originalMessage.Author is SocketGuildUser sgk) {
+            if (aca.originalMessage.Author is SocketGuildUser sgk)
+            {
                 var zoz = Apis.Discord.Discord._client.GetGuild(sgk.Guild.Id);
                 var zzz = zoz.GetUser(sgk.Id);
                 var ms = (TimeSpan)(DateTime.Now - zzz.JoinedAt.Value);

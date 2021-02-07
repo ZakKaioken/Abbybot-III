@@ -6,7 +6,6 @@ using Discord;
 using Discord.Rest;
 using Discord.WebSocket;
 
-using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,6 +36,7 @@ namespace Abbybot_III.Core.CommandHandler.extentions
                 return null;
             return await arg.channel.SendMessageAsync(sb.ToString());
         }
+
         public static async Task Send(this AbbybotCommandArgs arg, RequestObject ro)
         {
             await Task.FromResult(ro);
@@ -67,10 +67,8 @@ namespace Abbybot_III.Core.CommandHandler.extentions
             await arg.originalMessage.DeleteAsync();
         }
 
-
         public static async Task<bool> IsNSFW(this AbbybotCommandArgs arg)
         {
-
             if (arg.channel is SocketDMChannel sdc)
             {
                 return true;
@@ -83,7 +81,6 @@ namespace Abbybot_III.Core.CommandHandler.extentions
             {
                 return false;
             }
-
         }
 
         public static async Task<List<AbbybotUser>> GetMentionedUsers(this AbbybotCommandArgs aca)
@@ -106,7 +103,5 @@ namespace Abbybot_III.Core.CommandHandler.extentions
 
             return mentionedUsers;
         }
-
-
     }
 }

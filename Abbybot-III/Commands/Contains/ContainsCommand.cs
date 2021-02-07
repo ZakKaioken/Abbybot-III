@@ -1,11 +1,5 @@
-﻿using Abbybot_III.Core.CommandHandler.extentions;
-using Abbybot_III.Core.CommandHandler.Types;
-using Abbybot_III.Core.Roles.sql;
+﻿using Abbybot_III.Core.CommandHandler.Types;
 
-using Capi.Interfaces;
-
-using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,10 +14,12 @@ namespace Abbybot_III.Commands.Contains
             if (v) return await base.Evaluate(aca);
             else return false;
         }
+
         public override Task<bool> ShowHelp(AbbybotCommandArgs aca)
         {
-            return base.Evaluate(aca); 
+            return base.Evaluate(aca);
         }
+
         public override async Task DoWork(AbbybotCommandArgs aca)
         {
             var s = new StringBuilder(Command);

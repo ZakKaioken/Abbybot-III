@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Abbybot_III.Core.Guilds
+﻿namespace Abbybot_III.Core.Guilds
 {
     public class AbbybotGuild
     {

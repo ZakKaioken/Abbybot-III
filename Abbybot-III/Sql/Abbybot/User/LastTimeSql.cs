@@ -1,8 +1,5 @@
 ﻿using AbbySql;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Sql.Abbybot.User
@@ -20,7 +17,7 @@ namespace Abbybot_III.Sql.Abbybot.User
             {
                 await AbbysqlClient.RunSQL($"insert into `discord`.`useractivity` (`UserId`, `Kind`, `Time`) values ('{userId}','{it}','{time}');");
                 return;
-            } 
+            }
             string s = $"UPDATE `discord`.`useractivity` SET `Time`= '{time}' WHERE `UserId`='{userId}' and `Kind` = '{it}';";
 
             await AbbysqlClient.RunSQL(s);

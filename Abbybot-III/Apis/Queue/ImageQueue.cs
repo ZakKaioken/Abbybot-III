@@ -3,8 +3,6 @@ using Abbybot_III.Core.Twitter.Queue.sql;
 using Abbybot_III.Core.Twitter.Queue.types;
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Core.Twitter.Queue
@@ -22,8 +20,7 @@ namespace Abbybot_III.Core.Twitter.Queue
             var imgqueueinitialstart = imgQueueMilis - ((now - DateTime.Today).TotalMilliseconds % (imgQueueMilis));
             ImageQueueBeat = now.AddMilliseconds(imgqueueinitialstart);
 
-            AbbyHeart.heartBeat += async(time) => await beat(time);
-
+            AbbyHeart.heartBeat += async (time) => await beat(time);
         }
 
         static async Task beat(DateTime time)
@@ -35,7 +32,7 @@ namespace Abbybot_III.Core.Twitter.Queue
                 var count = await ImageQueueSql.Count();
                 if (count < 50)
                 {
-                    var e = await Apis.Booru.AbbyBooru.Execute(new string[] {"abigail_williams*" });
+                    var e = await Apis.Booru.AbbyBooru.Execute(new string[] { "abigail_williams*" });
 
                     Image img = new Image()
                     {
@@ -45,9 +42,7 @@ namespace Abbybot_III.Core.Twitter.Queue
 
                     await ImageQueueSql.Add(img);
                 }
-
             }
-
         }
     }
 }

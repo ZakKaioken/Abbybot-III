@@ -1,19 +1,12 @@
-﻿using Abbybot_III.Apis.Booru;
-using Abbybot_III.Core.CommandHandler.extentions;
+﻿using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
 using Abbybot_III.Core.Users.sql;
 using Abbybot_III.extentions;
 
-using AbbySql;
-
-using BooruSharp.Search.Post;
-
 using Discord;
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -27,17 +20,19 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
                 "on", "enabled", "enable", "true", "activate",
                 "activated", "yes", "go", "start", "1"
         };
+
         string[] deactivatewords = new string[]
         {
                 "off", "disabled", "disable", "false", "stop", "end",
                 "finish", "0"
         };
+
         string[] negativewords = new string[]
         {
-                "not", "negative", "-", "opposite", "undo", "flip", 
+                "not", "negative", "-", "opposite", "undo", "flip",
                 "nevermind", "reverse"
-
         };
+
         public override async Task DoWork(AbbybotCommandArgs a)
         {
             StringBuilder FavoriteCharacter = new StringBuilder(a.Message).Replace(Command, "");
@@ -65,29 +60,27 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
             {
                 FavoriteCharacter.Clear();
 
-
                 AppendDefinition(FavoriteCharacter, activationwords, act, all);
                 AppendDefinition(FavoriteCharacter, deactivatewords, disact, all);
                 AppendDefinition(FavoriteCharacter, negativewords, negative, all);
-                
+
                 await a.Send(FavoriteCharacter);
                 return;
             }
 
-
             bool wordused = false; bool state = false;
-                if (act)
-                {
-                    wordused = true;
-                    state = true;
-                }
-            
-                if (disact)
-                {
-                    wordused = true;
-                    state = false;
-                }
-            
+            if (act)
+            {
+                wordused = true;
+                state = true;
+            }
+
+            if (disact)
+            {
+                wordused = true;
+                state = false;
+            }
+
             if (!wordused)
             {
                 state = await FCMentionsSql.GetFCMAsync(a.abbybotUser.Id);
@@ -102,16 +95,19 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 
             await FCMentionsSql.SetFCMAsync(a.abbybotUser.Id, state);
             EmbedBuilder eb = new EmbedBuilder();
-            if (state) {
-                eb.Title =$"Favorite Character Mentions {activationwords.random()}";
+            if (state)
+            {
+                eb.Title = $"Favorite Character Mentions {activationwords.random()}";
                 eb.Color = Color.Green;
                 eb.Description = "Hehe master! I will now use whoever you mention's fc when you use a picture command!";
-            } else {
+            }
+            else
+            {
                 eb.Title = $"Favorite Character Mentions {deactivatewords.random()}";
                 eb.Color = Color.Red;
                 eb.Description = "oh master! I will not use whoever you mention's fc when you use a picture command anymore...";
             }
-        
+
             await a.Send(eb);
         }
 
@@ -127,6 +123,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
                 FavoriteCharacter.Append("\n");
             }
         }
+
         public override async Task<string> toHelpString(AbbybotCommandArgs aca)
         {
             return $"Turn on or off the ability to use the mentioned person's fc instead for pictures commands";

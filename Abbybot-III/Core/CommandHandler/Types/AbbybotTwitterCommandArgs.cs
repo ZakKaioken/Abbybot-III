@@ -4,10 +4,8 @@ using Abbybot_III.Core.Guilds.sql;
 
 using Discord.WebSocket;
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Core.CommandHandler.Types
@@ -24,8 +22,8 @@ namespace Abbybot_III.Core.CommandHandler.Types
             {
                 msg = value.Replace("pussy", "usb c").Replace("Pussy", "Usb c").Replace("PUSSY", "USB C");
             }
-            
         }
+
         public SocketUser author;
         public ISocketMessageChannel channel;
         public SocketMessage originalMessage;
@@ -54,13 +52,12 @@ namespace Abbybot_III.Core.CommandHandler.Types
             }
             aca.mentionedUserIds = sm.MentionedUsers.ToList();
 
-
-            if (sm.Author is SocketGuildUser sgux) {
+            if (sm.Author is SocketGuildUser sgux)
+            {
                 aca.abbybotGuild = new AbbybotGuild { GuildId = sgux.Guild.Id, Name = sgux.Guild.Name };
                 await GuildSql.GetGuild(aca.abbybotGuild);
             }
             return aca;
         }
-
     }
 }

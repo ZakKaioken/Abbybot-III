@@ -1,8 +1,6 @@
 ﻿using Abbybot_III.Core.Data.User;
 
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Abbybot_III.Commands.Contains.Gelbooru.dataobject
 {

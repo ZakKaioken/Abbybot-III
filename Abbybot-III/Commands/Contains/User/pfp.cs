@@ -1,14 +1,7 @@
-﻿
-using Abbybot_III.Commands.Contains;
+﻿using Abbybot_III.Commands.Contains;
 using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
 
-using Discord;
-using Discord.WebSocket;
-
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Commands.Normal
@@ -23,6 +16,7 @@ namespace Abbybot_III.Commands.Normal
                 return;
             await a.Send(mu[0].GetAvatarUrl());
         }
+
         public override async Task<string> toHelpString(AbbybotCommandArgs aca)
         {
             return "~~Steal~~ I mean, get somebody's profile picture";

@@ -1,5 +1,4 @@
-﻿using Abbybot_III.Commands.Contains;
-using Abbybot_III.Commands.Contains.Gelbooru;
+﻿using Abbybot_III.Commands.Contains.Gelbooru;
 
 using AbbySql;
 using AbbySql.Types;
@@ -7,9 +6,7 @@ using AbbySql.Types;
 using Capi.Commands.CommandReciever;
 using Capi.Interfaces;
 
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Commands.Reciever
@@ -18,10 +15,10 @@ namespace Abbybot_III.Commands.Reciever
     class GelbooruCommandReciever : CmdReciever
     {
         List<iCommand> cmds = new List<iCommand>();
-        
-    public override async Task<List<iCommand>> RecieveCommands()
-    {
-        List<iCommand> cmds = new List<iCommand>();
+
+        public override async Task<List<iCommand>> RecieveCommands()
+        {
+            List<iCommand> cmds = new List<iCommand>();
 
             var table = await AbbysqlClient.FetchSQL("SELECT * FROM gelboorucommands");
             foreach (AbbyRow row in table)
@@ -35,8 +32,6 @@ namespace Abbybot_III.Commands.Reciever
             }
 
             return cmds;
+        }
     }
-
-
-}
 }

@@ -1,13 +1,10 @@
-﻿
-using Abbybot_III.Core.CommandHandler.extentions;
+﻿using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
 using Abbybot_III.Sql.Abbybot.Fun;
 
 using Discord;
 using Discord.WebSocket;
 
-using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -40,9 +37,10 @@ namespace Abbybot_III.Commands.Normal
             sb.AppendJoin(", ", mu);
 
             if (!(a.channel is SocketDMChannel))
-            await a.Delete();
+                await a.Delete();
             await a.Send(sb);
         }
+
         public override async Task<string> toHelpString(AbbybotCommandArgs aca)
         {
             return $"send an anonymous dm to someone you mention";

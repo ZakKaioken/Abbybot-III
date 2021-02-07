@@ -1,12 +1,10 @@
-﻿using Abbybot_III.Core;
-using Abbybot_III.Core.CommandHandler;
+﻿using Abbybot_III.Core.CommandHandler;
 using Abbybot_III.Sql.Abbybot.Abbybot;
 using Abbybot_III.Sql.Abbybot.User;
 
 using Discord;
 using Discord.WebSocket;
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,9 +26,10 @@ namespace Abbybot_III.Apis.Discord.Events
         {
             bool nowrite = false;
             var cs = await AbbybotSql.GetAbbybotChannelIdAsync();
-            foreach (var (guildId, channelId) in cs) {
-            if (message.Channel.Id != channelId)
-                nowrite = true;
+            foreach (var (guildId, channelId) in cs)
+            {
+                if (message.Channel.Id != channelId)
+                    nowrite = true;
             }
             if (nowrite)
                 WriteMessage(message);
@@ -57,31 +56,32 @@ namespace Abbybot_III.Apis.Discord.Events
             sb.Append(guild).Append("-").Append(username).Append(": ");
 
             sb.AppendLine(message.Content);
-            
+
             foreach (var embed in message.Embeds.ToList())
-                {
-                    if (embed.Title is string)
+            {
+                if (embed.Title is string)
                     sb.AppendLine($"[{embed.Title}]");
-                    
-                    if (embed.Description is string)
-                        sb.AppendLine($"[{embed.Description}]");
-                    if (embed.Image.HasValue)
-                        sb.AppendLine($"[{embed.Image.Value.Url}]");
-                    if (embed.Video.HasValue)
-                        sb.AppendLine($"[{embed.Video.Value}]");
-                    foreach (var field in embed.Fields)
-                    {
-                        sb.AppendLine($"-[{field.Name}]");
-                        sb.AppendLine($"-[{field.Value}]");
-                    }
-                    if (embed.Footer.HasValue) {
-                        var foot = embed.Footer.Value;
-                        sb.AppendLine($"[{foot.Text}]");
-                    }
+
+                if (embed.Description is string)
+                    sb.AppendLine($"[{embed.Description}]");
+                if (embed.Image.HasValue)
+                    sb.AppendLine($"[{embed.Image.Value.Url}]");
+                if (embed.Video.HasValue)
+                    sb.AppendLine($"[{embed.Video.Value}]");
+                foreach (var field in embed.Fields)
+                {
+                    sb.AppendLine($"-[{field.Name}]");
+                    sb.AppendLine($"-[{field.Value}]");
                 }
-            
+                if (embed.Footer.HasValue)
+                {
+                    var foot = embed.Footer.Value;
+                    sb.AppendLine($"[{foot.Text}]");
+                }
+            }
+
             Abbybot.print(sb.ToString());
-         }
+        }
 
         static async Task Deleted(Cacheable<IMessage, ulong> message, ISocketMessageChannel channel)
         {

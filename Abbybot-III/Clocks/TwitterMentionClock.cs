@@ -1,12 +1,8 @@
 ﻿using Abbybot_III.Apis.Twitter;
 using Abbybot_III.Core.AbbyBooru.sql;
-using Abbybot_III.Core.CommandHandler.Types;
-using Abbybot_III.Core.Data.User;
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -18,6 +14,7 @@ namespace Abbybot_III.Clocks
     {
         int sendCount = 0;
         int maxSendCount = 5;
+
         //Queue<>
         public override async Task OnInit(DateTime time)
         {
@@ -27,7 +24,7 @@ namespace Abbybot_III.Clocks
 
         public override async Task OnWork(DateTime time)
         {
-            var atmms =await Twitter.ts.ListTweetsMentioningMeAsync(new TweetSharp.ListTweetsMentioningMeOptions{ Count=5, IncludeEntities = true });
+            var atmms = await Twitter.ts.ListTweetsMentioningMeAsync(new TweetSharp.ListTweetsMentioningMeOptions { Count = 5, IncludeEntities = true });
 
             TwitterRateLimitStatus rate = Twitter.ts.Response.RateLimitStatus;
             Abbybot.print("You have used " + rate.RemainingHits + " out of your " + rate.HourlyLimit);
@@ -39,13 +36,12 @@ namespace Abbybot_III.Clocks
                 if (test.Count > 0) continue;
                 await AbbybotMentionSql.AddLatestMentionIdAsync((ulong)tmm.Id);
 
-                var tmt = Regex.Replace(tmm.Text, @"http[^\s]+", ""); 
+                var tmt = Regex.Replace(tmm.Text, @"http[^\s]+", "");
                 var t = Regex.Replace(tmt, @"@[^\s]+", "");
                 //var twitteruser = AbbybotUser.GetUserFromTwitterUser(tmm.Author.ScreenName);
                 //AbbybotTwitterCommandArgs atca = new AbbybotTwitterCommandArgs();
                 //atca.Message = t;
                 //atca.abbybotUser = (AbbybotUser)twitteruser;
-            
 
                 Abbybot.print($"[\n{t}\n]");
             }

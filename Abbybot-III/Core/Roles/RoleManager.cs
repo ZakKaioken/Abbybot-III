@@ -5,17 +5,14 @@ using Capi.Interfaces;
 
 using Discord.WebSocket;
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Core.Mysql
 {
     class RoleManager
     {
-
         public static List<AbbybotRole> roles = new List<AbbybotRole>();
 
         public static async Task GetRoles(SocketGuild g)
@@ -23,8 +20,6 @@ namespace Abbybot_III.Core.Mysql
             roles.Clear();
             roles.AddRange(await RoleSql.GetRoles(g));
         }
-
-
 
         public static async Task<List<CommandRatings>> GetRatings(List<AbbybotRole> rolz)
         {

@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
+
 using System;
-using System.Diagnostics;
 using System.IO;
 
 namespace Abbybot_III.Apis.Twitter.ApiKeys
@@ -23,8 +23,6 @@ namespace Abbybot_III.Apis.Twitter.ApiKeys
 
         public static TwitterApiKeys Load(string path)
         {
-
-
             var dir = Path.GetDirectoryName(path);
             var fileName = Path.GetFileName(path);
             var e = Path.GetFullPath(path).Replace(fileName, "");
@@ -38,7 +36,7 @@ namespace Abbybot_III.Apis.Twitter.ApiKeys
                     ConsumerKey = "",
                     ConsumerSecret = ""
                 };
-                var tex = JsonConvert.SerializeObject(twikeys); 
+                var tex = JsonConvert.SerializeObject(twikeys);
                 File.WriteAllText(path, tex);
             }
 

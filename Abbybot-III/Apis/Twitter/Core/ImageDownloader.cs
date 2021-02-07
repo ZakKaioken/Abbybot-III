@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Apis.Twitter.Core
@@ -15,11 +13,9 @@ namespace Abbybot_III.Apis.Twitter.Core
 
             string dir = $@"{Directory.GetCurrentDirectory()}\Temp\";
 
-
             if (Directory.Exists(dir))
-                Directory.Delete(dir,true);            
+                Directory.Delete(dir, true);
             Directory.CreateDirectory(dir);
-            
 
             string name = Path.GetFileName(u.ToString());
             string location = $"{dir}{name}";
@@ -31,9 +27,7 @@ namespace Abbybot_III.Apis.Twitter.Core
             }
             client.Dispose();
 
-
             return location;
-
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using Abbybot_III.Apis.Discord.Events;
-using Abbybot_III.Commands.Contains.Gelbooru.dataobject;
+﻿using Abbybot_III.Commands.Contains.Gelbooru.dataobject;
 using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
 using Abbybot_III.Core.Data.User;
@@ -21,7 +20,6 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 {
     class GelbooruCommand : ContainCommand
     {
-
         public List<string> tags = new List<string> { "" };
 
         public GelbooruCommand(string Command, string[] tags, CommandRatings Rating)
@@ -31,7 +29,6 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
             List<string> s = new List<string>();
             this.tags = tags.ToList();
         }
-
 
         public override async Task DoWork(AbbybotCommandArgs msg)
         {
@@ -56,7 +53,6 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
             }
 
             await Task.CompletedTask;
-
         }
 
         static async Task<int> GetImageCount(AbbybotCommandArgs msg)
@@ -77,7 +73,6 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
                         {
                             await msg.Send(et.ToString());
                         }
-
                     }
             }
             if (count < 0)
@@ -144,7 +139,6 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 
                 if (!comb)
                     await msg.Send(data);
-
             }
         }
 
@@ -206,11 +200,9 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
                     return;
                 }
 
-
                 im.loli = imgdata.Tags.Contains("loli");
                 im.shot = imgdata.Tags.Contains("shot");
                 im.nsfw = (imgdata.Rating == BooruSharp.Search.Post.Rating.Explicit || imgdata.Rating == BooruSharp.Search.Post.Rating.Explicit);
-           
 
                 if (imgdata.FileUrl != null)
                 {
@@ -230,13 +222,12 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
             }
         }
 
-
         public GelbooruCommand()
         {
-
         }
 
         StringBuilder sb = new StringBuilder();
+
         public override async Task<bool> Evaluate(AbbybotCommandArgs aca)
         {
             bool canrun = await CanRun(aca);
@@ -274,19 +265,16 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
                 }
                 if (!md.abbybotUser.userPerms.Ratings.Contains((CommandRatings)3))
                 {
-
                     taggs.Add("-loli");
                 }
             }
-            if (!isnsfwchannel || !md.abbybotUser.userFavoriteCharacter .IsLewd || safe)
+            if (!isnsfwchannel || !md.abbybotUser.userFavoriteCharacter.IsLewd || safe)
             {
                 taggs.Add("rating:safe");
             }
 
-
             if (md.abbybotSudoUser == null)
             {
-
                 Random abbyrng = new Random();
                 sb.Clear();
                 if (md.mentionedUserIds.Count > 0)
@@ -297,7 +285,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
                 }
                 else
                 {
-                    sb.Append((md.abbybotUser.userFavoriteCharacter. FavoriteCharacter.Length > 1) ? md.abbybotUser.userFavoriteCharacter.FavoriteCharacter : "abigail_williams");
+                    sb.Append((md.abbybotUser.userFavoriteCharacter.FavoriteCharacter.Length > 1) ? md.abbybotUser.userFavoriteCharacter.FavoriteCharacter : "abigail_williams");
                 }
 
                 sb.Replace("abbybot", "abigail_williams");
@@ -328,7 +316,5 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
             await Task.CompletedTask;
             return canrun;
         }
-
-
     }
 }

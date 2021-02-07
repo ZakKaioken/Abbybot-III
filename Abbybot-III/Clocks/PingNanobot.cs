@@ -1,13 +1,8 @@
-﻿using Abbybot_III.Commands.Contains.Gelbooru.embed;
-using Abbybot_III.Core.Data.User;
-using Abbybot_III.Core.Users.sql;
-using Abbybot_III.Sql.Abbybot.Abbybot;
+﻿using Abbybot_III.Sql.Abbybot.Abbybot;
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Clocks
@@ -24,46 +19,47 @@ namespace Abbybot_III.Clocks
         public static int o = 0;
         static int o2 = 0;
         Random r = new Random();
+
         public override async Task OnWork(DateTime time)
         {
             var abbybotchannels = await AbbybotSql.GetAbbybotChannelIdAsync();
             var er = r.Next(0, abbybotchannels.Count);
             var ch = abbybotchannels[er];
             var c = Apis.Discord.Discord._client.GetGuild(ch.guildId).GetTextChannel(ch.channelId);
-                
-            if (o == 0)
-                {
-                    var abbybot = Process.GetProcessesByName("Nanobot");
-                    if (abbybot.Length == 0)
-                    {
-                        ShellExecute(IntPtr.Zero, "open", @"C:\Users\AbbybotLaptop\Documents\AbbybotTemporary\AbbybotSource\Abbybot-III-Public\Abbybot-III\Abbybot\III\Nanobot.exe", @"", @"C:\Users\AbbybotLaptop\Documents\AbbybotTemporary\AbbybotSource\Abbybot-III-Public\Abbybot-III\Abbybot\III\", ShowCommands.SW_MINIMIZE);
-                    }
-                    o = 1;
-                }
-                else if (o == 1)
-                {
-                    await c.SendMessageAsync("Hey nano");
-                    o = 2;
-                }
-                else if (o == 2)
-                {
-                    await c.SendMessageAsync("i'm gonna poke you with a stick silly nano!!");
-                    WakeAbbybot();
-                    await Task.Delay(5000);
-                    await c.SendMessageAsync("good morning nano");
 
-                    o = 1;
-                } else if (o == 5)
+            if (o == 0)
+            {
+                var abbybot = Process.GetProcessesByName("Nanobot");
+                if (abbybot.Length == 0)
                 {
-                    if (o2 > 4)
-                    {
-                        await c.SendMessageAsync("I failed at work nano...");
-                        o = 1;
-                    }
-                o2++;
+                    ShellExecute(IntPtr.Zero, "open", @"C:\Users\AbbybotLaptop\Documents\AbbybotTemporary\AbbybotSource\Abbybot-III-Public\Abbybot-III\Abbybot\III\Nanobot.exe", @"", @"C:\Users\AbbybotLaptop\Documents\AbbybotTemporary\AbbybotSource\Abbybot-III-Public\Abbybot-III\Abbybot\III\", ShowCommands.SW_MINIMIZE);
                 }
+                o = 1;
+            }
+            else if (o == 1)
+            {
+                await c.SendMessageAsync("Hey nano");
+                o = 2;
+            }
+            else if (o == 2)
+            {
+                await c.SendMessageAsync("i'm gonna poke you with a stick silly nano!!");
+                WakeAbbybot();
+                await Task.Delay(5000);
+                await c.SendMessageAsync("good morning nano");
+
+                o = 1;
+            }
+            else if (o == 5)
+            {
+                if (o2 > 4)
+                {
+                    await c.SendMessageAsync("I failed at work nano...");
+                    o = 1;
+                }
+                o2++;
+            }
         }
-        
 
         static void WakeAbbybot()
         {

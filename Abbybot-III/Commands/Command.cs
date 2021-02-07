@@ -11,7 +11,6 @@ using Discord;
 using Discord.WebSocket;
 
 using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,7 +18,6 @@ namespace Abbybot_III.Commands
 {
     public class BaseCommand : iCommand
     {
-
         public string Command
         {
             get; set;
@@ -45,10 +43,12 @@ namespace Abbybot_III.Commands
         {
             get; set;
         }
+
         public CommandRatings Rating
         {
             get; set;
         }
+
         public CommandType Type
         {
             get; set;
@@ -59,7 +59,6 @@ namespace Abbybot_III.Commands
             await Task.CompletedTask;
             await aca.Send("a blank command with no type was sent...");
         }
-
 
         public virtual async Task<bool> Evaluate(AbbybotCommandArgs aca)
         {
@@ -73,7 +72,7 @@ namespace Abbybot_III.Commands
             if (aca.abbybotUser.userPerms.Ratings != null)
                 hasperms = aca.abbybotUser.userPerms.Ratings.Contains(Rating);
             sb.AppendLine($"has permissions: {hasperms}");
-            
+
             bool isGuild = aca.abbybotGuild != null;
             bool istextchannel = aca.channel is ITextChannel;
             bool guilduser = aca.author is SocketGuildUser;
@@ -98,7 +97,6 @@ namespace Abbybot_III.Commands
             sb.AppendLine($"isabbybotrunnable = {isAbbybot} && {SelfRun}");
             await Task.CompletedTask;
 
-
             var wecanrun = canRun && !isAbbybot || canRun && IsAbbybotRunnable;
             sb.AppendLine($"wecanrun: {wecanrun}");
 
@@ -120,7 +118,6 @@ namespace Abbybot_III.Commands
 
         public virtual async Task RegenHelpString()
         {
-
         }
 
         public virtual async Task<bool> ShowHelp(AbbybotCommandArgs aca)
@@ -133,15 +130,12 @@ namespace Abbybot_III.Commands
         {
             var aca = (md as AbbybotCommandArgs);
 
-            
-            
             if (!(this is PassiveCommand))
             {
                 bool inTimeOut = aca.abbybotUser.userTrust.inTimeOut;
                 //sb.AppendLine($"in time out: {inTimeOut}");
                 if (inTimeOut)
                 {
-
                     DateTime time = aca.abbybotUser.userTrust.TimeOutEndDate;
                     string reason = aca.abbybotUser.userTrust.timeoutReason;
                     var tt = TimeStringGenerator.MilistoTimeString((decimal)(time - DateTime.Now).TotalMilliseconds);
@@ -179,7 +173,5 @@ namespace Abbybot_III.Commands
         {
             return await ShowHelp(md as AbbybotCommandArgs);
         }
-
-
     }
 }

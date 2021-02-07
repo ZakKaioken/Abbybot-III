@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+
 using System;
 using System.IO;
 
@@ -28,7 +29,6 @@ namespace Abbybot_III.Apis.Mysql.ApiKeys
 
         public static MysqlApiKeys Load(string path)
         {
-
             var dir = Path.GetDirectoryName(path);
             var fileName = Path.GetFileName(path);
             var e = Path.GetFullPath(path).Replace(fileName, "");

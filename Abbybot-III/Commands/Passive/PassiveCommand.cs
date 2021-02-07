@@ -1,11 +1,5 @@
 ﻿using Abbybot_III.Core.CommandHandler.Types;
-using Abbybot_III.Sql.Abbybot.User;
 
-using Capi;
-
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Commands.Custom.PassiveUsage
@@ -17,6 +11,7 @@ namespace Abbybot_III.Commands.Custom.PassiveUsage
         {
             return false;
         }
+
         public override async Task<bool> Evaluate(AbbybotCommandArgs aca)
         {
             return true;

@@ -1,19 +1,13 @@
 ﻿using Abbybot_III.Core.Guilds.DataType;
-using Abbybot_III.Core.Guilds.sql;
 
 using Discord;
-using Discord.WebSocket;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Core.Guilds.GuildMessageHandler
 {
     class MessageHandler
     {
-
         public static async Task DoGuildMessage(GuildMessage gm)
         {
             if (gm == null)
@@ -33,9 +27,6 @@ namespace Abbybot_III.Core.Guilds.GuildMessageHandler
             var channel = gm.guild.GetTextChannel(gm.channelId);
             Embed emb = embedBuilder.Build();
             await channel.SendMessageAsync(null, false, emb);
-
-
         }
-
     }
 }

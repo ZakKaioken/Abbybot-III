@@ -2,10 +2,6 @@
 using Abbybot_III.Core.CommandHandler.Types;
 using Abbybot_III.extentions;
 
-using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Commands.Contains
@@ -26,7 +22,6 @@ namespace Abbybot_III.Commands.Contains
 
         public Egg()
         {
-
         }
 
         public override async Task DoWork(AbbybotCommandArgs md)

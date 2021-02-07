@@ -3,8 +3,6 @@
 using AbbySql;
 using AbbySql.Types;
 
-using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,7 +14,7 @@ namespace Abbybot_III.Core.Guilds.sql
         {
             StringBuilder abisb = new StringBuilder("SELECT * FROM servermessages WHERE ");
             abisb.Append($"guildId ='{id}' && ");
-                abisb.Append($"type = '{type}';");
+            abisb.Append($"type = '{type}';");
             GuildMessage g = null;
             var table2 = await AbbysqlClient.FetchSQL(abisb.ToString());
             foreach (AbbyRow row in table2)
@@ -28,7 +26,7 @@ namespace Abbybot_III.Core.Guilds.sql
                     message = (row["message"] is string msg) ? msg : "",
                     imgurl = (row["imagelink"] is string imlk) ? imlk : "",
                     channelId = (ulong)row["channel"]
-            };
+                };
             }
             return g;
         }

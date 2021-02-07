@@ -1,19 +1,13 @@
-﻿using Newtonsoft.Json;
-
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Apis.Mysql
 {
     class MysqlCore
     {
-        
+        public static string mysqlbinpath;
 
-       public static string mysqlbinpath;
         public static async Task CheckMysql(string localpath)
         {
             Process[] mysqls = Process.GetProcessesByName("mysqld");
@@ -57,6 +51,5 @@ namespace Abbybot_III.Apis.Mysql
                 Abbybot.print($"AbbybotMemory: Abbybot's memory is not running and I can't find where abbybot's memory is to turn it back on... Did you forget to give me it? ({fileName} in {dir})");
             }
         }
-
     }
 }

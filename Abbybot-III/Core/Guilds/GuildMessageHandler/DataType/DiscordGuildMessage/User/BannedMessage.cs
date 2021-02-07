@@ -3,9 +3,6 @@
 using Discord;
 using Discord.WebSocket;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Core.Guilds.GuildMessageHandler.DataType.DiscordGuildMessage.User
@@ -35,7 +32,7 @@ namespace Abbybot_III.Core.Guilds.GuildMessageHandler.DataType.DiscordGuildMessa
                     user = user,
                     message = e.message,
                     color = Color.Red
-            };
+                };
             jm.guild = guild;
             return jm;
         }

@@ -2,14 +2,12 @@
 using Abbybot_III.Core.AbbyBooru.sql;
 using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
-using Abbybot_III.Core.Users.sql;
 
 using BooruSharp.Search.Post;
 
 using Discord;
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,7 +17,6 @@ namespace Abbybot_III.Commands.Normal.AbbyBooruChecker
     [Capi.Cmd("abbybot acadd", 5, 1)]
     class AddCharacter : NormalCommand
     {
-
         public override async Task DoWork(AbbybotCommandArgs a)
         {
             StringBuilder FavoriteCharacter = new StringBuilder(a.Message.Replace(Command, ""));
@@ -30,7 +27,6 @@ namespace Abbybot_III.Commands.Normal.AbbyBooruChecker
                 FavoriteCharacter.Remove(0, 1);
             while (FavoriteCharacter[FavoriteCharacter.Length - 1] == ' ')
                 FavoriteCharacter.Remove(FavoriteCharacter.Length - 1, 1);
-
 
             string fc = FavoriteCharacter.ToString();
 
@@ -84,9 +80,11 @@ namespace Abbybot_III.Commands.Normal.AbbyBooruChecker
             var u = a.abbybotUser;
             if (canrun)
             {
-                try {
-                await AbbyBooruSql.AddCharacterAsync(a.channel, a.abbybotGuild, FavoriteCharacter+"*");
-                } catch (Exception e)
+                try
+                {
+                    await AbbyBooruSql.AddCharacterAsync(a.channel, a.abbybotGuild, FavoriteCharacter + "*");
+                }
+                catch (Exception e)
                 {
                     Abbybot.print(e.Message);
 
@@ -113,6 +111,5 @@ namespace Abbybot_III.Commands.Normal.AbbyBooruChecker
         {
             return $"Add a gelbooru tag feed to a channel";
         }
-
     }
 }

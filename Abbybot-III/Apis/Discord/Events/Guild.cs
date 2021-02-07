@@ -1,13 +1,11 @@
 ﻿using Discord.WebSocket;
 
-using System;
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Apis.Discord.Events
 {
     public class Guild
     {
-
         public static void Init(DiscordSocketClient _client)
         {
             _client.JoinedGuild += async (guild) => await Guild.Joined(guild);
@@ -22,21 +20,25 @@ namespace Abbybot_III.Apis.Discord.Events
             await Task.CompletedTask;
             //throw new NotImplementedException();
         }
+
         static async Task Left(SocketGuild guild)
         {
             await Task.CompletedTask;
             //throw new NotImplementedException();
         }
+
         static async Task Updated(SocketGuild oldguild, SocketGuild newguild)
         {
             await Task.CompletedTask;
             //throw new NotImplementedException();
         }
+
         static async Task Available(SocketGuild guild)
         {
             await Task.CompletedTask;
             //throw new NotImplementedException();
         }
+
         static async Task Unavailable(SocketGuild guild)
         {
             await Task.CompletedTask;

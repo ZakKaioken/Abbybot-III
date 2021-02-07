@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+
 namespace AbbybotSleep
 {
     public static class AbbybotExtensions

@@ -4,8 +4,6 @@ using AbbySql;
 using AbbySql.Types;
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Core.Twitter.Queue.sql
@@ -57,10 +55,10 @@ namespace Abbybot_III.Core.Twitter.Queue.sql
 
         public static async Task Add(Tweet I, bool v)
         {
-                int priority = v ? 1 : 0;
-                var url = AbbysqlClient.EscapeString(I.url);
-                var sourceurl = AbbysqlClient.EscapeString(I.sourceurl);
-                var message = AbbysqlClient.EscapeString(I.message);
+            int priority = v ? 1 : 0;
+            var url = AbbysqlClient.EscapeString(I.url);
+            var sourceurl = AbbysqlClient.EscapeString(I.sourceurl);
+            var message = AbbysqlClient.EscapeString(I.message);
             await AbbysqlClient.RunSQL($"INSERT INTO `abbybottwitter`.`tweets` ( `ImgUrl`,`SrcUrl`, `Description`, `Priority` ) VALUES('{url}', '{sourceurl}', '{message}', '{priority}');");
         }
     }

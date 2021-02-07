@@ -1,8 +1,5 @@
 ﻿using AbbySql;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Core.Users.sql
@@ -13,6 +10,5 @@ namespace Abbybot_III.Core.Users.sql
         {
             await AbbysqlClient.RunSQL($"UPDATE `discord`.`users` SET `FavoriteCharacter`= '{favoriteCharacter}' WHERE  `Id`= {userId};");
         }
-
     }
 }

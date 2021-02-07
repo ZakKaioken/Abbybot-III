@@ -1,12 +1,9 @@
-﻿
-using Abbybot_III.Core.CommandHandler.extentions;
+﻿using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
 using Abbybot_III.Sql.Abbybot.Fun;
 
 using Discord.WebSocket;
 
-using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -31,8 +28,8 @@ namespace Abbybot_III.Commands.Normal
                 await a.Delete();
             Abbybot.print("tried to run say");
             await a.Send(FavoriteCharacter);
-
         }
+
         public override async Task<string> toHelpString(AbbybotCommandArgs aca)
         {
             return $"make me say something!!!";

@@ -30,11 +30,6 @@ namespace Abyplay
 
             var (milstr, magic) = upgrade(milenia, 10);
 
-
-
-
-
-
             if (milstr > 0)
             {
                 sb.Append($"{milstr} milenia");
@@ -42,16 +37,12 @@ namespace Abyplay
                 if (centstr > 0) sb.Append(", ");
             }
 
-
-
-
             if (centstr > 0)
             {
                 sb.Append($"{centstr} centurie");
                 if (centstr > 1) sb.Append("s");
                 if (decastr > 0) sb.Append(", ");
             }
-
 
             if (decastr > 0)
             {
@@ -113,12 +104,11 @@ namespace Abyplay
                 if (milistr > 1) sb.Append("s");
             }
             return sb.ToString();
-
         }
+
         static (decimal startmod, decimal enddiv) upgrade(decimal start, int count)
         {
             return (Math.Floor(start % count), start / count);
         }
-
     }
 }

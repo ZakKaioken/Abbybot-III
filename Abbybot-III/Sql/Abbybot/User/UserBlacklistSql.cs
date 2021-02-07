@@ -24,7 +24,6 @@ namespace Abbybot_III.Core.Users.sql
             abisb.Append($"INSERT INTO `discord`.`usergelblacklist`(`userId`, `tag`) VALUES ('{did}', '{item}'); ");
             var e = await AbbysqlClient.RunSQL(abisb.ToString());
             return e > 0;
-
         }
 
         public static async Task<List<string>> GetBlackListTags(ulong id)
@@ -43,6 +42,5 @@ namespace Abbybot_III.Core.Users.sql
             }
             return tags;
         }
-
     }
 }

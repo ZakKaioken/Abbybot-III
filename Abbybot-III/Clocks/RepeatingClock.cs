@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Clocks
@@ -10,6 +8,7 @@ namespace Abbybot_III.Clocks
         DateTime tick = DateTime.Now;
         public TimeSpan delay = TimeSpan.Zero;
         bool firstrun = false;
+
         public override async Task OnTick(DateTime time)
         {
             if (delay == TimeSpan.Zero)
@@ -22,7 +21,7 @@ namespace Abbybot_III.Clocks
             {
                 tick = time.Add(delay);
                 if (firstrun) { firstrun = false; return; }
-                
+
                 await OnWork(time);
             }
         }

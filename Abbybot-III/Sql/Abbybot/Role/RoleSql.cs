@@ -20,7 +20,6 @@ namespace Abbybot_III.Core.Roles.sql
     {
         public static async Task<bool> SetRole(ulong user, ulong guild, ulong role)
         {
-
             bool dre = await DoesRoleExist(user, guild, role);
 
             if (dre)
@@ -67,7 +66,6 @@ namespace Abbybot_III.Core.Roles.sql
 
         public static async Task<List<AbbybotRole>> GetRolesFromUser(AbbybotUser u)
         {
-
             StringBuilder abisb = new StringBuilder();
             abisb.Clear();
             abisb.Append("SELECT * FROM `discord`.`roles` WHERE ");

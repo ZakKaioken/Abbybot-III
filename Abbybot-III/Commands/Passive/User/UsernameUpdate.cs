@@ -3,9 +3,6 @@ using Abbybot_III.Sql.Abbybot.User;
 
 using Capi;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Commands.Custom.PassiveUsage

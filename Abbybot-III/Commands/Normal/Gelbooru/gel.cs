@@ -6,9 +6,7 @@ using Abbybot_III.Core.Users.sql;
 using Capi.Interfaces;
 
 using Discord;
-using Discord.WebSocket;
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,8 +17,6 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
     [Capi.Cmd("abbybot gel", 1, 1)]
     class gel : NormalCommand
     {
-
-
         public override async Task DoWork(AbbybotCommandArgs a)
         {
             StringBuilder tagss = new StringBuilder(a.Message.Replace(Command, ""));
@@ -34,16 +30,13 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
             while (tagss[^1] == ' ')
                 tagss.Remove(tagss.Length - 1, 1);
 
-            if (a.abbybotUser.userFavoriteCharacter != null) {
-            var fc = a.abbybotUser.userFavoriteCharacter.FavoriteCharacter;
-            tagss.Replace("&fc", $"{fc}*");
+            if (a.abbybotUser.userFavoriteCharacter != null)
+            {
+                var fc = a.abbybotUser.userFavoriteCharacter.FavoriteCharacter;
+                tagss.Replace("&fc", $"{fc}*");
             }
 
-
             var tags = tagss.ToString().Split(' ').ToList();
-
-
-            
 
             var blacklisttags = await UserBlacklistSql.GetBlackListTags(a.abbybotUser.Id);
 
@@ -52,7 +45,8 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
                 tags.Add($"-{item}");
             }
 
-            if (a.abbybotGuild != null) { 
+            if (a.abbybotGuild != null)
+            {
                 var ratings = a.abbybotUser.userPerms.Ratings;
                 var sgc = (ITextChannel)a.channel;
                 if (sgc == null) return;
@@ -76,7 +70,6 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
                     im.source = imgdata.Source;
                 }
 
-
                 try
                 {
                     eb = Contains.Gelbooru.embed.GelEmbed.Build(im, new StringBuilder("abbybot"));
@@ -95,6 +88,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
         {
             return await Apis.Booru.AbbyBooru.Execute(tags.ToArray());
         }
+
         public override async Task<string> toHelpString(AbbybotCommandArgs aca)
         {
             return $"a random picture finder, 1 to 1 ratio to gelbooru's own search bar";

@@ -1,5 +1,4 @@
-﻿using Abbybot_III.Apis.Discord.Events;
-using Abbybot_III.Commands.Contains.Gelbooru.dataobject;
+﻿using Abbybot_III.Commands.Contains.Gelbooru.dataobject;
 using Abbybot_III.Commands.Contains.Gelbooru.embed;
 using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
@@ -11,20 +10,17 @@ using BooruSharp.Search.Post;
 
 using Capi.Interfaces;
 
-using Discord;
 using Discord.WebSocket;
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Commands.Contains.Gelbooru
 {
     class NewGelbooruCommand : ContainCommand
     {
-
         public override bool SelfRun
         {
             get => base.SelfRun = true;
@@ -43,7 +39,6 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 
         public NewGelbooruCommand()
         {
-
         }
 
         public override async Task DoWork(AbbybotCommandArgs aca)
@@ -131,15 +126,16 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 
             bool guildloli = false;
             bool guildnsfw = false;
-            if (aca.abbybotGuild != null) {
+            if (aca.abbybotGuild != null)
+            {
                 guildloli = aca.abbybotGuild.NoLoli;
                 guildnsfw = aca.abbybotGuild.NoNSFW;
             }
 
-            if ((loli&&guildloli) || (nsfw&&guildnsfw))
+            if ((loli && guildloli) || (nsfw && guildnsfw))
                 await aca.Send("I can't send that to this server due to it opting not to allow nsfw.");
-            else {
-
+            else
+            {
                 ImgData imgdrata = new ImgData()
                 {
                     command = Command,
@@ -158,9 +154,6 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
                 var e = GelEmbed.Build(imgdrata);
                 await aca.Send(e);
             }
-
-
-
         }
 
         async Task<List<string>> GenerateTags(AbbybotCommandArgs aca, string fc, string cfc = "NO")
@@ -194,17 +187,16 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 
         static async Task<string> GetFavoriteCharacterTagAsync(AbbybotCommandArgs aca, List<AbbybotUser> mentionedUsers)
         {
-            
             if (aca.abbybotSudoUser != null)
                 return "Abigail_Williams*";
 
             var ufcm = await FCMentionsSql.GetFCMAsync(aca.abbybotUser.Id);
-            if (ufcm&&mentionedUsers.Count > 0)
-                    return mentionedUsers.random().userFavoriteCharacter.FavoriteCharacter;
+            if (ufcm && mentionedUsers.Count > 0)
+                return mentionedUsers.random().userFavoriteCharacter.FavoriteCharacter;
             else
-                {
-                    return aca.abbybotUser.userFavoriteCharacter.FavoriteCharacter;
-                }
+            {
+                return aca.abbybotUser.userFavoriteCharacter.FavoriteCharacter;
+            }
 
             return "abigail_williams*";
         }

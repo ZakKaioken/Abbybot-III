@@ -1,5 +1,4 @@
 ﻿using Abbybot_III.Apis.Booru;
-using Abbybot_III.Commands.Contains.Gelbooru.dataobject;
 using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
 using Abbybot_III.Core.Users.sql;
@@ -7,9 +6,7 @@ using Abbybot_III.Core.Users.sql;
 using Capi.Interfaces;
 
 using Discord;
-using Discord.WebSocket;
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,9 +16,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 {
     [Capi.Cmd("abbybot gelcount", 1, 1)]
     class gelcount : NormalCommand
-    {   
-
-
+    {
         public override async Task DoWork(AbbybotCommandArgs a)
         {
             StringBuilder tagss = new StringBuilder(a.Message.Replace(Command, ""));
@@ -35,16 +30,13 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
             while (tagss[^1] == ' ')
                 tagss.Remove(tagss.Length - 1, 1);
 
-            if (a.abbybotUser.userFavoriteCharacter != null) {
-            var fc = a.abbybotUser.userFavoriteCharacter.FavoriteCharacter;
-            tagss.Replace("&fc", $"{fc}*");
+            if (a.abbybotUser.userFavoriteCharacter != null)
+            {
+                var fc = a.abbybotUser.userFavoriteCharacter.FavoriteCharacter;
+                tagss.Replace("&fc", $"{fc}*");
             }
 
-
             var tags = tagss.ToString().Split(' ').ToList();
-
-
-            
 
             var blacklisttags = await UserBlacklistSql.GetBlackListTags(a.abbybotUser.Id);
 
@@ -53,7 +45,8 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
                 tags.Add($"-{item}");
             }
 
-            if (a.abbybotGuild != null) { 
+            if (a.abbybotGuild != null)
+            {
                 var ratings = a.abbybotUser.userPerms.Ratings;
                 var sgc = (ITextChannel)a.channel;
                 if (sgc == null) return;
@@ -68,14 +61,13 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
                 await a.Send($"There are {o} posts by those tags.");
             }
             catch { }
-
-            
         }
 
         public virtual async Task<BooruSharp.Search.Post.SearchResult> service(List<string> tags)
         {
             return await Apis.Booru.AbbyBooru.Execute(tags.ToArray());
         }
+
         public override async Task<string> toHelpString(AbbybotCommandArgs aca)
         {
             return $"a random picture finder, 1 to 1 ratio to gelbooru's own search bar";

@@ -1,10 +1,8 @@
 ﻿using Abbybot_III.Core.Data.User;
 
 using AbbySql;
-using AbbySql.Types;
 
 using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,7 +15,7 @@ namespace Abbybot_III.Core.Users.sql
             var abisb = new StringBuilder();
             abisb.Append($"SELECT * FROM `usertimeout` WHERE `UserId` = '{au.Id}';");
             var table = await AbbysqlClient.FetchSQL(abisb.ToString());
-            
+
             if (table.Count > 0)
             {
                 au.userTrust = new Data.User.Subsets.UserTrust();
@@ -34,7 +32,5 @@ namespace Abbybot_III.Core.Users.sql
 
             return au;
         }
-
-
     }
 }

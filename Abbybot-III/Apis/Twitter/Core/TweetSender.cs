@@ -1,14 +1,10 @@
-﻿
-using Abbybot_III.Clocks;
-using Abbybot_III.Core.Twitter.Queue;
+﻿using Abbybot_III.Clocks;
 using Abbybot_III.Core.Twitter.Queue.sql;
 using Abbybot_III.Core.Twitter.Queue.types;
 using Abbybot_III.Sql.Abbybot.Abbybot;
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 
 using TweetSharp;
@@ -17,16 +13,17 @@ namespace Abbybot_III.Apis.Twitter.Core
 {
     class TweetSender
     {
-
         static int id;
         static int trycount;
 
-        static void p(object st) 
+        static void p(object st)
         {
             Abbybot.print($"[Tweet Sender Core]: {st}");
         }
+
         static bool sendingtweet = false;
         static Random r = new Random();
+
         public static async Task SendTweet()
         {
             Abbybot.print("ayo");
@@ -37,14 +34,17 @@ namespace Abbybot_III.Apis.Twitter.Core
             await c.SendMessageAsync("nano gonna work");
             PingAbbybotClock.o = 6; //6 is the working state
             Tweet tweet = null;
-            try {
-            tweet = await TweetQueueSql.Peek();
-            } catch
+            try
+            {
+                tweet = await TweetQueueSql.Peek();
+            }
+            catch
             {
                 try
                 {
                     tweet = await TweetArchiveSql.Peek();
-                } catch {}
+                }
+                catch { }
             }
 
             if (tweet == null)
@@ -59,7 +59,7 @@ namespace Abbybot_III.Apis.Twitter.Core
 
             if (tempfilepath == null)
             {
-               p("no image found.");
+                p("no image found.");
                 await c.SendMessageAsync("I'm done working nano");
                 PingAbbybotClock.o = 1;
                 return;
@@ -69,7 +69,6 @@ namespace Abbybot_III.Apis.Twitter.Core
             int tsrs = 0;
             do
             {
-
                 FileStream file = new FileStream(tempfilepath, FileMode.Open);
 
                 MediaFile m = new MediaFile { Content = file };
@@ -127,7 +126,6 @@ namespace Abbybot_III.Apis.Twitter.Core
 
                 TwitterAsyncResult<TwitterStatus> tweeto = await o;
                 tweetvalue = tweeto.Value;
-
             } while ((tweetvalue == null) && (tries <= 3));
 
             if (tweetvalue != null)
@@ -160,12 +158,13 @@ namespace Abbybot_III.Apis.Twitter.Core
 
             string e = tweetvalue.CreatedDate.ToString().Replace(' ', '_').Replace('/', '-').Replace(':', '-');
 
-            try {
-            File.WriteAllText($"{dir}Tweet-{e}.json", tweetvalue.RawSource);
-            } catch
+            try
             {
-
+                File.WriteAllText($"{dir}Tweet-{e}.json", tweetvalue.RawSource);
             }
+            catch
+            {
             }
+        }
     }
 }

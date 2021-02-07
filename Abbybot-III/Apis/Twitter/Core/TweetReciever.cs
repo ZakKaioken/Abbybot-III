@@ -1,8 +1,4 @@
-﻿using Abbybot_III.Core.Heart;
-
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Apis.Twitter.Core
@@ -12,7 +8,6 @@ namespace Abbybot_III.Apis.Twitter.Core
         public static void init()
         {
             //AbbyHeart.heartBeat += (time) => RequestBeat(time).GetAwaiter().GetResult();
-            
         }
 
         static async Task RequestBeat(DateTime time)

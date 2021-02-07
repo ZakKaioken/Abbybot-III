@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace Abbybot_III.Clocks
 {
-    
-        
     class ClockIniter
     {
         static BaseClock[] clocks = new BaseClock[]
@@ -17,7 +12,7 @@ namespace Abbybot_III.Clocks
 
         public static async Task init()
         {
-            foreach(var clock in clocks)
+            foreach (var clock in clocks)
             {
                 await clock.Init();
             }

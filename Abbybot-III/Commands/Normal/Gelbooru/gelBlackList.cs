@@ -56,7 +56,6 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
                         blt.Add(item);
                         FavoriteCharacter.Append($"{item} ");
                     }
-
                 }
                 catch (Exception ecx)
                 {
@@ -68,7 +67,6 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 
             if (blt.Count > 0)
             {
-
                 eb.Title = $"{fc} Yayy!!";
                 eb.Color = Color.Green;
 
@@ -84,11 +82,10 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 
             await message.Send(eb);
         }
+
         public override async Task<string> toHelpString(AbbybotCommandArgs aca)
         {
             return $"blacklist tags you don't like. Personally, i hate large breasts, but you do you.";
         }
     }
-
-
 }

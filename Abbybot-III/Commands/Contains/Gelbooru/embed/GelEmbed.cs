@@ -1,5 +1,4 @@
 ﻿using Abbybot_III.Commands.Contains.Gelbooru.dataobject;
-using Abbybot_III.Core.Data.User;
 using Abbybot_III.extentions;
 
 using Discord;
@@ -8,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Abbybot_III.Commands.Contains.Gelbooru.embed
 {
@@ -68,10 +66,12 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
                 return source.Replace("/member_illust.php?mode=medium&amp;illust_id=", "/en/artworks/");
             return "";
         }
+
         public static string fcbuilder(string s)
         {
-            return s.Replace("* ~ ", " or ").Replace("* ", " and ").Replace("{", "").Replace("}", "").Replace("_", " ").Replace("*","");
+            return s.Replace("* ~ ", " or ").Replace("* ", " and ").Replace("{", "").Replace("}", "").Replace("_", " ").Replace("*", "");
         }
+
         public static EmbedBuilder Build(string fileurl, string source, string fc, List<Core.Data.User.AbbybotUser> mentionedUsers, string command)
         {
             StringBuilder message = new StringBuilder();
@@ -96,31 +96,30 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
 
         public static EmbedBuilder Build(ImgData imgdrata)
         {
-                StringBuilder message = new StringBuilder();
+            StringBuilder message = new StringBuilder();
             EmbedBuilder embededodizer = new EmbedBuilder();
 
-            var iu =new Uri(imgdrata.Imageurl).ToString();
+            var iu = new Uri(imgdrata.Imageurl).ToString();
             if (iu.Contains(new string[] { "mp4", "avi", "webm" }))
                 message.AppendLine(iu).Replace("%20", "\\%20");
-
             else
                 try
                 {
                     embededodizer.ImageUrl = iu;
-                } catch
+                }
+                catch
                 {
                     message.AppendLine(iu);
                 }
             string fcn = fcbuilder(imgdrata.favoritecharacter.ToString());
 
-                MentionsEmbed(imgdrata, message);
-                string fixedsource = FixSource(imgdrata.source);
-                embededodizer.AddField($"{fcn}  :)", $"[Image Source]({fixedsource})");
-                embededodizer.Color = Color.LightOrange;
-                embededodizer.Description = message.ToString();
+            MentionsEmbed(imgdrata, message);
+            string fixedsource = FixSource(imgdrata.source);
+            embededodizer.AddField($"{fcn}  :)", $"[Image Source]({fixedsource})");
+            embededodizer.Color = Color.LightOrange;
+            embededodizer.Description = message.ToString();
 
-                return embededodizer;
-            
+            return embededodizer;
         }
     }
 }

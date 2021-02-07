@@ -1,8 +1,6 @@
 ﻿using Abbybot_III.Core.LevelingManager.Types;
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Abbybot_III.Core.LevelingManager
 {
@@ -15,7 +13,6 @@ namespace Abbybot_III.Core.LevelingManager
             float lastlr;
             while (true)
             {
-
                 lastlr = level * ((level + 1) / 1.5f) * 4;
                 if (f > lastlr)
                 {
@@ -34,6 +31,5 @@ namespace Abbybot_III.Core.LevelingManager
                 totalstat = i
             };
         }
-
     }
 }

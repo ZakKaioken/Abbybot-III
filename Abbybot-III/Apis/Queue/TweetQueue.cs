@@ -1,10 +1,7 @@
 ﻿using Abbybot_III.Apis.Twitter.Core;
 using Abbybot_III.Core.Heart;
-using Abbybot_III.Core.Twitter.Queue.sql;
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Core.Twitter.Queue
@@ -14,7 +11,7 @@ namespace Abbybot_III.Core.Twitter.Queue
         DateTime TweetQueueBeat;
         TimeSpan tweetQueueMilis = TimeSpan.FromHours(2);
 
-    public void init()
+        public void init()
         {
             var now = DateTime.Now;
             var twtqueueinitialstart = tweetQueueMilis.TotalMilliseconds - ((now - DateTime.Today).TotalMilliseconds % (tweetQueueMilis.TotalMilliseconds));
@@ -22,8 +19,8 @@ namespace Abbybot_III.Core.Twitter.Queue
 
             AbbyHeart.heartBeat += (time) => beat(time).GetAwaiter().GetResult();
         }
-        
-         async Task beat(DateTime time)
+
+        async Task beat(DateTime time)
         {
             if (TweetQueueBeat < time)
             {
@@ -31,7 +28,6 @@ namespace Abbybot_III.Core.Twitter.Queue
                 TweetQueueBeat = TweetQueueBeat.AddMilliseconds(tweetQueueMilis.TotalMilliseconds);
                 await TweetSender.SendTweet();
             }
-
         }
     }
 }

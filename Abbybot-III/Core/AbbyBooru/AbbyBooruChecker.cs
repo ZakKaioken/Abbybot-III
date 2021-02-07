@@ -1,6 +1,4 @@
-﻿using Abbybot_III.Apis.Twitter.Core;
-using Abbybot_III.Core.AbbyBooru.types;
-using Abbybot_III.Core.Guilds;
+﻿using Abbybot_III.Core.AbbyBooru.types;
 using Abbybot_III.Core.Heart;
 using Abbybot_III.Core.Twitter.Queue.sql;
 using Abbybot_III.Core.Twitter.Queue.types;
@@ -13,8 +11,6 @@ using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Authentication.ExtendedProtection;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Core.AbbyBooru
@@ -22,6 +18,7 @@ namespace Abbybot_III.Core.AbbyBooru
     class AbbyBooruChecker
     {
         static DateTime CheckTime;
+
         public static void Init()
         {
             AbbyHeart.heartBeat += async (time) => await RequestBeat(time);
@@ -87,7 +84,6 @@ namespace Abbybot_III.Core.AbbyBooru
                     {
                         img sr = nngs[i];
 
-
                         EmbedBuilder embededodizer = new EmbedBuilder
                         {
                             ImageUrl = sr.imgurl
@@ -119,11 +115,7 @@ namespace Abbybot_III.Core.AbbyBooru
 
                             await TweetQueueSql.Add(tweet, true);
                         }
-
-
-
                     }
-
                 }
             }
         }

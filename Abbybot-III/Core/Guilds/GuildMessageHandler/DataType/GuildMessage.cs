@@ -3,9 +3,6 @@
 using Discord;
 using Discord.WebSocket;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Core.Guilds.DataType
@@ -15,13 +12,19 @@ namespace Abbybot_III.Core.Guilds.DataType
         public string type;
         public ulong guildId;
         public ulong channelId;
-        public string message { 
-            get { 
-                return _msg; 
-            } set { 
+
+        public string message
+        {
+            get
+            {
+                return _msg;
+            }
+            set
+            {
                 _msg = BuildDescription(value);
-            } 
+            }
         }
+
         string _msg;
         public string imgurl;
         public SocketGuild guild;
@@ -36,8 +39,5 @@ namespace Abbybot_III.Core.Guilds.DataType
         {
             return await GuildMessageSql.GetGuildMessage(Guild.Id, type);
         }
-
-
-
     }
 }
