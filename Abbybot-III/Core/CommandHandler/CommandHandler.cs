@@ -1,4 +1,5 @@
 ﻿using Abbybot_III.Core.CommandHandler.Types;
+using Abbybot_III.Core.Users.sql;
 
 using Discord.WebSocket;
 
@@ -15,6 +16,8 @@ namespace Abbybot_III.Core.CommandHandler
         internal static async Task Handle(SocketMessage message)
         {
             AbbybotCommandArgs aca = await AbbybotCommandArgs.MakeArgsFromMessage(message);
+            await UserTrustSql.GetUserTimeout(aca.abbybotUser);
+            Console.WriteLine(aca.abbybotUser.userTrust.inTimeOut);
             capi.Start(aca);
         }
 

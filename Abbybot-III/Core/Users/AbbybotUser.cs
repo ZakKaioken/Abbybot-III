@@ -70,7 +70,8 @@ namespace Abbybot_III.Core.Data.User
                 @"\$1").Replace("\\ ", " ");
 
             userNames.PreferedName = eex;
-
+            userTrust = new UserTrust();
+            await UserTrustSql.GetUserTimeout(this);
 
             await UserSql.GetUser(this);
         }

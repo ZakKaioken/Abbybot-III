@@ -10,5 +10,7 @@ namespace Abbybot_III.Core.Data.User.Subsets
         public int Love;
 
         public bool inTimeOut;
+        public DateTime TimeOutEndDate;
+        public string timeoutReason;
     }
 }

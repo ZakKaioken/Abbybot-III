@@ -1,6 +1,7 @@
 ﻿
 using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
+using Abbybot_III.Sql.Abbybot.Fun;
 
 using Discord;
 using Discord.WebSocket;
@@ -20,6 +21,13 @@ namespace Abbybot_III.Commands.Normal
             StringBuilder FavoriteCharacter = new StringBuilder(a.Message).Replace(Command, "").Replace("--debugmode", "");
             while (FavoriteCharacter[0] == ' ')
                 FavoriteCharacter.Remove(0, 1);
+
+            var o = await SayBlacklistSql.GetBlackListTags();
+            foreach (var oo in o)
+            {
+                FavoriteCharacter.Replace(oo, "");
+            }
+
             FavoriteCharacter.Insert(0, "you have a givt from a secret sender!!!\n");
             var mu = a.mentionedUserIds;
             StringBuilder sb = new StringBuilder();

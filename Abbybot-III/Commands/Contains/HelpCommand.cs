@@ -1,6 +1,7 @@
 ﻿using Abbybot_III.Core.CommandHandler;
 using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
+using Abbybot_III.Core.Users.sql;
 
 using Capi.Interfaces;
 
@@ -30,7 +31,7 @@ namespace Abbybot_III.Commands.Contains
                 Title = "Almost every command i will listen to",
                 Color = Color.Teal
             };
-
+            var au = abd.abbybotUser;
             if (abd.abbybotUser.userTrust.inTimeOut)
             {
                 eb.Color = Color.Red;

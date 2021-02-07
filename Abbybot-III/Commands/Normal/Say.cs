@@ -1,6 +1,7 @@
 ﻿
 using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
+using Abbybot_III.Sql.Abbybot.Fun;
 
 using Discord.WebSocket;
 
@@ -20,10 +21,17 @@ namespace Abbybot_III.Commands.Normal
             while (FavoriteCharacter[0] == ' ')
                 FavoriteCharacter.Remove(0, 1);
 
+            var o = await SayBlacklistSql.GetBlackListTags();
+            foreach (var oo in o)
+            {
+                FavoriteCharacter.Replace(oo, "");
+            }
+
             if (!(a.channel is SocketDMChannel))
                 await a.Delete();
             Abbybot.print("tried to run say");
             await a.Send(FavoriteCharacter);
+
         }
         public override async Task<string> toHelpString(AbbybotCommandArgs aca)
         {

@@ -3,6 +3,8 @@ using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
 using Abbybot_III.Sql.Abbybot.User;
 
+using Abyplay;
+
 using Capi.Interfaces;
 
 using Discord;
@@ -61,6 +63,7 @@ namespace Abbybot_III.Commands
 
         public virtual async Task<bool> Evaluate(AbbybotCommandArgs aca)
         {
+            if (Command.ToLower() == "abby") return false;
             StringBuilder sb = new StringBuilder($"running the base evaluate on: {Command.Replace("abbybot ", "")}\n");
             sb.AppendLine($"Type: {(CommandType)this.Type}");
             sb.AppendLine($"Rating: {(CommandRatings)this.Rating}");
@@ -70,11 +73,7 @@ namespace Abbybot_III.Commands
             if (aca.abbybotUser.userPerms.Ratings != null)
                 hasperms = aca.abbybotUser.userPerms.Ratings.Contains(Rating);
             sb.AppendLine($"has permissions: {hasperms}");
-            bool inTimeOut = aca.abbybotUser.userTrust.inTimeOut;
-            sb.AppendLine($"in time out: {inTimeOut}");
-            if (inTimeOut)
-                await aca.Send($"You're in timeout for a little while. You did a mean thing and I can't stand for that. Check your time and details with ``abbybot timeout``. Sorry.");
-
+            
             bool isGuild = aca.abbybotGuild != null;
             bool istextchannel = aca.channel is ITextChannel;
             bool guilduser = aca.author is SocketGuildUser;
@@ -90,7 +89,7 @@ namespace Abbybot_III.Commands
 
             bool dmchannel = aca.channel is SocketDMChannel;
             sb.AppendLine($"is in dms: {dmchannel}");
-            var canRun = ((isGuild && !inTimeOut && istextchannel && guilduser && hasperms) || dmchannel);
+            var canRun = ((isGuild && istextchannel && guilduser && hasperms) || dmchannel);
             sb.AppendLine($"requirements met?: {canRun}");
             var isAbbybot = aca.abbybotUser.Id == Apis.Discord.Discord._client.CurrentUser.Id;
             var IsAbbybotRunnable = isAbbybot && SelfRun;
@@ -103,16 +102,13 @@ namespace Abbybot_III.Commands
             var wecanrun = canRun && !isAbbybot || canRun && IsAbbybotRunnable;
             sb.AppendLine($"wecanrun: {wecanrun}");
 
-            sb.AppendLine($"canrun = (({isGuild} && {!inTimeOut} && {istextchannel} && {guilduser} && {hasperms}) OR {dmchannel})");
+            sb.AppendLine($"canrun = (({isGuild} && {istextchannel} && {guilduser} && {hasperms}) OR {dmchannel})");
             sb.AppendLine($"wecanrun = {canRun} && {!isAbbybot} OR {canRun} && {IsAbbybotRunnable} ");
 
             if (aca.Message.Contains("--debugmode") && !aca.Message.Contains("abbybot say") && !aca.Message.Contains("abbybot dm"))
                 await aca.Send(sb);
 
             bool go = canRun && !isAbbybot || canRun && IsAbbybotRunnable;
-
-
-
             return go;
         }
 
@@ -137,12 +133,26 @@ namespace Abbybot_III.Commands
         {
             var aca = (md as AbbybotCommandArgs);
 
-            await DoWork(aca);
+            
+            
             if (!(this is PassiveCommand))
             {
+                bool inTimeOut = aca.abbybotUser.userTrust.inTimeOut;
+                //sb.AppendLine($"in time out: {inTimeOut}");
+                if (inTimeOut)
+                {
+
+                    DateTime time = aca.abbybotUser.userTrust.TimeOutEndDate;
+                    string reason = aca.abbybotUser.userTrust.timeoutReason;
+                    var tt = TimeStringGenerator.MilistoTimeString((decimal)(time - DateTime.Now).TotalMilliseconds);
+
+                    await aca.Send($"You're in **timeout** for {tt}. You **{reason}** and I can't stand for that. Sorry.");
+                    return;
+                }
                 await PassiveUserSql.IncStat(aca.abbybotUser.Id, "CommandsSent");
                 await LastTimeSql.SetTimeSql(aca.abbybotUser.Id, "Command", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
             }
+            await DoWork(aca);
         }
 
         async Task<bool> iCommand.Evaluate(iMsgData message)
