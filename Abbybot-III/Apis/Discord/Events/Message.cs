@@ -35,8 +35,16 @@ namespace Abbybot_III.Apis.Discord.Events
             if (nowrite)
                 WriteMessage(message);
 
+            ulong guidId = 0, chanelId = 0;
 
-            await PassiveUserSql.IncStat(message.Author.Id, "MessagesSent");
+            if (message.Author is SocketGuildUser sgu)
+            {
+                guidId = sgu.Guild.Id;
+                chanelId = message.Channel.Id;
+            }
+            ulong abbybotId = Discord._client.CurrentUser.Id;
+            await PassiveUserSql.IncreaseStat(abbybotId, guidId, chanelId, message.Author.Id, "MessagesSent");
+
             await CommandHandler.Handle(message);
         }
 

@@ -1,4 +1,5 @@
 ﻿using Abbybot_III.Clocks;
+using Abbybot_III.Commands.Custom.PassiveUsage;
 using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
 using Abbybot_III.Sql.Abbybot.Abbybot;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 namespace Abbybot_III.Commands.Contains.Abbybot
 {
     [Capi.Cmd("hey abbybot", 1,1)]
-    class heyNano :ContainCommand
+    class heyNano : PassiveCommand
     {
         public override async Task<bool> Evaluate(AbbybotCommandArgs aca)
         {
@@ -25,7 +26,13 @@ namespace Abbybot_III.Commands.Contains.Abbybot
             foreach (var abbybotchannel in abbybotchannels)
                 if (aca.channel.Id == abbybotchannel.channelId) listenChannel = true;
 
-            return e && listenChannel && await base.Evaluate(aca);
+            return e && listenChannel && await Eval(aca);
+        }
+        public async Task<bool> Eval(AbbybotCommandArgs aca)
+        {
+            bool v = (aca.Message.ToLower().Contains(Command.ToLower()));
+            if (v) return await base.Evaluate(aca);
+            else return false;
         }
         public override async Task DoWork(AbbybotCommandArgs aca)
         {

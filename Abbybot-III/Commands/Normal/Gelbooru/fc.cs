@@ -25,7 +25,6 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 
             if (FavoriteCharacter.Length < 1)
             {
-                FavoriteCharacter[0] = '1';
                 var fcfc = GelEmbed.fcbuilder(a.abbybotUser.userFavoriteCharacter.FavoriteCharacter);
                 await a.Send($"Your favorite character is: {fcfc}");
                 return;

@@ -17,7 +17,6 @@ namespace Abbybot_III.Core.CommandHandler
         {
             AbbybotCommandArgs aca = await AbbybotCommandArgs.MakeArgsFromMessage(message);
             await UserTrustSql.GetUserTimeout(aca.abbybotUser);
-            Console.WriteLine(aca.abbybotUser.userTrust.inTimeOut);
             capi.Start(aca);
         }
 

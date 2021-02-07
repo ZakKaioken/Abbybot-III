@@ -149,7 +149,17 @@ namespace Abbybot_III.Commands
                     await aca.Send($"You're in **timeout** for {tt}. You **{reason}** and I can't stand for that. Sorry.");
                     return;
                 }
-                await PassiveUserSql.IncStat(aca.abbybotUser.Id, "CommandsSent");
+
+                ulong guildId = 0, channelId = 0;
+
+                if (aca.abbybotGuild != null)
+                {
+                    guildId = aca.abbybotGuild.GuildId;
+                    channelId = aca.channel.Id;
+                }
+                ulong abbybotId = Apis.Discord.Discord._client.CurrentUser.Id;
+                await PassiveUserSql.IncreaseStat(abbybotId, guildId, channelId, aca.abbybotUser.Id, "CommandsSent");
+                Console.WriteLine($"I was suposed to increase {"CommandsSent"}");
                 await LastTimeSql.SetTimeSql(aca.abbybotUser.Id, "Command", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
             }
             await DoWork(aca);

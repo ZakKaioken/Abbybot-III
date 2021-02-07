@@ -13,17 +13,17 @@ namespace Abbybot_III.Core.Users.sql
 {
     class UserSql
     {
-        public static async Task GetUser(AbbybotUser user)
+        public static async Task<AbbybotUser> GetUser(ulong Id)
         {
 
-            var table = await AbbysqlClient.FetchSQL($"SELECT `Id` FROM `users` WHERE `Id` = '{user.Id}';");
+            var table = await AbbysqlClient.FetchSQL($"SELECT `Id` FROM `users` WHERE `Id` = '{Id}';");
             if (table.Count < 1)
-                await AddUser(user);
+                await AbbysqlClient.RunSQL($"INSERT INTO `discord`.`users`(Id, FavoriteCharacter) VALUES ('{Id}','Abigail_Williams*');");
 
-            table = await AbbysqlClient.FetchSQL($"SELECT users.* FROM `users` WHERE users.Id = {user.Id};");
+            table = await AbbysqlClient.FetchSQL($"SELECT users.* FROM `users` WHERE users.Id = {Id};");
             
             AbbyRow row = table[0];
-
+            var user = new AbbybotUser();
             user.userFavoriteCharacter = new UserFavoriteCharacter
             {
                 FavoriteCharacter = (row["FavoriteCharacter"] is string s) ? s : "abigail_williams*",
@@ -46,17 +46,16 @@ namespace Abbybot_III.Core.Users.sql
                 ActivityLevel = (int)row["LonlinessRating"]
             };
 
-           /* user.userTwitter = new UserTwitter
-            {
-                 Twitter = (row["Twitter"] is string twitter) ? twitter : "",
-                 TwitterChannel = (row["Channel"] is string chan) ? chan : "",
-                 TweetCount = (row["TweetCount"] is int twwc) ? twwc : 0
-            };*/
+            /* user.userTwitter = new UserTwitter
+             {
+                  Twitter = (row["Twitter"] is string twitter) ? twitter : "",
+                  TwitterChannel = (row["Channel"] is string chan) ? chan : "",
+                  TweetCount = (row["TweetCount"] is int twwc) ? twwc : 0
+             };*/
+            return user;
         }
-
-        private static async Task AddUser(AbbybotUser user)
+        private static async Task AddUser(ulong Id)
         {
-            await AbbysqlClient.RunSQL($"INSERT INTO `discord`.`users`(Id, FavoriteCharacter) VALUES ('{user.Id}','Abigail_Williams*');");
-        }
+            }
     }
 }

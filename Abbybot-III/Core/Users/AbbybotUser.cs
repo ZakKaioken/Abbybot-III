@@ -50,6 +50,7 @@ namespace Abbybot_III.Core.Data.User
             
             if (author == null)
                 throw new Exception("author is null");
+            
 
             Id = author.Id;
 
@@ -73,7 +74,11 @@ namespace Abbybot_III.Core.Data.User
             userTrust = new UserTrust();
             await UserTrustSql.GetUserTimeout(this);
 
-            await UserSql.GetUser(this);
+            var u = await UserSql.GetUser(Id);
+            userFavoriteCharacter = u.userFavoriteCharacter;
+            userMarry = u.userMarry;
+            userInterestingFacts = u.userInterestingFacts;
+            userTrust = u.userTrust;
         }
 
         internal static object GetUserFromTwitterUser(string screenName)

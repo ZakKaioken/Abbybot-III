@@ -26,8 +26,10 @@ namespace Abbybot_III.Core.Users.sql
         public static async Task<bool> GetAutoFcDmAsync(ulong userId)
         {
             AbbyTable table = await AbbysqlClient.FetchSQL($"select * from `discord`.`autofcdms` where `UserId` = {userId}");
-            return table.Count >= 1 && (((sbyte)table[0]["On"])==1 ? true : false);
-            ;
+            if (table.Count < 1) return false;
+
+            return (table[0]["On"] is sbyte sba) ? ((int)sba == 1) : false;
+            
         }
 
         public static async Task<List<ulong>> GetListAutoFcDmsAsync()
