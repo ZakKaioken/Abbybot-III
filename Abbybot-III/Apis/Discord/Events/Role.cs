@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 
 namespace Abbybot_III.Apis.Discord.Events
 {
-    internal class Role
+    public class Role
     {
-        internal static void Init(DiscordSocketClient _client)
+        public static void Init(DiscordSocketClient _client)
         {
             _client.RoleCreated += async (role) => await Role.Created(role);
             _client.RoleDeleted += async (role) => await Role.Deleted(role);
