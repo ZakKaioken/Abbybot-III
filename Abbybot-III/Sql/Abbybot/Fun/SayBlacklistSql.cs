@@ -15,7 +15,6 @@ namespace Abbybot_III.Sql.Abbybot.Fun
             abisb.Append("SELECT * FROM `sayblacklist`");
             List<string> tags = new List<string>();
 
-            bool e = false;
             var table = await AbbysqlClient.FetchSQL(abisb.ToString());
             foreach (AbbyRow row in table)
             {

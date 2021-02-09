@@ -12,9 +12,6 @@ namespace Abbybot_III.Clocks
 {
     class TwitterMentionClock : RepeatingClock
     {
-        int sendCount = 0;
-        int maxSendCount = 5;
-
         //Queue<>
         public override async Task OnInit(DateTime time)
         {

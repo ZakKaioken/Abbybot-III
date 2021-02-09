@@ -13,24 +13,20 @@ namespace Abbybot_III.Apis.Twitter.Core
 {
     class TweetSender
     {
-        static int id;
-        static int trycount;
-
-        static void p(object st)
+        static void P(object st)
         {
             Abbybot.print($"[Tweet Sender Core]: {st}");
         }
 
-        static bool sendingtweet = false;
-        static Random r = new Random();
+        static readonly Random r = new Random();
 
         public static async Task SendTweet()
         {
             Abbybot.print("ayo");
             var abbybotchannels = await AbbybotSql.GetAbbybotChannelIdAsync();
             var er = r.Next(0, abbybotchannels.Count);
-            var ch = abbybotchannels[er];
-            var c = Discord.Discord._client.GetGuild(ch.guildId).GetTextChannel(ch.channelId);
+            var (guildId, channelId) = abbybotchannels[er];
+            var c = Discord.Discord._client.GetGuild(guildId).GetTextChannel(channelId);
             await c.SendMessageAsync("nano gonna work");
             PingAbbybotClock.o = 6; //6 is the working state
             Tweet tweet = null;
@@ -49,7 +45,7 @@ namespace Abbybot_III.Apis.Twitter.Core
 
             if (tweet == null)
             {
-                p("no tweet was found");
+                P("no tweet was found");
                 await c.SendMessageAsync("I'm done working nano");
                 PingAbbybotClock.o = 1;
                 return;
@@ -59,7 +55,7 @@ namespace Abbybot_III.Apis.Twitter.Core
 
             if (tempfilepath == null)
             {
-                p("no image found.");
+                P("no image found.");
                 await c.SendMessageAsync("I'm done working nano");
                 PingAbbybotClock.o = 1;
                 return;
@@ -108,13 +104,13 @@ namespace Abbybot_III.Apis.Twitter.Core
             }
 
             string[] s = new string[] { me.Media_Id };
-            Task<TwitterAsyncResult<TwitterStatus>> o = null;
             int tries = 0;
             TwitterStatus tweetvalue;
             do
             {
                 tries++;
                 Console.Write("I");
+                Task<TwitterAsyncResult<TwitterStatus>> o;
                 if (!tweet.sourceurl.Contains("twitter"))
                 {
                     o = Twitter.ts.SendTweetAsync(new SendTweetOptions { Status = $"{tweet.message}\n\n{tweet.sourceurl} #abigailwilliams #abbybot @AbbyKaioken", MediaIds = s });

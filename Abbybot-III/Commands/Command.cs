@@ -1,5 +1,4 @@
-﻿using Abbybot_III.Commands.Custom.PassiveUsage;
-using Abbybot_III.Core.CommandHandler.extentions;
+﻿using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
 using Abbybot_III.Sql.Abbybot.User;
 
@@ -118,6 +117,7 @@ namespace Abbybot_III.Commands
 
         public virtual async Task RegenHelpString()
         {
+            await Task.CompletedTask;
         }
 
         public virtual async Task<bool> ShowHelp(AbbybotCommandArgs aca)
@@ -128,35 +128,40 @@ namespace Abbybot_III.Commands
 
         async Task iCommand.DoWork(iMsgData md)
         {
-            var aca = (md as AbbybotCommandArgs);
-
-            if (!(this is PassiveCommand))
+            var aca = md as AbbybotCommandArgs;
+            try
             {
-                bool inTimeOut = aca.abbybotUser.userTrust.inTimeOut;
-                //sb.AppendLine($"in time out: {inTimeOut}");
-                if (inTimeOut)
-                {
-                    DateTime time = aca.abbybotUser.userTrust.TimeOutEndDate;
-                    string reason = aca.abbybotUser.userTrust.timeoutReason;
-                    var tt = TimeStringGenerator.MilistoTimeString((decimal)(time - DateTime.Now).TotalMilliseconds);
-
-                    await aca.Send($"You're in **timeout** for {tt}. You **{reason}** and I can't stand for that. Sorry.");
-                    return;
-                }
-
-                ulong guildId = 0, channelId = 0;
-
-                if (aca.abbybotGuild != null)
-                {
-                    guildId = aca.abbybotGuild.GuildId;
-                    channelId = aca.channel.Id;
-                }
-                ulong abbybotId = Apis.Discord.Discord._client.CurrentUser.Id;
-                await PassiveUserSql.IncreaseStat(abbybotId, guildId, channelId, aca.abbybotUser.Id, "CommandsSent");
-                Console.WriteLine($"I was suposed to increase {"CommandsSent"}");
-                await LastTimeSql.SetTimeSql(aca.abbybotUser.Id, "Command", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+                await DoWorkIncrementations(aca);
+                await DoWork(aca);
             }
-            await DoWork(aca);
+            catch { }
+        }
+
+        public virtual async Task DoWorkIncrementations(AbbybotCommandArgs aca)
+        {
+            bool inTimeOut = aca.abbybotUser.userTrust.inTimeOut;
+            //sb.AppendLine($"in time out: {inTimeOut}");
+            if (inTimeOut)
+            {
+                DateTime time = aca.abbybotUser.userTrust.TimeOutEndDate;
+                string reason = aca.abbybotUser.userTrust.timeoutReason;
+                var tt = TimeStringGenerator.MilistoTimeString((decimal)(time - DateTime.Now).TotalMilliseconds);
+
+                await aca.Send($"You're in **timeout** for {tt}. You **{reason}** and I can't stand for that. Sorry.");
+                return;
+            }
+
+            ulong guildId = 0, channelId = 0;
+
+            if (aca.abbybotGuild != null)
+            {
+                guildId = aca.abbybotGuild.GuildId;
+                channelId = aca.channel.Id;
+            }
+            ulong abbybotId = Apis.Discord.Discord._client.CurrentUser.Id;
+            await PassiveUserSql.IncreaseStat(abbybotId, guildId, channelId, aca.abbybotUser.Id, "CommandsSent");
+            Console.WriteLine($"I was suposed to increase {"CommandsSent"}");
+            await LastTimeSql.SetTimeSql(aca.abbybotUser.Id, "Command", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
         }
 
         async Task<bool> iCommand.Evaluate(iMsgData message)

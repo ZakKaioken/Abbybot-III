@@ -11,7 +11,7 @@ namespace Abbybot_III.Sql.Abbybot.User
     {
         public static async Task SetUsernameSql(ulong userId, string username, string nickname = "")
         {
-            nickname = (nickname != null) ? nickname : "";
+            nickname ??= "";
 
             string u = (username.Length > 1) ? AbbysqlClient.EscapeString(username) : "";
             string n = (nickname.Length > 1) ? AbbysqlClient.EscapeString(nickname) : "";

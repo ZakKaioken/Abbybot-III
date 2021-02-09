@@ -53,7 +53,7 @@ namespace Abbybot_III.Apis.Discord.Events
 
             var username = message.Author.Username;
             StringBuilder sb = new StringBuilder();
-            sb.Append(guild).Append("-").Append(username).Append(": ");
+            sb.Append(guild).Append('-').Append(username).Append(": ");
 
             sb.AppendLine(message.Content);
 

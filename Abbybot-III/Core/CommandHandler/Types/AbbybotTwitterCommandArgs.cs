@@ -12,7 +12,7 @@ namespace Abbybot_III.Core.CommandHandler.Types
 {
     public class AbbybotTwitterCommandArgs : AbbybotCommandArgs
     {
-        public string Message
+        public new string Message
         {
             get
             {
@@ -24,24 +24,26 @@ namespace Abbybot_III.Core.CommandHandler.Types
             }
         }
 
-        public SocketUser author;
-        public ISocketMessageChannel channel;
-        public SocketMessage originalMessage;
-        public List<SocketUser> mentionedUserIds;
-        public AbbybotGuild abbybotGuild;
-        public AbbybotUser abbybotUser;
-        public AbbybotUser abbybotSudoUser;
+        public new SocketUser author;
+        public new ISocketMessageChannel channel;
+        public new SocketMessage originalMessage;
+        public new List<SocketUser> mentionedUserIds;
+        public new AbbybotGuild abbybotGuild;
+        public new AbbybotUser abbybotUser;
+        public new AbbybotUser abbybotSudoUser;
 
         string msg;
 
-        public static async Task<AbbybotCommandArgs> MakeArgsFromMessage(SocketMessage sm)
+        public static new async Task<AbbybotCommandArgs> MakeArgsFromMessage(SocketMessage sm)
         {
-            var aca = new AbbybotCommandArgs();
-            aca.Message = sm.Content;
-            aca.author = sm.Author;
-            aca.abbybotUser = await AbbybotUser.GetUserFromSocketUser(sm.Author);
-            aca.channel = sm.Channel;
-            aca.originalMessage = sm;
+            var aca = new AbbybotCommandArgs
+            {
+                Message = sm.Content,
+                author = sm.Author,
+                abbybotUser = await AbbybotUser.GetUserFromSocketUser(sm.Author),
+                channel = sm.Channel,
+                originalMessage = sm
+            };
 
             List<ulong> menids = new List<ulong>();
             foreach (var e in sm.MentionedUsers)

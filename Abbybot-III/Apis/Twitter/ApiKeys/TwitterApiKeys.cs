@@ -11,9 +11,12 @@ namespace Abbybot_III.Apis.Twitter.ApiKeys
         public string ConsumerSecret;
         public string AccessToken;
         public string AcessTokenSecret;
+#pragma warning disable 649
 
         [JsonIgnore]
         public string jPath;
+
+#pragma warning restore  649
 
         public void Save()
         {

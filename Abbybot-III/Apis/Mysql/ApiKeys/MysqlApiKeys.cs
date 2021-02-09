@@ -18,8 +18,12 @@ namespace Abbybot_III.Apis.Mysql.ApiKeys
             return $"server ={server}; user ={user}; database ={database}; port ={port}; password ={password}";
         }
 
+#pragma warning disable 649
+
         [JsonIgnore]
         public string jPath;
+
+#pragma warning restore  649
 
         public void Save()
         {

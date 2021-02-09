@@ -9,12 +9,18 @@ namespace Abbybot_III.Commands.Custom.PassiveUsage
     {
         public override async Task<bool> ShowHelp(AbbybotCommandArgs aca)
         {
-            return false;
+            return await Task.FromResult(false);
         }
 
         public override async Task<bool> Evaluate(AbbybotCommandArgs aca)
         {
-            return true;
+            return await Task.FromResult(true);
+        }
+
+        public override async Task DoWorkIncrementations(AbbybotCommandArgs aca)
+        {
+            await Task.CompletedTask;
+            throw new System.Exception("PassiveCommand");
         }
     }
 }

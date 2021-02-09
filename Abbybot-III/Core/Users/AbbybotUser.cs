@@ -85,13 +85,14 @@ namespace Abbybot_III.Core.Data.User
 
         async Task GetGuild(SocketUser author)
         {
-            var sgu = author as SocketGuildUser;
             //Abbybot.print(sgu.Guild.Name);
-            if (sgu != null)
+            if (author is SocketGuildUser sgu)
             {
                 //Abbybot.print("found guild");
-                userGuild = new UserGuild();
-                userGuild.GuildId = sgu.Guild.Id;
+                userGuild = new UserGuild
+                {
+                    GuildId = sgu.Guild.Id
+                };
                 userNames.Nickname = sgu.Nickname;
                 userGuild.Roles = await RoleManager.GetUserRoles(sgu);
                 userGuild.admin = sgu.Roles.ToList().Any(rs => rs.Permissions.Administrator);

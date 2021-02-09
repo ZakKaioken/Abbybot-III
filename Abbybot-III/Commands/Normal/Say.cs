@@ -32,7 +32,7 @@ namespace Abbybot_III.Commands.Normal
 
         public override async Task<string> toHelpString(AbbybotCommandArgs aca)
         {
-            return $"make me say something!!!";
+            return await Task.FromResult($"make me say something!!!");
         }
     }
 }

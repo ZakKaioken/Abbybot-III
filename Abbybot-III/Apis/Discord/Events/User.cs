@@ -52,7 +52,15 @@ namespace Abbybot_III.Apis.Discord.Events
 
         static async Task Updated(SocketUser olduser, SocketUser newuser)
         {
-            await Task.CompletedTask;
+            Abbybot.print("awawa ");
+            if (olduser is SocketGuildUser osgu && newuser is SocketGuildUser nsgu)
+            {
+                if (osgu.Nickname != nsgu.Nickname)
+                {
+                    NicknameChangedMessage bm = await NicknameChangedMessage.CreateFromUser(osgu.Nickname, nsgu.Nickname, nsgu.Guild);
+                    await MessageHandler.DoGuildMessage(bm);
+                }
+            }
             //throw new NotImplementedException();
         }
 

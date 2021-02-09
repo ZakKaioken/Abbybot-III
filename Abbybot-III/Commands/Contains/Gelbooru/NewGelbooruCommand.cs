@@ -27,7 +27,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
             set => base.SelfRun = value;
         }
 
-        List<string> tags = new List<string> { "" };
+        readonly List<string> tags = new List<string> { "" };
 
         public NewGelbooruCommand(string Command, string[] tags, CommandRatings Rating)
         {
@@ -53,7 +53,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
                 cfc = await ChannelFCOverride.GetFCMAsync(aca.abbybotGuild.GuildId, aca.channel.Id);
             string fc = await GetFavoriteCharacterTagAsync(aca, mentionedUsers);
             List<string> tagz;
-            SearchResult imgdata = new SearchResult();
+            SearchResult imgdata;
 
             var ufc = "abigail_williams*";
             try
@@ -81,7 +81,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
                     if (imgdata.Source == "noimagefound")
                     {
                         throw new Exception("CFC FAILED");
-                        ufc = GelEmbed.fcbuilder($"{cfc}");
+                        //ufc = GelEmbed.fcbuilder($"{cfc}");
                     }
                 }
                 catch
@@ -100,7 +100,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
                     }
                     catch
                     {
-                        tagz = await GenerateTags(aca, "abigail_williams*");
+                        tagz = await GenerateTags(aca, ufc);
 
                         imgdata = await Apis.Booru.AbbyBooru.Execute(tagz.ToArray());
 
@@ -164,7 +164,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
                 tagz.Add($"{cfc}*");
             tagz.Add($"{fc}*");
 
-            if (!(aca.channel is SocketDMChannel sdc))
+            if (aca.channel is not SocketDMChannel sdc)
             {
                 if (!aca.abbybotUser.userPerms.Ratings.Contains((CommandRatings)2) || !await aca.IsNSFW())
                 {
@@ -197,8 +197,6 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
             {
                 return aca.abbybotUser.userFavoriteCharacter.FavoriteCharacter;
             }
-
-            return "abigail_williams*";
         }
 
         public override async Task<string> toHelpString(AbbybotCommandArgs aca)

@@ -8,8 +8,12 @@ namespace Abbybot_III.Apis.Discord.ApiKeys
     {
         public string ApiKey;
 
+#pragma warning disable 649
+
         [JsonIgnore]
         public string jPath;
+
+#pragma warning restore 649
 
         public void Save()
         {
@@ -19,8 +23,6 @@ namespace Abbybot_III.Apis.Discord.ApiKeys
 
         public static DiscordApiKey Load(string path)
         {
-            DiscordApiKey api = null;
-
             var dir = Path.GetDirectoryName(path);
             var fileName = Path.GetFileName(path);
             var e = Path.GetFullPath(path).Replace(fileName, "");
@@ -41,7 +43,7 @@ namespace Abbybot_III.Apis.Discord.ApiKeys
                 Abbybot.print($"Master I can't talk to my friends without my discord token... It's the {fileName} file in {dir}!!!");
             }
 
-            api = JsonConvert.DeserializeObject<DiscordApiKey>(File.ReadAllText(path));
+            DiscordApiKey api = JsonConvert.DeserializeObject<DiscordApiKey>(File.ReadAllText(path));
             return api;
         }
     }
