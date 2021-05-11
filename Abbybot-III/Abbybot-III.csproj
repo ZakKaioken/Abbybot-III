@@ -1,21 +1,20 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>Abbybot_III</RootNamespace>
-    
+
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <OutputPath>C:\Users\Zacha\Documents\GitHub\Abbybot-III\Release\Abbybot-III</OutputPath>
- 
-    <OutDir>Abbybot\III</OutDir>
- 
-    <ApplicationIcon>Abby Kaioken Badge b.ico</ApplicationIcon>
 
+    <OutDir>Abbybot\III</OutDir>
+
+    <ApplicationIcon>Abby Kaioken Badge b.ico</ApplicationIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <Optimize>true</Optimize> 
+    <Optimize>false</Optimize>
   </PropertyGroup>
 
   <ItemGroup>
@@ -33,7 +32,7 @@
 
   <ItemGroup>
     <PackageReference Include="BooruSharp" Version="3.0.2" />
-    <PackageReference Include="Discord.Net" Version="2.3.0" />
+    <PackageReference Include="Discord.Net" Version="2.3.1" />
     <PackageReference Include="MoonSharp" Version="2.0.0" />
     <PackageReference Include="MySql.Data" Version="8.0.23" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
@@ -64,5 +63,4 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
 </Project>

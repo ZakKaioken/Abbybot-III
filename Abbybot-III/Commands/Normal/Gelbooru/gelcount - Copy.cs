@@ -14,8 +14,8 @@ using System.Threading.Tasks;
 
 namespace Abbybot_III.Commands.Normal.Gelbooru
 {
-	[Capi.Cmd("abbybot gelcount", 1, 1)]
-	class gelcount : NormalCommand
+	[Capi.Cmd("abbybot geltags", 1, 1)]
+	class geltags : NormalCommand
 	{
 		public override async Task DoWork(AbbybotCommandArgs a)
 		{
@@ -33,20 +33,27 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 			if (a.abbybotUser.userFavoriteCharacter != null)
 			{
 				var fc = a.abbybotUser.userFavoriteCharacter.FavoriteCharacter;
-				tagss.Replace("&fc", $"{fc}*");
+				tagss.Replace("&fc", $"{fc}");
 			}
 
-			Fc.FCBuilder(tagss);
+			Fc.FCBuilder(tagss).Replace("*", "");
 
 			var tags = tagss.ToString().Split(' ').ToList();
 
+			List<string> sts = new List<string>();
+			foreach (var t in tags)
+			{
+				sts.Add($"{t}");
+			}
+			tags = sts;
+			/*
 			var blacklisttags = await UserBlacklistSql.GetBlackListTags(a.abbybotUser.Id);
 
 			foreach (var item in blacklisttags)
 			{
 				tags.Add($"-{item}");
 			}
-
+			*/
 			if (a.abbybotGuild != null)
 			{
 				var ratings = a.abbybotUser.userPerms.Ratings;
@@ -59,15 +66,25 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 			}
 			try
 			{
-				int o = await AbbyBooru.GetPostCount(tags.ToArray());
-				await a.Send($"There are {o} posts by those tags.");
+				var o = await AbbyBooru.GetTagData(tags.ToArray());
+
+				EmbedBuilder eb = new EmbedBuilder();
+
+				eb.Title = ("Here's what i found");
+				eb.Color = Color.Purple;
+				Abbybot.print(o.Count);
+				foreach (var ooooo in o)
+				{
+					EmbedFieldBuilder efb = new EmbedFieldBuilder();
+					efb.IsInline = true;
+					efb.Name = "\u200b";
+					efb.Value = $"({ooooo.Type}) *{ooooo.Name.Replace("_", "\\_")}*";
+					eb.AddField(efb);
+				}
+
+				await a.Send(eb);
 			}
 			catch { }
-		}
-
-		public virtual async Task<BooruSharp.Search.Post.SearchResult> service(List<string> tags)
-		{
-			return await Apis.Booru.AbbyBooru.Execute(tags.ToArray());
 		}
 
 		public override async Task<string> toHelpString(AbbybotCommandArgs aca)

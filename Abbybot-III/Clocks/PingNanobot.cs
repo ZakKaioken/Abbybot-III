@@ -32,7 +32,7 @@ namespace Abbybot_III.Clocks
                 var abbybot = Process.GetProcessesByName("Nanobot");
                 if (abbybot.Length == 0)
                 {
-                    ShellExecute(IntPtr.Zero, "open", @"C:\Users\AbbybotLaptop\Documents\AbbybotTemporary\AbbybotSource\Abbybot-III-Public\Abbybot-III\Abbybot\III\Nanobot.exe", @"", @"C:\Users\AbbybotLaptop\Documents\AbbybotTemporary\AbbybotSource\Abbybot-III-Public\Abbybot-III\Abbybot\III\", ShowCommands.SW_MINIMIZE);
+                    ShellExecute(IntPtr.Zero, "open", @"C:\Users\AbbybotLaptop\Documents\AbbybotTemporary\AbbybotSource\Abbybot-III-Public\Abbybot-III\Abbybot\III\Nanobot.exe", @"", @"C:\Users\AbbybotLaptop\Documents\AbbybotTemporary\AbbybotSource\Abbybot-III-Public\Abbybot-III\Abbybot\III\", ShowCommands.SW_SHOWMINNOACTIVE);
                 }
                 o = 1;
             }
@@ -72,11 +72,11 @@ namespace Abbybot_III.Clocks
             if (abbybot.Length > 0)
             {
                 abbybot[0].Kill();
-                ShellExecute(IntPtr.Zero, "open", @"C:\Users\AbbybotLaptop\Documents\AbbybotTemporary\AbbybotSource\Abbybot-III-Public\Abbybot-III\Abbybot\III\Nanobot.exe", @"", @"C:\Users\AbbybotLaptop\Documents\AbbybotTemporary\AbbybotSource\Abbybot-III-Public\Abbybot-III\Abbybot\III\", ShowCommands.SW_MINIMIZE);
+                ShellExecute(IntPtr.Zero, "open", @"C:\Users\AbbybotLaptop\Documents\AbbybotTemporary\AbbybotSource\Abbybot-III-Public\Abbybot-III\Abbybot\III\Nanobot.exe", @"", @"C:\Users\AbbybotLaptop\Documents\AbbybotTemporary\AbbybotSource\Abbybot-III-Public\Abbybot-III\Abbybot\III\", ShowCommands.SW_SHOWMINNOACTIVE);
             }
             else
             {
-                ShellExecute(IntPtr.Zero, "open", @"C:\Users\AbbybotLaptop\Documents\AbbybotTemporary\AbbybotSource\Abbybot-III-Public\Abbybot-III\Abbybot\III\Nanobot.exe", @"", @"C:\Users\AbbybotLaptop\Documents\AbbybotTemporary\AbbybotSource\Abbybot-III-Public\Abbybot-III\Abbybot\III\", ShowCommands.SW_MINIMIZE);
+                ShellExecute(IntPtr.Zero, "open", @"C:\Users\AbbybotLaptop\Documents\AbbybotTemporary\AbbybotSource\Abbybot-III-Public\Abbybot-III\Abbybot\III\Nanobot.exe", @"", @"C:\Users\AbbybotLaptop\Documents\AbbybotTemporary\AbbybotSource\Abbybot-III-Public\Abbybot-III\Abbybot\III\", ShowCommands.SW_SHOWMINNOACTIVE);
             }
         }
 

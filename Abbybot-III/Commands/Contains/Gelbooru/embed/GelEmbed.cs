@@ -10,116 +10,144 @@ using System.Text;
 
 namespace Abbybot_III.Commands.Contains.Gelbooru.embed
 {
-    public class GelEmbed
-    {
-        public static EmbedBuilder Build(ImgData imgdata, StringBuilder sb)
-        {
-            StringBuilder message = new StringBuilder();
+	public class GelEmbed
+	{
+		public static EmbedBuilder Build(ImgData imgdata, StringBuilder sb)
+		{
+			StringBuilder message = new StringBuilder();
 
-            EmbedBuilder embededodizer = new EmbedBuilder();
-            var iu = imgdata.Imageurl;
-            if (iu.Contains(new string[] { "mp4", "avi", "webm" }))
-                embededodizer.Url = iu;
-            else
-                embededodizer.ImageUrl = iu;
-            string fcn = fcbuilder(sb.ToString());
+			EmbedBuilder embededodizer = new EmbedBuilder();
+			var iu = imgdata.Imageurl;
+			if (iu.Contains(new string[] { "mp4", "avi", "webm" }))
+				embededodizer.Url = iu;
+			else
+				embededodizer.ImageUrl = iu;
+			string fcn = fcbuilder(sb.ToString());
 
-            message.Clear();
-            MentionsEmbed(imgdata, message);
-            string fixedsource = FixSource(imgdata.source);
-            embededodizer.AddField($"{fcn}  :)", $"[Image Source]({fixedsource})");
-            embededodizer.Color = Color.LightOrange;
-            embededodizer.Description = message.ToString();
+			message.Clear();
+			MentionsEmbed(imgdata, message);
+			string fixedsource = FixSource(imgdata.source);
+			embededodizer.AddField($"{fcn}  :)", $"[Image Source]({fixedsource})");
+			embededodizer.Color = Color.LightOrange;
+			embededodizer.Description = message.ToString();
 
-            return embededodizer;
-        }
+			return embededodizer;
+		}
 
-        static void MentionsEmbed(ImgData imgd, StringBuilder message)
-        {
-            if (imgd.mentions != null)
-            {
-                if (imgd.mentions.Count > 0)
-                {
-                    message.Append(" Hey");
+		static void MentionsEmbed(ImgData imgd, StringBuilder message)
+		{
+			if (imgd.mentions != null)
+			{
+				if (imgd.mentions.Count > 0)
+				{
+					if (imgd.mentions.Count == 1 && imgd.mentions[0].Id == Apis.Discord.Discord._client.CurrentUser.Id)
+					{
+						message.Append("You ");
+						message.Append(imgd.command.Replace("abbybot ", ""));
+						message.Append("ed me!! Thank you so much!!! **");
+						message.Append(imgd.user.userNames.PreferedName);
+						message.Append("**! <:abbyheart:699636931839000606> <a:AbbyHearts:829759075969531984>");
+					}
+					else if (imgd.user.Id == Apis.Discord.Discord._client.CurrentUser.Id)
+					{
+						message.Append("I ");
+						message.Append(imgd.command.Replace("abbybot ", ""));
+						message.Append("ed you ");
+						for (int hu = 0; hu < imgd.mentions.Count; hu++)
+						{
+							message.Append($"**{imgd.mentions[hu].userNames.PreferedName}**");
+							if (imgd.mentions.Count - hu >= 1)
+								message.Append(", ");
+						}
+						message.Append("!!! <a:abbyrich:731562550923100162> <:abbybearsquish:744219531454709820>");
+					}
+					else
+					{
+						message.Append(" Hey");
 
-                    for (int hu = 0; hu < imgd.mentions.Count; hu++)
-                    {
-                        message.Append($" **{imgd.mentions[hu].userNames.PreferedName}**");
-                        if (imgd.mentions.Count - hu >= 1)
-                            message.Append(", ");
-                    }
+						for (int hu = 0; hu < imgd.mentions.Count; hu++)
+						{
+							message.Append($" **{imgd.mentions[hu].userNames.PreferedName}**");
+							if (imgd.mentions.Count - hu >= 1)
+								message.Append(", ");
+						}
 
-                    message.Append("you were ");
-                    message.Append(imgd.command.Replace("abbybot ", ""));
-                    message.Append("ed by **");
-                    message.Append(imgd.user.userNames.PreferedName);
-                    message.Append("**! :)");
-                }
-            }
-        }
+						message.Append("you were ");
+						message.Append(imgd.command.Replace("abbybot ", ""));
+						message.Append("ed by **");
+						message.Append(imgd.user.userNames.PreferedName);
+						message.Append("**! :)");
+					}
+				}
+			}
+		}
 
-        static string FixSource(string source)
-        {
-            //https://www.pixiv.net/en/artworks/77911151
-            //http://www.pixiv.net/member_illust.php?mode=medium&amp;illust_id=66620949
-            if (!string.IsNullOrEmpty(source))
-                return source.Replace("/member_illust.php?mode=medium&amp;illust_id=", "/en/artworks/");
-            return "";
-        }
+		static string FixSource(string source)
+		{
+			//https://www.pixiv.net/en/artworks/77911151
+			//http://www.pixiv.net/member_illust.php?mode=medium&amp;illust_id=66620949
+			if (!string.IsNullOrEmpty(source))
+				return source.Replace("/member_illust.php?mode=medium&amp;illust_id=", "/en/artworks/");
+			return "";
+		}
 
-        public static string fcbuilder(string s)
-        {
-            return s.Replace("* ~ ", " or ").Replace("* ", " and ").Replace("{", "").Replace("}", "").Replace("_", " ").Replace("*", "");
-        }
+		public static string fcbuilder(string s)
+		{
+			return s.Replace("* ~ ", " or ").Replace("* ", " and ").Replace("{", "").Replace("}", "").Replace("_", " ").Replace("*", "");
+		}
 
-        public static EmbedBuilder Build(string fileurl, string source, string fc, List<Core.Data.User.AbbybotUser> mentionedUsers, string command)
-        {
-            StringBuilder message = new StringBuilder();
+		public static EmbedBuilder Build(string fileurl, string source, string fc, List<Core.Data.User.AbbybotUser> mentionedUsers, string command)
+		{
+			StringBuilder message = new StringBuilder();
 
-            EmbedBuilder embededodizer = new EmbedBuilder();
-            var iu = fileurl;
-            if (iu.Contains(new string[] { "mp4", "avi", "webm" }))
-                embededodizer.Url = iu;
-            else
-                embededodizer.ImageUrl = iu;
-            string fcn = fcbuilder(fc.ToString());
+			EmbedBuilder embededodizer = new EmbedBuilder();
+			var iu = fileurl;
+			if (iu.Contains(new string[] { "mp4", "avi", "webm" }))
+				embededodizer.Url = iu;
+			else
+				embededodizer.ImageUrl = iu;
+			string fcn = fcbuilder(fc.ToString());
 
-            message.Clear();
-            //MentionsEmbed(imgd, message);
-            string fixedsource = FixSource(source);
-            embededodizer.AddField($"{fcn}  :)", $"[Image Source]({fixedsource})");
-            embededodizer.Color = Color.LightOrange;
-            embededodizer.Description = message.ToString();
+			message.Clear();
+			//MentionsEmbed(imgd, message);
+			string fixedsource = FixSource(source);
+			embededodizer.AddField($"{fcn}  :)", $"[Image Source]({fixedsource})");
+			embededodizer.Color = Color.LightOrange;
+			embededodizer.Description = message.ToString();
 
-            return embededodizer;
-        }
+			return embededodizer;
+		}
 
-        public static EmbedBuilder Build(ImgData imgdrata)
-        {
-            StringBuilder message = new StringBuilder();
-            EmbedBuilder embededodizer = new EmbedBuilder();
+		public static EmbedBuilder Build(ImgData imgdrata, bool found, bool rolling)
+		{
+			StringBuilder message = new StringBuilder();
+			EmbedBuilder embededodizer = new EmbedBuilder();
 
-            var iu = new Uri(imgdrata.Imageurl).ToString();
-            if (iu.Contains(new string[] { "mp4", "avi", "webm" }))
-                message.AppendLine(iu).Replace("%20", "\\%20");
-            else
-                try
-                {
-                    embededodizer.ImageUrl = iu;
-                }
-                catch
-                {
-                    message.AppendLine(iu);
-                }
-            string fcn = fcbuilder(imgdrata.favoritecharacter.ToString());
+			var iu = new Uri(imgdrata.Imageurl).ToString();
+			if (iu.Contains(new string[] { "mp4", "avi", "webm" }))
+				message.AppendLine(iu).Replace("%20", "\\%20");
+			else
+				try
+				{
+					embededodizer.ImageUrl = iu;
+				}
+				catch
+				{
+					message.AppendLine(iu);
+				}
+			string fcn = fcbuilder(imgdrata.favoritecharacter.ToString());
 
-            MentionsEmbed(imgdrata, message);
-            string fixedsource = FixSource(imgdrata.source);
-            embededodizer.AddField($"{fcn}  :)", $"[Image Source]({fixedsource})");
-            embededodizer.Color = Color.LightOrange;
-            embededodizer.Description = message.ToString();
+			MentionsEmbed(imgdrata, message);
+			string fixedsource = FixSource(imgdrata.source);
+			string title = ((rolling) ? "r" : "") + $"{fcn} :)";
+			if (found)
+				embededodizer.AddField($"{fcn}  :)", $"[Image Source]({fixedsource})");
+			else
+				embededodizer.AddField($"I couldn't find a {imgdrata.command.ReplaceA("abbybot ", "")} picture of {fcn}...  :o", $"[Image Source]({fixedsource})");
+			embededodizer.Color = Color.LightOrange;
+			embededodizer.Description = message.ToString();
 
-            return embededodizer;
-        }
-    }
+			return embededodizer;
+		}
+	}
 }

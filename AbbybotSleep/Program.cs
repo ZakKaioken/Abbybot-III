@@ -15,10 +15,11 @@ Timer timer = new Timer(twtqueueinitialstart);
 timer.Elapsed += (a, b) =>
 {
     timer.Interval = milis;
-    Process.GetProcessesByName("Abbybot-III").Sleep();
+    var ss = Process.GetProcessesByName("Abbybot-III");
+    if (ss.Length > 1) { ss.Sleep(); Process.Start("Abbybot-III"); }
+    if (ss.Length < 1) Process.Start("Abbybot-III");
     timestr = TimeStringGenerator.MilistoTimeString(milis);
     Console.WriteLine($"Dosing off... I'm back!! I'll probably dose off in {timestr}");
-    Process.Start("Abbybot-III");
 };
 timer.Start();
 Console.ReadLine();

@@ -9,7 +9,7 @@ namespace Abbybot_III.Core.Twitter.Queue
     class TweetQueue
     {
         DateTime TweetQueueBeat;
-        TimeSpan tweetQueueMilis = TimeSpan.FromHours(2);
+        TimeSpan tweetQueueMilis = TimeSpan.FromHours(5);
 
         public void init()
         {

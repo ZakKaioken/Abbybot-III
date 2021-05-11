@@ -32,7 +32,7 @@ namespace Abbybot_III.Core.Twitter.Queue.sql
             var table = await AbbysqlClient.FetchSQL($"SELECT * FROM `abbybottwitter`.`tweetarchive`");
             if (table.Count < 1)
                 throw new Exception("no tweets in list");
-
+            //Console.WriteLine($"You have {table.Count} items in the tweetarchive");
             AbbyRow row = table[r.Next(0, table.Count)];
             tweet = new Tweet()
             {

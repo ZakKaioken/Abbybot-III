@@ -12,8 +12,8 @@ using System.Threading.Tasks;
 
 namespace Abbybot_III.Commands.Normal.Gelbooru
 {
-    [Capi.Cmd("abbybot blacklisttag", 1, 1)]
-    class BlackListTag : NormalCommand
+    [Capi.Cmd("abbybot unblacklisttag", 1, 1)]
+    class UnBlackListTag : NormalCommand
     {
         public override async Task DoWork(AbbybotCommandArgs message)
         {
@@ -44,31 +44,17 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
             {
                 try
                 {
-                    try
+                    bool addedtag = await UserBlacklistSql.UnBlackListTag(message.abbybotUser.Id, item);
+                    if (addedtag)
                     {
-                        BooruSharp.Search.Post.SearchResult imgdata = await AbbyBooru.Execute(new string[] { item });
-                    }
-                    catch
-                    {
-                        throw new Exception("This tag doesn't have images. I can't add it to your blacklist.");
-                    }
-                    try
-                    {
-                        bool addedtag = await UserBlacklistSql.BlackListTag(message.abbybotUser.Id, item);
-                        if (addedtag)
-                        {
-                            blt.Add(item);
-                            FavoriteCharacter.Append($"{item} ");
-                        }
-                    }
-                    catch
-                    {
-                        failedblt.Add(item);
+                        blt.Add(item);
+                        FavoriteCharacter.Append($"{item} ");
                     }
                 }
-                catch (Exception ecx)
+                catch (Exception e)
                 {
-                    reason = ecx.Message;
+                    Console.WriteLine(e);
+                    failedblt.Add(item);
                 }
             }
             //FavoriteCharacter.AppendJoin(",", tags);
@@ -91,7 +77,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
             {
                 eb.Title = $"{fc} Yayy!!";
                 eb.Color = Color.Green;
-                fcmaa.Append($"I added tags {FavoriteCharacter} to your gel blacklist cutie {message.abbybotUser.userNames.PreferedName} master!!");
+                fcmaa.Append($"I removed tags {FavoriteCharacter} from your gel blacklist cutie {message.abbybotUser.userNames.PreferedName} master!!");
                 if (ff.Length > 0) fcmaa.Append(" (").Append(ff).Append(")");
 
                 eb.Description = fcmaa.ToString();
@@ -102,7 +88,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
                 eb.Color = Color.Red;
                 eb.ImageUrl = "https://cdn.discordapp.com/avatars/595308053448884294/69542a3eb0866c37f33aa63704fe3726.png";
                 fcmaa.Append($"sorry {message.abbybotUser.userNames.PreferedName} master...");
-                fcmaa.Append(" I could not blacklist these tags: ").Append(ff).Append("...");
+                fcmaa.Append(" I could not remove these tags: ").Append(ff).Append("...");
                 eb.Description = fcmaa.ToString();
             }
 
@@ -111,7 +97,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 
         public override async Task<string> toHelpString(AbbybotCommandArgs aca)
         {
-            return await Task.FromResult($"blacklist tags you don't like. Personally, i hate large breasts, but you do you.");
+            return await Task.FromResult($"remove blacklisted tags you blacklisted.");
         }
     }
 }
