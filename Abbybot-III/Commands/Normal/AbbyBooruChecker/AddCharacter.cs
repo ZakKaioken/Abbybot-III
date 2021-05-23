@@ -1,5 +1,4 @@
-﻿using Abbybot_III.Apis.Booru;
-using Abbybot_III.Core.AbbyBooru.sql;
+﻿using Abbybot_III.Core.AbbyBooru.sql;
 using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
 
@@ -9,7 +8,7 @@ using Discord;
 
 using System;
 using System.Linq;
-using System.Text;
+
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Commands.Normal.AbbyBooruChecker
@@ -19,23 +18,19 @@ namespace Abbybot_III.Commands.Normal.AbbyBooruChecker
 	{
 		public override async Task DoWork(AbbybotCommandArgs a)
 		{
-			StringBuilder FavoriteCharacter = new StringBuilder(a.Message.Replace(Command, ""));
+			var FavoriteCharacter = a.Replace(Command);
 			if (a.user.isGuild && !a.user.admin)
 				await a.Send($"silly {a.user.Preferedname}, you're not an admin here!!!");
 			Abbybot.print("acadd called");
 			if (FavoriteCharacter.Length < 1)
 				return;
-			while (FavoriteCharacter[0] == ' ')
-				FavoriteCharacter.Remove(0, 1);
-			while (FavoriteCharacter[^1] == ' ')
-				FavoriteCharacter.Remove(FavoriteCharacter.Length - 1, 1);
+			a.BuildAbbybooruTag(FavoriteCharacter);
 
-			Gelbooru.Fc.FCBuilder(FavoriteCharacter);
 			string pictureurl = "https://img2.gelbooru.com/samples/ee/e2/sample_eee286783bfa37e088d1ffbcf8f098ba.jpg";
 			var o = new string[1];
 			o[0] = FavoriteCharacter.ToString() + "*";
 
-			var ee = await Gelbooru.Fc.awa(o);
+			var ee = await Gelbooru.Fc.awa(a, o);
 			EmbedBuilder eb = new EmbedBuilder();
 			eb.ImageUrl = pictureurl;
 			var u = a.user;

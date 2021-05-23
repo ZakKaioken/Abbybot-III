@@ -26,7 +26,7 @@ namespace Abbybot_III.Apis.Twitter.Core
             var abbybotchannels = await AbbybotSql.GetAbbybotChannelIdAsync();
             var er = r.Next(0, abbybotchannels.Count);
             var (guildId, channelId) = abbybotchannels[er];
-            var c = Discord._client.GetGuild(guildId).GetTextChannel(channelId);
+            var c = Discord.__client.GetGuild(guildId).GetTextChannel(channelId);
             await c.SendMessageAsync("nano gonna work");
             PingAbbybotClock.o = 6; //6 is the working state
             Tweet tweet = null;

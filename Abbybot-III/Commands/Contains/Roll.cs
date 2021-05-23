@@ -22,7 +22,7 @@ namespace Abbybot_III.Commands.Contains
 		{
 			StringBuilder sb = new StringBuilder();
 			int d = 6;
-			var i = abd.Message.ToLower().Split(" ");
+			var i = abd.Split(" ", true);
 			bool def = true;
 			foreach (var a in i)
 			{

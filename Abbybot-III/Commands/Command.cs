@@ -72,24 +72,16 @@ namespace Abbybot_III.Commands
 				hasperms = aca.user.Ratings.Contains(Rating);
 			sb.AppendLine($"has permissions: {hasperms}");
 
-			bool isGuild = aca.guild != null;
-			bool istextchannel = aca.channel is ITextChannel;
+			bool isGuild = aca.isGuild;
 			bool guilduser = aca.author is SocketGuildUser;
-
-			if (istextchannel)
-			{
-				var aaa = aca.channel as ITextChannel;
-				sb.AppendLine($"channel is nsfw: {aaa.IsNsfw}");
-			}
-
-			bool guild = isGuild && istextchannel && guilduser;
+			bool guild = isGuild && guilduser;
 			sb.AppendLine($"is in guild: {guild}");
 
 			bool dmchannel = aca.channel is SocketDMChannel;
 			sb.AppendLine($"is in dms: {dmchannel}");
-			var canRun = ((isGuild && istextchannel && guilduser && hasperms) || dmchannel);
+			var canRun = ((isGuild && guilduser && hasperms) || dmchannel);
 			sb.AppendLine($"requirements met?: {canRun}");
-			var isAbbybot = aca.user.Id == Apis.Discord._client.CurrentUser.Id;
+			var isAbbybot = aca.user.Id == aca.abbybotId;
 			var IsAbbybotRunnable = isAbbybot && SelfRun;
 
 			sb.AppendLine($"isabbybotrunnable: {IsAbbybotRunnable}");
@@ -99,10 +91,10 @@ namespace Abbybot_III.Commands
 			var wecanrun = canRun && !isAbbybot || canRun && IsAbbybotRunnable;
 			sb.AppendLine($"wecanrun: {wecanrun}");
 
-			sb.AppendLine($"canrun = (({isGuild} && {istextchannel} && {guilduser} && {hasperms}) OR {dmchannel})");
+			sb.AppendLine($"canrun = (({isGuild} && {guilduser} && {hasperms}) OR {dmchannel})");
 			sb.AppendLine($"wecanrun = {canRun} && {!isAbbybot} OR {canRun} && {IsAbbybotRunnable} ");
 
-			if (aca.Message.Contains("--debugmode") && !aca.Message.Contains("abbybot say") && !aca.Message.Contains("abbybot dm"))
+			if (aca.Message.Contains("--test") && !aca.Message.Contains("abbybot say") && !aca.Message.Contains("abbybot dm"))
 				await aca.Send(sb);
 
 			bool go = canRun && !isAbbybot || canRun && IsAbbybotRunnable;
@@ -167,8 +159,7 @@ namespace Abbybot_III.Commands
 				guildId = aca.guild.Id;
 				channelId = aca.channel.Id;
 			}
-			ulong abbybotId = Apis.Discord._client.CurrentUser.Id;
-			await PassiveUserSql.IncreaseStat(abbybotId, guildId, channelId, aca.user.Id, "CommandsSent");
+			await aca.IncreasePassiveStat("CommandsSent");
 			await LastTimeSql.SetTimeSql(aca.user.Id, guildId, "Command", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
 		}
 

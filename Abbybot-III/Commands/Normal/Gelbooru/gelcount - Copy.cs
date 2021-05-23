@@ -1,4 +1,4 @@
-﻿using Abbybot_III.Apis.Booru;
+﻿using Abbybot_III.Apis;
 using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
 using Abbybot_III.Core.Users.sql;
@@ -9,7 +9,7 @@ using Discord;
 
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Commands.Normal.Gelbooru
@@ -19,7 +19,8 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 	{
 		public override async Task DoWork(AbbybotCommandArgs a)
 		{
-			StringBuilder tagss = new StringBuilder(a.Message.Replace(Command, ""));
+			//StringBuilder tagss = new StringBuilder(a.Message.Replace(Command, ""));
+			var tagss = a.Replace(Command);
 			if (tagss.Length < 1)
 			{
 				await a.Send("You gotta tell me some tags too silly!!!");
@@ -32,8 +33,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 
 			var fc = a.user.FavoriteCharacter;
 			tagss.Replace("&fc", $"{fc}");
-
-			Fc.FCBuilder(tagss).Replace("*", "");
+			a.BuildAbbybooruTag(tagss).Replace("*", "");
 
 			var tags = tagss.ToString().Split(' ').ToList();
 
@@ -43,14 +43,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 				sts.Add($"{t}");
 			}
 			tags = sts;
-			/*
-			var badtaglisttags = await UserbadtaglistSql.GetbadtaglistTags(a.abbybotUser.Id);
-
-			foreach (var item in badtaglisttags)
-			{
-				tags.Add($"-{item}");
-			}
-			*/
+			
 			if (a.guild != null)
 			{
 				var ratings = a.user.Ratings;
@@ -69,7 +62,6 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 
 				eb.Title = ("Here's what i found");
 				eb.Color = Color.Purple;
-				Abbybot.print(o.Count);
 				foreach (var ooooo in o)
 				{
 					EmbedFieldBuilder efb = new EmbedFieldBuilder();

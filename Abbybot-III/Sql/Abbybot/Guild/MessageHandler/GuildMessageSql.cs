@@ -3,7 +3,7 @@
 using AbbySql;
 using AbbySql.Types;
 
-using System.Text;
+
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Core.Guilds.sql
@@ -12,11 +12,9 @@ namespace Abbybot_III.Core.Guilds.sql
     {
         public static async Task<GuildMessage> GetGuildMessage(ulong id, string type)
         {
-            StringBuilder abisb = new StringBuilder("SELECT * FROM servermessages WHERE ");
-            abisb.Append($"guildId ='{id}' && ");
-            abisb.Append($"type = '{type}';");
             GuildMessage g = null;
-            var table2 = await AbbysqlClient.FetchSQL(abisb.ToString());
+            
+            var table2 = await AbbysqlClient.FetchSQL($"SELECT * FROM servermessages WHERE guildId ='{id}' && type = '{type}';");
             foreach (AbbyRow row in table2)
             {
                 g = new GuildMessage()

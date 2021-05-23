@@ -11,7 +11,7 @@ using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Core.Roles.sql
@@ -24,19 +24,12 @@ namespace Abbybot_III.Core.Roles.sql
 
 			if (dre)
 				return false;
-
-			StringBuilder abisb = new StringBuilder();
-			abisb.Clear();
-			abisb.Append("INSERT INTO `discord`.`roles` (`UserId`,`GuildId`,`RoleId`) ");
-			abisb.Append("VALUES ");
-			abisb.Append($"('{user}', ");
-			abisb.Append($"'{guild}',");
-			abisb.Append($"'{role}'); ");
+			
 
 			bool ran = true;
 			try
 			{
-				await AbbysqlClient.RunSQL(abisb.ToString());
+				await AbbysqlClient.RunSQL($"INSERT INTO `discord`.`roles` (`UserId`,`GuildId`,`RoleId`) VALUES ('{user}', '{guild}','{role}');");
 			}
 			catch (Exception e)
 			{
@@ -47,14 +40,9 @@ namespace Abbybot_III.Core.Roles.sql
 
 		public static async Task<List<AbbybotRole>> GetRoles(SocketGuild g)
 		{
-			StringBuilder abisb = new StringBuilder();
-			abisb.Clear();
-			abisb.Append("SELECT * FROM `discord`.`guildroles` WHERE `GuildId` = '");
-			abisb.Append(g.Id);
-			abisb.Append("';");
-
 			List<AbbybotRole> roles = new List<AbbybotRole>();
-			var table = await AbbysqlClient.FetchSQL(abisb.ToString());
+
+			var table = await AbbysqlClient.FetchSQL($"SELECT * FROM `discord`.`guildroles` WHERE `GuildId` = '{g.Id}';");
 			foreach (AbbyRow row in table)
 			{
 				ulong Roleid = (ulong)(row["Id"]);
@@ -66,14 +54,9 @@ namespace Abbybot_III.Core.Roles.sql
 
 		public static async Task<List<AbbybotRole>> GetRolesFromUser(AbbybotUser u)
 		{
-			StringBuilder abisb = new StringBuilder();
-			abisb.Clear();
-			abisb.Append("SELECT * FROM `discord`.`roles` WHERE ");
-			abisb.Append($"`UserId` = '{u.Id}'");
-			abisb.Append($" && `GuildId` = '{u.GuildId}';");
-
 			List<AbbybotRole> roles = new List<AbbybotRole>();
-			var table = await AbbysqlClient.FetchSQL(abisb.ToString());
+
+			var table = await AbbysqlClient.FetchSQL($"SELECT * FROM `discord`.`roles` WHERE `UserId` = '{u.Id}' && `GuildId` = '{u.GuildId}';");
 			foreach (AbbyRow row in table)
 			{
 				long Roleid = (long)(row["RoleId"]);
@@ -84,16 +67,7 @@ namespace Abbybot_III.Core.Roles.sql
 
 		public static async Task<bool> DoesRoleExist(ulong user, ulong guild, ulong role)
 		{
-			StringBuilder abisb = new StringBuilder();
-			abisb.Append("SELECT * FROM `discord`.`roles` WHERE `UserId` = '");
-			abisb.Append(user);
-			abisb.Append("' && `Roleid` ='");
-			abisb.Append(role);
-			abisb.Append("' && `GuildId` ='");
-			abisb.Append(guild);
-			abisb.Append("';");
-
-			var table = await AbbysqlClient.FetchSQL(abisb.ToString());
+			var table = await AbbysqlClient.FetchSQL($"SELECT * FROM `discord`.`roles` WHERE `UserId` = '{user}' && `Roleid` ='{role}' && `GuildId` ='{guild}';");
 
 			return (table.Count > 0);
 		}

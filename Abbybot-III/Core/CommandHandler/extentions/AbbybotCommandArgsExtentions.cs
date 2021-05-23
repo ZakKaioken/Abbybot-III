@@ -87,7 +87,7 @@ namespace Abbybot_III.Core.CommandHandler.extentions
         {
             List<AbbybotUser> mentionedUsers = new List<AbbybotUser>();
 
-            foreach (var u in aca.mentionedUserIds)
+            foreach (var u in aca.mentionedUsers)
             {
                 AbbybotUser au = null;
                 if (u is SocketGuildUser sgu)

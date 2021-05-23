@@ -2,7 +2,7 @@
 using AbbySql.Types;
 
 using System.Collections.Generic;
-using System.Text;
+
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Sql.Abbybot.Fun
@@ -11,11 +11,9 @@ namespace Abbybot_III.Sql.Abbybot.Fun
 	{
 		public static async Task<List<string>> GetbadtaglistTags()
 		{
-			var abisb = new StringBuilder();
-			abisb.Append("SELECT * FROM `saybadtaglist`");
 			List<string> tags = new List<string>();
 
-			var table = await AbbysqlClient.FetchSQL(abisb.ToString());
+			var table = await AbbysqlClient.FetchSQL("SELECT * FROM `saybadtaglist`");
 			foreach (AbbyRow row in table)
 			{
 				tags.Add((row["Word"] is string favchan) ? favchan : "");

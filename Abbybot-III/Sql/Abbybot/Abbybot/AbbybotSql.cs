@@ -17,7 +17,7 @@ namespace Abbybot_III.Sql.Abbybot.Abbybot
             {
                 abbybots.Add(table.Count >= 1 && (row["Id"] is ulong u) ? u : 0);
             }
-            abbybots.Remove(Apis.Discord._client.CurrentUser.Id);
+            abbybots.Remove(Apis.Discord.__client.CurrentUser.Id);
             return abbybots;
         }
 

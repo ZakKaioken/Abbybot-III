@@ -28,10 +28,9 @@ namespace Abbybot_III.Commands.Passive.User
                 guildId = aca.guild.Id;
                 channelId = aca.channel.Id;
             }
-            ulong abbybotId = Apis.Discord._client.CurrentUser.Id;
             foreach (var w in words)
                 if (aca.Message.ReplaceA("abbybot ", "").ToLower().Contains(w.word))
-                    await PassiveUserSql.IncreaseStat(abbybotId, guildId, channelId, aca.user.Id, w.column);
+                    await aca.IncreasePassiveStat(w.column);
         }
     }
 

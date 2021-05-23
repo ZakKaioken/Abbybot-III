@@ -10,11 +10,11 @@ namespace Abbybot_III.Core.Abbybot
         public static async Task<bool> IsAbbybotHere(ulong guildId)
         {
             var abbybotids = await AbbybotSql.GetAbbybotIdAsync();
-            abbybotids.Remove(Apis.Discord._client.CurrentUser.Id);
+            abbybotids.Remove(Apis.Discord.__client.CurrentUser.Id);
             bool b = false;
             foreach (var o in abbybotids)
             {
-                var u = Apis.Discord._client.GetUser(o);
+                var u = Apis.Discord.__client.GetUser(o);
                 b = u.MutualGuilds.ToList().Any(x => x.Id == guildId);
             }
             return b;

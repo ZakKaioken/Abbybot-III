@@ -20,7 +20,7 @@ namespace Abbybot_III.Commands.Normal
         {
             if (!(a.originalMessage.Author is SocketGuildUser sgu))
             {
-                var usu = Apis.Discord._client.GetUser(a.user.Id);
+                var usu = a.GetUser(a.user.Id);
                 StringBuilder sb = new StringBuilder();
                 foreach (var g in usu.MutualGuilds.ToList())
                 {
@@ -39,31 +39,29 @@ namespace Abbybot_III.Commands.Normal
             else
             {
                 var po = a.originalMessage.Author is SocketGuildUser sgk;
-                var zoz = Apis.Discord._client.GetGuild(sgu.Guild.Id);
-                var zzz = zoz.GetUser(sgu.Id);
-                foreach (var ax in a.mentionedUserIds)
+                var zoz = a.GetGuildUser(sgu.Guild.Id, sgu.Id);
+                foreach (var ax in a.getMentionedDiscordGuildUsers())
                 {
-                    if (!(ax is SocketGuildUser sgum)) continue;
-                    var zzx = Apis.Discord._client.GetGuild(sgum.Guild.Id).GetUser(sgum.Id);
-                    if (!zzx.JoinedAt.HasValue)
+                    if (ax is not SocketGuildUser sgum) continue;
+                    if (!ax.JoinedAt.HasValue)
                     {
                         await a.Send($"{ax.Username} didn't have a join time... somehow...");
                         continue;
                     }
-                    var ms = (TimeSpan)(DateTime.Now - zzx.JoinedAt.Value);
+                    var ms = (TimeSpan)(DateTime.Now - ax.JoinedAt.Value);
                     var ts = TimeStringGenerator.MilistoTimeString((decimal)ms.TotalMilliseconds);
-                    await a.Send($"{ax.Username} joined {zoz.Name} exactly {ts} ago.");
+                    await a.Send($"{ax.Username} joined {a.server.Name} exactly {ts} ago.");
                 }
-                if (a.mentionedUserIds.Count < 1)
+                if (!a.isMentioning)
                 {
-                    if (!zzz.JoinedAt.HasValue)
+                    if (!zoz.JoinedAt.HasValue)
                     {
                         await a.Send($"you didn't have a join time... somehow...");
                         return;
                     }
-                    var ms = (TimeSpan)(DateTime.Now - zzz.JoinedAt.Value);
+                    var ms = (TimeSpan)(DateTime.Now - zoz.JoinedAt.Value);
                     var ts = TimeStringGenerator.MilistoTimeString((decimal)ms.TotalMilliseconds);
-                    await a.Send($"You joined {zoz.Name} exactly {ts} ago.");
+                    await a.Send($"You joined {a.guild.Name} exactly {ts} ago.");
                 }
             }
         }
@@ -72,9 +70,8 @@ namespace Abbybot_III.Commands.Normal
         {
             if (aca.originalMessage.Author is SocketGuildUser sgk)
             {
-                var zoz = Apis.Discord._client.GetGuild(sgk.Guild.Id);
-                var zzz = zoz.GetUser(sgk.Id);
-                var ms = (TimeSpan)(DateTime.Now - zzz.JoinedAt.Value);
+                var zoz = aca.GetGuildUser(sgk.Guild.Id,sgk.Id);
+                var ms = (TimeSpan)(DateTime.Now - zoz.JoinedAt.Value);
                 var ts = TimeStringGenerator.MilistoTimeString((decimal)ms.TotalMilliseconds);
 
                 return $"you joined {sgk.Guild.Name} {ts} ago. Use ab!jointime in a different server to find out how long ago you joined it.";

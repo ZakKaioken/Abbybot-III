@@ -4,7 +4,7 @@ using AbbySql.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Sql.Abbybot.Guild.User

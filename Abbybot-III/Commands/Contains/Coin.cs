@@ -24,7 +24,7 @@ namespace Abbybot_III.Commands.Contains
 			Random r = new Random();
 			var heads = "heads";
 			var tails = "tails";
-			var hot = abd.Message.Replace($"{Command} ", "").Split(" or ");
+			var hot = abd.ReplaceSplit(Command, " or ");
 			if (hot.Length >= 2)
 			{
 				heads = hot[0];

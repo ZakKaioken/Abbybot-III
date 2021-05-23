@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Abbybot_III.Apis.Booru
+namespace Abbybot_III.Apis
 {
 	class AbbyBooru
 	{

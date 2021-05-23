@@ -49,15 +49,13 @@ namespace Abbybot_III.Commands.Contains
 				sb.Append("❌ ");
 
 			sb.Append("\n");
-			var client = Apis.Discord._client;
-			var abbybotid = client.CurrentUser.Id;
 			if (abd.guild != null)
 			{
 				sb.Append("Your favorite channel in this server is: ");
 
-				var MSC = await PassiveUserSql.GetChannelsinGuildStats(abbybotid, abd.guild.Id, abd.user.Id, "MessagesSent");
+				var MSC = await PassiveUserSql.GetChannelsinGuildStats(abd.abbybotId, abd.guild.Id, abd.user.Id, "MessagesSent");
 				var orderedlist = MSC.OrderBy(x => x.stat).ToList()[0];
-				var chan = client.GetGuild(abd.guild.Id).GetChannel(orderedlist.channel);
+				var chan = abd.GetGuildChannel(abd.guild.Id, orderedlist.channel);
 				sb.AppendLine(chan.Name);
 
 				ulong i = 0;

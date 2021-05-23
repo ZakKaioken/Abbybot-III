@@ -40,6 +40,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
             if (FavoriteCharacter.Length < 1)
             {
                 var e = await FCMentionsSql.GetFCMAsync(a.user.Id);
+                //replace activation words definition with sql varient
                 var word = (e) ? activationwords.random() : deactivatewords.random();
                 await a.Send($"your favorite character mentions modifier is {word}");
                 return;

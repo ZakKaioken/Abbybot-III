@@ -68,9 +68,8 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 					channelId = aca.channel.Id;
 				}
 
-				ulong abbybotId = Apis.Discord._client.CurrentUser.Id;
-				await PassiveUserSql.IncreaseStat(abbybotId, guildId, channelId, aca.user.Id, "GelCommandUsages");
-				var e = await PassiveUserSql.GetChannelsinGuildStats(abbybotId, guildId, aca.user.Id, "GelCommandUsages");
+				await PassiveUserSql.IncreaseStat(aca.abbybotId, guildId, channelId, aca.user.Id, "GelCommandUsages");
+				var e = await PassiveUserSql.GetChannelsinGuildStats(aca.abbybotId, guildId, aca.user.Id, "GelCommandUsages");
 
 				foreach (var sta in e)
 				{
@@ -100,14 +99,14 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 
 				tagz = await GenerateTags(aca, fc, cfc);
 
-				imgdata = await Apis.Booru.AbbyBooru.Execute(tagz.ToArray());
+				imgdata = await aca.GetPicture(tagz.ToArray());
 
 				if (imgdata.Source == "noimagefound")
 				{
 					Console.WriteLine("cfc+fc failed");
 					throw new Exception("CFC+FC FAILED");
 				}
-				ufc = GelEmbed.fcbuilder($"{fc} and {cfc}");
+				ufc = aca.BreakAbbybooruTag($"{fc} and {cfc}");
 			}
 			catch
 			{
@@ -121,14 +120,14 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 
 					tagz = await GenerateTags(aca, cfc);
 
-					imgdata = await Apis.Booru.AbbyBooru.Execute(tagz.ToArray());
+					imgdata = await aca.GetPicture(tagz.ToArray());
 
 					if (imgdata.Source == "noimagefound")
 					{
 						Console.WriteLine("No image found for the channel favorite character...");
 						throw new Exception("CFC FAILED");
 					}
-					ufc = GelEmbed.fcbuilder($"{cfc}");
+					ufc = aca.BreakAbbybooruTag($"{cfc}");
 				}
 				catch
 				{
@@ -136,20 +135,20 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 					{
 						tagz = await GenerateTags(aca, fc);
 
-						imgdata = await Apis.Booru.AbbyBooru.Execute(tagz.ToArray());
+						imgdata = await aca.GetPicture(tagz.ToArray());
 
 						if (imgdata.Source == "noimagefound")
 						{
 							Console.WriteLine("no picture found for the users fc");
 							throw new Exception("FC FAILED");
 						}
-						ufc = GelEmbed.fcbuilder($"{fc}");
+						ufc = aca.BreakAbbybooruTag($"{fc}");
 					}
 					catch
 					{
 						tagz = await GenerateTags(aca, ufc);
 						found = false;
-						imgdata = await Apis.Booru.AbbyBooru.Execute(tagz.ToArray());
+						imgdata = await aca.GetPicture(tagz.ToArray());
 
 						if (imgdata.Source == "noimagefound")
 						{
@@ -201,7 +200,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 					favoritecharacter = w
 				};
 
-				var e = GelEmbed.Build(imgdrata, found, rolling);
+				var e = GelEmbed.Build(aca, imgdrata, found, rolling);
 				await aca.Send(e);
 			}
 		}

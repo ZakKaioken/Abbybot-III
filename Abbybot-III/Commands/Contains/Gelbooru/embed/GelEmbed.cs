@@ -1,4 +1,5 @@
 ﻿using Abbybot_III.Commands.Contains.Gelbooru.dataobject;
+using Abbybot_III.Core.CommandHandler.Types;
 using Abbybot_III.Core.Data.User;
 using Abbybot_III.extentions;
 
@@ -13,7 +14,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
 {
 	public class GelEmbed
 	{
-		public static EmbedBuilder Build(ImgData imgdata, StringBuilder sb)
+		public static EmbedBuilder Build(AbbybotCommandArgs a, ImgData imgdata, StringBuilder sb)
 		{
 			StringBuilder message = new StringBuilder();
 
@@ -23,12 +24,12 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
 				embededodizer.Url = iu;
 			else
 				embededodizer.ImageUrl = iu;
-			string fcn = fcbuilder(sb.ToString());
+			string fcn = a.BreakAbbybooruTag(sb).ToString();
 
 			message.Clear();
 			if (imgdata.mentions.Count > 0)
 			{
-				MentionsEmbed(imgdata.user, imgdata.command, imgdata.mentions);
+				message = MentionsEmbed(imgdata.user, imgdata.command, imgdata.mentions);
 			}
 			string fixedsource = FixSource(imgdata.source);
 			embededodizer.AddField($"{fcn}  :)", $"[Image Source]({fixedsource})");
@@ -42,7 +43,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
 		{
 			if (mentions == null || mentions.Count == 0) return null;
 			StringBuilder message = new StringBuilder();
-			if (mentions.Count == 1 && mentions[0].Id == Apis.Discord._client.CurrentUser.Id)
+			if (mentions.Count == 1 && mentions[0].Id == Apis.Discord.__client.CurrentUser.Id)
 			{
 				message.Append("You ");
 				message.Append(command.Replace("abbybot ", ""));
@@ -50,7 +51,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
 				message.Append(user.Preferedname);
 				message.Append("**! <:abbyheart:699636931839000606> <a:AbbyHearts:829759075969531984>");
 			}
-			else if (user.Id == Apis.Discord._client.CurrentUser.Id)
+			else if (user.Id == Apis.Discord.__client.CurrentUser.Id)
 			{
 				message.Append("I ");
 				message.Append(command.Replace("abbybot ", ""));
@@ -92,12 +93,9 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
 			return "";
 		}
 
-		public static string fcbuilder(string s)
-		{
-			return s.Replace("* ~ ", " or ").Replace("* ", " and ").Replace("{", "").Replace("}", "").Replace("_", " ").Replace("*", "");
-		}
+		
 
-		public static EmbedBuilder Build(string fileurl, string source, string fc, List<Core.Data.User.AbbybotUser> mentionedUsers, string command, AbbybotUser user)
+		public static EmbedBuilder Build(AbbybotCommandArgs a,  string fileurl, string source, string fc, List<Core.Data.User.AbbybotUser> mentionedUsers, string command, AbbybotUser user)
 		{
 			StringBuilder message = new StringBuilder();
 
@@ -108,7 +106,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
 				embededodizer.Url = iu;
 			else
 				embededodizer.ImageUrl = iu;
-			string fcn = fcbuilder(fc.ToString());
+			string fcn = a.BreakAbbybooruTag(fc.ToString());
 
 			message.Clear();
 			string fixedsource = FixSource(source);
@@ -123,7 +121,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
 			return embededodizer;
 		}
 
-		public static EmbedBuilder Build(ImgData imgdrata, bool found, bool rolling)
+		public static EmbedBuilder Build(AbbybotCommandArgs aca, ImgData imgdrata, bool found, bool rolling)
 		{
 			StringBuilder message = new StringBuilder();
 			EmbedBuilder embededodizer = new EmbedBuilder();
@@ -140,7 +138,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
 				{
 					message.AppendLine(iu);
 				}
-			string fcn = fcbuilder(imgdrata.favoritecharacter.ToString());
+			string fcn = aca.BreakAbbybooruTag(imgdrata.favoritecharacter.ToString());
 
 			string fixedsource = FixSource(imgdrata.source);
 			string title = ((rolling) ? "r" : "") + $"{fcn} :)";

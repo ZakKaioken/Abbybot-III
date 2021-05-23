@@ -36,9 +36,7 @@ namespace Abbybot_III.Commands.Contains
 				eb.Color = Color.Red;
 				eb.Title = "Your timeout commands.";
 				eb.Description = "You've been mean to me...";
-				StringBuilder sb = new StringBuilder();
-				sb.Append("abbybot help\nabbybot timeout");
-				eb.AddField("\u200b", sb.ToString());
+				eb.AddField("\u200b", "abbybot help\nabbybot timeout");
 				await abd.SendDM(eb);
 				return;
 			}

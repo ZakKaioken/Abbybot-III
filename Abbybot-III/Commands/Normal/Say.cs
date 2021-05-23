@@ -4,7 +4,7 @@ using Abbybot_III.Sql.Abbybot.Fun;
 
 using Discord.WebSocket;
 
-using System.Text;
+
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Commands.Normal
@@ -14,9 +14,7 @@ namespace Abbybot_III.Commands.Normal
 	{
 		public override async Task DoWork(AbbybotCommandArgs a)
 		{
-			StringBuilder FavoriteCharacter = new StringBuilder(a.Message).Replace(Command, "").Replace("--debugmode", "");
-			while (FavoriteCharacter[0] == ' ')
-				FavoriteCharacter.Remove(0, 1);
+			var FavoriteCharacter = a.Replace("Command").Replace("--debugmode", "");
 
 			var o = await SaybadtaglistSql.GetbadtaglistTags();
 			foreach (var oo in o)

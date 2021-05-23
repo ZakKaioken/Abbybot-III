@@ -1,5 +1,4 @@
-﻿using Abbybot_III.Apis.Booru;
-using Abbybot_III.Commands.Contains.Gelbooru.embed;
+﻿using Abbybot_III.Commands.Contains.Gelbooru.embed;
 using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
 using Abbybot_III.Core.Users.sql;
@@ -10,7 +9,7 @@ using Discord;
 
 using System;
 using System.Linq;
-using System.Text;
+
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Commands.Normal.Gelbooru
@@ -20,7 +19,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 	{
 		public override async Task DoWork(AbbybotCommandArgs a)
 		{
-			StringBuilder FavoriteCharacter = new StringBuilder(a.Message.ToLower().Replace(Command.ToLower(), ""));
+			var FavoriteCharacter =a.Replace(Command, true);
 			var cfc = await ChannelFCOverride.GetFCMAsync(a.guild.Id, a.channel.Id);
 			if (FavoriteCharacter.Length < 1)
 			{
@@ -29,7 +28,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 					await a.Send($"Master... You didn't set the channel's cfc!!");
 					return;
 				}
-				var fcfc = GelEmbed.fcbuilder(cfc);
+				var fcfc = a.BreakAbbybooruTag(cfc);
 				await a.Send($"The channel's favorite character is: {fcfc}\nFor help do ``{Command} help``");
 				return;
 			}
@@ -55,12 +54,11 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 			}
 
 			string fc = FavoriteCharacter.ToString();
-			Gelbooru.Fc.FCBuilder(FavoriteCharacter);
-			//string pictureurl = "https://img2.gelbooru.com/samples/ee/e2/sample_eee286783bfa37e088d1ffbcf8f098ba.jpg";
+			a.BuildAbbybooruTag(FavoriteCharacter);
 			var o = new string[1];
 			o[0] = FavoriteCharacter.ToString();
 
-			var canr = await Fc.awa(o);
+			var canr = await Fc.awa(a, o);
 			fc = canr.fc;
 			EmbedBuilder eb = new EmbedBuilder();
 			eb.ImageUrl = canr.pictureurl.AbsoluteUri;

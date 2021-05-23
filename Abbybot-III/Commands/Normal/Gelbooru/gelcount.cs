@@ -1,4 +1,4 @@
-﻿using Abbybot_III.Apis.Booru;
+﻿using Abbybot_III.Apis;
 using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
 using Abbybot_III.Core.Users.sql;
@@ -9,7 +9,7 @@ using Discord;
 
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Commands.Normal.Gelbooru
@@ -19,7 +19,8 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 	{
 		public override async Task DoWork(AbbybotCommandArgs a)
 		{
-			StringBuilder tagss = new StringBuilder(a.Message.Replace(Command, ""));
+			//StringBuilder tagss = new StringBuilder(a.Message.Replace(Command, ""));
+			var tagss = a.Replace(Command);
 			if (tagss.Length < 1)
 			{
 				await a.Send("You gotta tell me some tags too silly!!!");
@@ -35,8 +36,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 				var fc = a.user.FavoriteCharacter;
 				tagss.Replace("&fc", $"{fc}*");
 			}
-
-			Fc.FCBuilder(tagss);
+			a.BuildAbbybooruTag(tagss);
 
 			var tags = tagss.ToString().Split(' ').ToList();
 
@@ -63,11 +63,6 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 				await a.Send($"There are {o} posts by those tags.");
 			}
 			catch { }
-		}
-
-		public virtual async Task<BooruSharp.Search.Post.SearchResult> service(List<string> tags)
-		{
-			return await Apis.Booru.AbbyBooru.Execute(tags.ToArray());
 		}
 
 		public override async Task<string> toHelpString(AbbybotCommandArgs aca)

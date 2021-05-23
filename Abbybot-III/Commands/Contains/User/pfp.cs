@@ -11,10 +11,9 @@ namespace Abbybot_III.Commands.Normal
     {
         public override async Task DoWork(AbbybotCommandArgs a)
         {
-            var mu = a.mentionedUserIds.ToArray();
-            if (mu.Length < 1)
-                return;
-            await a.Send(mu[0].GetAvatarUrl());
+            var mu = a.mentionedUsers;
+            if (a.isMentioning)
+                await a.Send(mu[0].GetAvatarUrl());
         }
 
         public override async Task<string> toHelpString(AbbybotCommandArgs aca)

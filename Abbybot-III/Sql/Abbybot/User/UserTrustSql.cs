@@ -3,7 +3,7 @@
 using AbbySql;
 
 using System;
-using System.Text;
+
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Core.Users.sql
@@ -12,9 +12,8 @@ namespace Abbybot_III.Core.Users.sql
 	{
 		public static async Task<(bool inTimeout, DateTime timeoutEndDate, string reason)> GetUserTimeout(ulong auId)
 		{
-			var abisb = new StringBuilder();
-			abisb.Append($"SELECT * FROM `usertimeout` WHERE `UserId` = '{auId}';");
-			var table = await AbbysqlClient.FetchSQL(abisb.ToString());
+			var table = await AbbysqlClient.FetchSQL($"SELECT * FROM `usertimeout` WHERE `UserId` = '{auId}';");
+			
 			(bool t, DateTime ted, string r) vars = (false, DateTime.Now, "");
 			if (table.Count > 0)
 			{

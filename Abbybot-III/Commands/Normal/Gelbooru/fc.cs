@@ -1,5 +1,4 @@
-﻿using Abbybot_III.Apis.Booru;
-using Abbybot_III.Commands.Contains.Gelbooru.embed;
+﻿using Abbybot_III.Commands.Contains.Gelbooru.embed;
 using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
 using Abbybot_III.Core.Users.sql;
@@ -22,15 +21,13 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 		public override async Task DoWork(AbbybotCommandArgs a)
 		{
 			Console.WriteLine("starting fc");
-			StringBuilder FavoriteCharacter = new StringBuilder(a.Message.ToLower().Replace(Command.ToLower(), ""));
+			var FavoriteCharacter = a.Replace(Command, true);
+
 			var zxxx = a.user.FavoriteCharacter;
 
-			string[] fccx = zxxx.Replace("{", "").Replace("}", "").Split(" ~ ");
-
-			if (FavoriteCharacter.Length < 1)
+			string[] fccx = a.GetFCList();
+			if (a.hasMultipleFcs)
 			{
-				Console.WriteLine("nonuse fc check");
-				Abbybot.print(zxxx.Contains(" ~ "));
 
 				if (zxxx.Contains(" ~ "))
 				{
@@ -46,7 +43,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 							sbs.Add(new StringBuilder(CurrentItem.ToString()));
 							CurrentItem.Clear();
 						}
-						CurrentItem.AppendLine(GelEmbed.fcbuilder(fcz));
+						CurrentItem.AppendLine(a.BreakAbbybooruTag(fcz));
 					}
 					if (CurrentItem.Length > 0)
 						sbs.Add(new StringBuilder(CurrentItem.ToString()));
@@ -59,7 +56,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 				}
 				else
 				{
-					var fcfc = GelEmbed.fcbuilder(zxxx);
+					var fcfc = a.BreakAbbybooruTag(zxxx);
 					await a.Send($"Your favorite character is: {fcfc}. Get help with {Command} help");
 				}
 
@@ -181,7 +178,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 				type = "remove";
 				FavoriteCharacter.Remove(0, 7);
 				TitleFC.Remove(0, 7);
-				FCBuilder(FavoriteCharacter);
+				a.BuildAbbybooruTag(FavoriteCharacter);
 				if ((FavoriteCharacter.Length < 2)) return;
 				if (fccx.Contains(FavoriteCharacter.ToString()))
 				{
@@ -209,10 +206,9 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 			}
 
 			fc = FavoriteCharacter.ToString();
-			FCBuilder(FavoriteCharacter);
-			FCBuilder(TitleFC);
+			a.BuildAbbybooruTag(TitleFC);
+			a.BuildAbbybooruTag(FavoriteCharacter);
 			if (FavoriteCharacter.Length <= 2) return;
-			//string pictureurl = "https://img2.gelbooru.com/samples/ee/e2/sample_eee286783bfa37e088d1ffbcf8f098ba.jpg";
 			var o = new string[1];
 			var t = FavoriteCharacter.ToString();
 			if (!addedtoexistingfc)
@@ -227,7 +223,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 			(bool canrun, Uri pictureurl, Uri previewurl, string fc) aaa;
 			do
 			{
-				aaa = await awa(o);
+				aaa = await awa(a, o);
 				fc = aaa.fc;
 				try
 				{
@@ -265,8 +261,8 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 			{
 				Console.WriteLine("making embeds");
 				await FavoriteCharacterSql.SetFavoriteCharacterAsync(u.Id, t);
-				var foc = GelEmbed.fcbuilder(fc);
-				var oioio = (addedtoexistingfc || removedfromexistingfc) ? GelEmbed.fcbuilder(TitleFC.ToString()) : foc;
+				var foc = a.BreakAbbybooruTag(fc);
+				var oioio = (addedtoexistingfc || removedfromexistingfc) ? a.BreakAbbybooruTag(TitleFC.ToString()) : foc;
 				await FavoriteCharacterHistorySql.SetFavoriteCharacterHistoryAsync(u.Id, t, type, oioio);
 
 				eb.Color = Color.Green;
@@ -289,7 +285,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 			}
 			else
 			{
-				var foc = GelEmbed.fcbuilder(fc);
+				var foc = a.BreakAbbybooruTag (fc);
 				eb.Title = $"oof... {foc}...";
 				eb.Color = Color.Red;
 				eb.Description = $"sorry {u.Preferedname}... i couldn't find {foc} ({FavoriteCharacter}) ...";
@@ -299,7 +295,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 			if (fccx.Length > 2 && type == "set") await a.Send("Hey, ps... I think you may have made a mistake... You set that favorite character instead of adding it. \nIf you didn't mean to override your favorite character list, I suggest you to run: ``%fc undo``");
 		}
 
-		public static async Task<(bool canrun, Uri pictureurl, Uri previewurl, string fc)> awa(string[] o)
+		public static async Task<(bool canrun, Uri pictureurl, Uri previewurl, string fc)> awa(AbbybotCommandArgs aca, string[] o)
 		{
 			Uri pictureurl = null;
 			string fc = o[0];
@@ -310,7 +306,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 			{
 				try
 				{
-					SearchResult imgdata = await AbbyBooru.Execute(o);
+					SearchResult imgdata = await aca.GetPicture(o);
 					if (imgdata.Source.Contains("noimagefound"))
 						throw new Exception("AAAA");
 					if (imgdata.Rating == BooruSharp.Search.Post.Rating.Safe)
@@ -324,7 +320,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 						e.Add(" rating:safe ");
 						try
 						{
-							var i = await AbbyBooru.Execute(e.ToArray());
+							var i = await aca.GetPicture(e.ToArray());
 							if (i.Source.Contains("noimagefound"))
 								throw new Exception("AAAA");
 							pictureurl = i.FileUrl;
@@ -340,7 +336,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 				{
 					if (e.ToString().Contains("AAAA"))
 					{
-						o[0] = InvertName(o[0]);
+						o[0] = aca.InvertName(o[0]);
 						fc = o[0];
 					}
 					else throw new Exception("failed");
@@ -351,61 +347,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 			return (canrun, pictureurl, previewurl, fc);
 		}
 
-		public static StringBuilder FCBuilder(StringBuilder FavoriteCharacter)
-		{
-			FavoriteCharacter.Replace(" ", "_").Replace("abbybot", "abigail_williams").Replace("abby_kaioken", "abigail_williams");
-			if (FavoriteCharacter[^1] != '~')
-				FavoriteCharacter.Append("*");
-			else
-				FavoriteCharacter.Remove(FavoriteCharacter.Length - 1, 1);
-
-			if (FavoriteCharacter.ToString().Contains("_~_") || FavoriteCharacter.ToString().Contains("_or_"))
-			{
-				FavoriteCharacter.Insert(0, "{").Append("}");
-				FavoriteCharacter.Replace("~_or_", " ~ ").Replace("~_~_", " ~ ").Replace("_~_", "* ~ ").Replace("_or_", "* ~ ");
-			}
-			FavoriteCharacter.Replace("~_&&_", " ").Replace("~_and_", " ").Replace("_&&_", "* ").Replace("_and_", "* ");
-			return FavoriteCharacter;
-		}
-
-		static string InvertName(string sbsb)
-		{
-			var sb = new StringBuilder();
-			var orchars = sbsb.Split(" ~ ");
-			foreach (var orchar in orchars)
-			{
-				var andchars = orchar.Replace("{", "").Replace("}", "").Split(" ");
-				foreach (var andchar in andchars)
-				{
-					var subnames = andchar.Replace("*", "").Split("_");
-					if (subnames.Length == 1)
-					{
-						sb.Append(subnames[0]);
-					}
-					if (subnames.Length == 2)
-					{
-						sb.Append($"{subnames[^1]}_{subnames[0]}*");
-					}
-					else if (subnames.Length == 3)
-					{
-						sb.Append($"{subnames[^1]}_{subnames[1]}_{subnames[0]}*");
-					}
-					if (andchars.Length > 1)
-						sb.Append(" ");
-				}
-				if (orchars.Length > 1)
-				{
-					sb.Append(" ~ ");
-				}
-			}
-			if (orchars.Length > 1)
-			{
-				sb.Insert(0, "{");
-				sb.Append("}");
-			}
-			var s = sb.ToString();
-			return s;
-		}
+		
 
 		public override async Task<string> toHelpString(AbbybotCommandArgs aca)
 		{

@@ -1,5 +1,4 @@
 ﻿using Abbybot_III.Core.CommandHandler.Types;
-
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,7 +9,7 @@ namespace Abbybot_III.Commands.Contains
     {
         public override async Task<bool> Evaluate(AbbybotCommandArgs aca)
         {
-            bool v = (aca.Message.ToLower().Contains(Command.ToLower()));
+            bool v = aca.Contains(Command, true);
             if (v) return await base.Evaluate(aca);
             else return false;
         }
@@ -22,9 +21,8 @@ namespace Abbybot_III.Commands.Contains
 
         public override async Task DoWork(AbbybotCommandArgs aca)
         {
-            var s = new StringBuilder(Command);
-            s.Append(" was called with the message: ");
-            s.Append(aca.Message.Replace(Command, ""));
+            //$" was called with the message: {aca.Replace(Command)}";
+           
             await Task.CompletedTask;
         }
 

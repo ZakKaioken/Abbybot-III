@@ -1,16 +1,17 @@
 using System.Threading.Tasks;
 using System.Linq;
-using System.Text;
+
 using System;
 using System.Collections.Generic;
-using Abbybot_III.Apis.Booru;
 using Capi.Interfaces;
 using Abbybot_III.Commands.Contains.Gelbooru.embed;
 using Discord;
+using Abbybot_III.Apis;
+using Abbybot_III.Core.CommandHandler.Types;
 
 class PictureCommandSimplification
 {
-	public async Task<EmbedBuilder> GetPicture(PictureCommandData message)
+	public async Task<EmbedBuilder> GetPicture(AbbybotCommandArgs aca,  PictureCommandData message)
 	{
 		EmbedBuilder eb = new EmbedBuilder();
 
@@ -23,6 +24,7 @@ class PictureCommandSimplification
 		string pfc = null;
 		foreach (var command in picture)
 		{
+			Console.WriteLine($"testing {command["Command"]}");
 			string tags = command["Tags"] is string ta ? ta : "";
 			int rating = command["RatingId"] is int rI ? rI : -1;
 			if (tags == "" || rating == -1) continue;
@@ -68,14 +70,17 @@ class PictureCommandSimplification
 					if (types[triesIndex].Item1 is string i1)
 					{
 						tagz.Add(i1);
+						Console.Write($"[{i1}]");
 						ww += i1;
 					}
 					if (types[triesIndex].Item2 is string i2)
 					{
 						tagz.Add(i2);
+						Console.Write($"[{i2}]");
 						ww += $" {i2}";
 					}
-
+					if (ww.Length < 3) throw new Exception("it didn't work right...");
+					Console.WriteLine($"set tags as [{ww}]");
 					var imgdata = await AbbyBooru.Execute(tagz.ToArray());
 					imageData = new ImageData()
 					{
@@ -103,7 +108,7 @@ class PictureCommandSimplification
 				//sb.AppendLine($"Master... I didn't find a {command["Command"]}ing picture...");
 				continue;
 			}
-			Console.WriteLine($"{message.isNSFW}, {imageData.Nsfw}");
+			Console.WriteLine(imageData.pictureCharacter);
 			if (!message.isNSFW && imageData.Nsfw)
 			{
 				eb.Description = ("Master that's a lewd image... I can't send it...");
@@ -121,7 +126,7 @@ class PictureCommandSimplification
 			var soai = imageData.Source;
 			var iisu = imageData.ContainsLoli;
 
-			eb = GelEmbed.Build(filrl.ToString(), soai, pc, message.mentions, command["Command"] as string, message.user);
+			eb = GelEmbed.Build(aca, filrl.ToString(), soai, pc, message.mentions, command["Command"] as string, message.user);
 		}
 		return eb;
 	}

@@ -19,16 +19,13 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 	{
 		public override async Task DoWork(AbbybotCommandArgs a)
 		{
-			StringBuilder tagss = new StringBuilder(a.Message.Replace(Command, ""));
+			//StringBuilder tagss = new StringBuilder(a.Message.Replace(Command, ""));
+			var tagss = a.Replace(Command);
 			if (tagss.Length < 1)
 			{
 				await a.Send("You gotta tell me some tags too silly!!!");
 				return;
 			}
-			while (tagss[0] == ' ')
-				tagss.Remove(0, 1);
-			while (tagss[^1] == ' ')
-				tagss.Remove(tagss.Length - 1, 1);
 
 			var fc = a.user.FavoriteCharacter;
 			tagss.Replace("&fc", $"{fc}*");
@@ -47,7 +44,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 				var ratings = a.user.Ratings;
 				var sgc = (ITextChannel)a.channel;
 				if (sgc == null) return;
-				if (!sgc.IsNsfw || !a.user.IsLewd || !ratings.Contains(CommandRatings.hot))
+				if (!a.IsChannelNSFW || !a.user.IsLewd || !a.user.HasRatings(CommandRatings.hot))
 				{
 					tags.Add("rating:safe");
 				}
@@ -55,7 +52,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 			EmbedBuilder eb = null;
 			try
 			{
-				BooruSharp.Search.Post.SearchResult imgdata = await service(tags);
+				BooruSharp.Search.Post.SearchResult imgdata = await a.GetPicture(tags);
 				ImgData im = (new ImgData { });
 
 				if (imgdata.FileUrl != null)
@@ -69,7 +66,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 
 				try
 				{
-					eb = Contains.Gelbooru.embed.GelEmbed.Build(im, new StringBuilder("abbybot"));
+					eb = Contains.Gelbooru.embed.GelEmbed.Build(a,im, new StringBuilder("abbybot"));
 				}
 				catch
 				{
@@ -81,10 +78,6 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 			await a.Send(eb);
 		}
 
-		public virtual async Task<BooruSharp.Search.Post.SearchResult> service(List<string> tags)
-		{
-			return await Apis.Booru.AbbyBooru.Execute(tags.ToArray());
-		}
 
 		public override async Task<string> toHelpString(AbbybotCommandArgs aca)
 		{

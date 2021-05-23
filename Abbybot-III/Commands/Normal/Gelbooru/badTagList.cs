@@ -1,5 +1,4 @@
-﻿using Abbybot_III.Apis.Booru;
-using Abbybot_III.Core.CommandHandler.extentions;
+﻿using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
 using Abbybot_III.Core.Users.sql;
 
@@ -17,16 +16,8 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 	{
 		public override async Task DoWork(AbbybotCommandArgs message)
 		{
-			StringBuilder FavoriteCharacter = new StringBuilder(message.Message.Replace(Command, ""));
-
+			var FavoriteCharacter = message.Replace(Command);
 			EmbedBuilder eb = new EmbedBuilder();
-			if (FavoriteCharacter.Length > 0)
-			{
-				while (FavoriteCharacter[0] == ' ')
-					FavoriteCharacter.Remove(0, 1);
-				while (FavoriteCharacter[^1] == ' ')
-					FavoriteCharacter.Remove(FavoriteCharacter.Length - 1, 1);
-			}
 			if (FavoriteCharacter.Length < 1)
 			{
 				StringBuilder sb = new StringBuilder();
@@ -65,7 +56,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 					{
 						try
 						{
-							BooruSharp.Search.Post.SearchResult imgdata = await AbbyBooru.Execute(new string[] { item });
+							BooruSharp.Search.Post.SearchResult imgdata = await message.GetPicture(new string[] { item });
 						}
 						catch
 						{

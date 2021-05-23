@@ -39,7 +39,7 @@ namespace Abbybot_III.Commands.Custom
 				script.Globals.Set("guild", guild);
 			}
 
-			script.Globals["buildfc"] = (Func<string, string>)GelEmbed.fcbuilder;
+			script.Globals["buildfc"] = (Func<string, string>)message.BuildAbbybooruTag;
 
 			DynValue dada = script.DoString("say = print");
 

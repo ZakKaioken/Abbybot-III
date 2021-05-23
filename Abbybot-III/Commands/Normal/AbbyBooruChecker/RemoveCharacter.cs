@@ -4,7 +4,7 @@ using Abbybot_III.Core.CommandHandler.Types;
 
 using Discord;
 
-using System.Text;
+
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Commands.Normal.AbbyBooruChecker
@@ -14,28 +14,15 @@ namespace Abbybot_III.Commands.Normal.AbbyBooruChecker
 	{
 		public override async Task DoWork(AbbybotCommandArgs a)
 		{
-			StringBuilder FavoriteCharacter = new StringBuilder(a.Message.Replace(Command, ""));
-
+			
+			var FavoriteCharacter = a.Replace(Command);
 			if (FavoriteCharacter.Length < 1)
 				return;
-			while (FavoriteCharacter[0] == ' ')
-				FavoriteCharacter.Remove(0, 1);
-			while (FavoriteCharacter[FavoriteCharacter.Length - 1] == ' ')
-				FavoriteCharacter.Remove(FavoriteCharacter.Length - 1, 1);
+
 
 			string fc = FavoriteCharacter.ToString();
 
-			FavoriteCharacter.Replace(" ", "_").Replace("abbybot", "abigail_williams").Replace("abby", "abigail_williams").Replace("abby_kaioken", "abigail_williams");
-			if (FavoriteCharacter[^1] != '~')
-				FavoriteCharacter.Append("*");
-			else
-				FavoriteCharacter.Remove(FavoriteCharacter.Length - 1, 1);
-			if (FavoriteCharacter.ToString().Contains("_~_") || FavoriteCharacter.ToString().Contains("_or_"))
-			{
-				FavoriteCharacter.Insert(0, "{").Append("}");
-				FavoriteCharacter.Replace("~_or_", " ~ ").Replace("~_~_", " ~ ").Replace("_~_", "* ~ ").Replace("_or_", "* ~ ");
-			}
-			FavoriteCharacter.Replace("~_&&_", " ").Replace("~_and_", " ").Replace("_&&_", "* ").Replace("_and_", "* ");
+			a.BuildAbbybooruTag(FavoriteCharacter);
 
 			var o = new string[1];
 			o[0] = FavoriteCharacter.ToString() + "*";

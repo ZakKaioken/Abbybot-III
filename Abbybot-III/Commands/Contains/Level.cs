@@ -2,7 +2,6 @@
 using Abbybot_III.Core.CommandHandler.Types;
 using Abbybot_III.Core.LevelingManager;
 using Abbybot_III.Sql.Abbybot.User;
-
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,15 +15,13 @@ namespace Abbybot_III.Commands.Contains
 		public override async Task DoWork(AbbybotCommandArgs abd)
 		{
 			StringBuilder sb = new StringBuilder();
-			var client = Apis.Discord._client;
-			var abbybotid = client.CurrentUser.Id;
 			ulong guildid = 0;
 			if (abd.guild != null)
 			{
 				guildid = abd.guild.Id;
 			}
 
-			var MSC = await PassiveUserSql.GetChannelsinGuildStats(abbybotid, guildid, abd.user.Id, "MessagesSent");
+			var MSC = await abd.IncreasePassiveStat("MessagesSent");
 
 			ulong i = 0;
 			foreach (var sta in MSC)

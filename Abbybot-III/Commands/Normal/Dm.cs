@@ -4,7 +4,6 @@ using Abbybot_III.Sql.Abbybot.Fun;
 
 using Discord;
 using Discord.WebSocket;
-
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,11 +14,9 @@ namespace Abbybot_III.Commands.Normal
 	{
 		public override async Task DoWork(AbbybotCommandArgs a)
 		{
-			if (a.mentionedUserIds.Count < 1) return;
-			StringBuilder FavoriteCharacter = new StringBuilder(a.Message).Replace(Command, "").Replace("--debugmode", "");
-			while (FavoriteCharacter[0] == ' ')
-				FavoriteCharacter.Remove(0, 1);
-
+			if (a.isMentioning) return;
+			var FavoriteCharacter = a.Replace(Command).Replace("--debugmode", "");
+		
 			var o = await SaybadtaglistSql.GetbadtaglistTags();
 			foreach (var oo in o)
 			{
@@ -27,7 +24,7 @@ namespace Abbybot_III.Commands.Normal
 			}
 
 			FavoriteCharacter.Insert(0, "you have a givt from a secret sender!!!\n");
-			var mu = a.mentionedUserIds;
+			var mu = a.getMentionedDiscordGuildUsers();
 			StringBuilder sb = new StringBuilder();
 			foreach (var muz in mu)
 			{

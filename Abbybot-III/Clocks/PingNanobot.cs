@@ -26,7 +26,7 @@ namespace Abbybot_III.Clocks
 			var er = r.Next(0, abbybotchannels.Count);
 
 			var ch = abbybotchannels[er];
-			var Gg = Apis.Discord._client.GetGuild(ch.guildId);
+			var Gg = Apis.Discord.__client.GetGuild(ch.guildId);
 			if (Gg == null) return;
 			var c = Gg.GetTextChannel(ch.channelId);
 

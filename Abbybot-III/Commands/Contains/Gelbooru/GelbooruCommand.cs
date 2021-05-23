@@ -94,7 +94,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 		{
 			List<AbbybotUser> mentionedUsers = new List<AbbybotUser>();
 
-			foreach (var u in msg.mentionedUserIds)
+			foreach (var u in msg.mentionedUsers)
 			{
 				AbbybotUser au = null;
 				if (u is SocketGuildUser sgu)
@@ -120,7 +120,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 			if (im.source == null)
 				im.source = "no source";
 			if (!im.source.Contains("error"))
-				data = embed.GelEmbed.Build(im, sb);
+				data = embed.GelEmbed.Build(msg, im, sb);
 			else if (im.source.Contains("errornsfw"))
 			{
 				await msg.Send("master i can't search for nsfw pictures in a safe channel. there may be children.");
@@ -192,7 +192,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 
 				try
 				{
-					imgdata = await Apis.Booru.AbbyBooru.Execute(tagz.ToArray());
+					imgdata = await Apis.AbbyBooru.Execute(tagz.ToArray());
 				}
 				catch
 				{
@@ -277,10 +277,12 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 			{
 				Random abbyrng = new Random();
 				sb.Clear();
-				if (md.mentionedUserIds.Count > 0)
+				
+				if (md.isMentioning)
 				{
-					var rng = abbyrng.Next(0, md.mentionedUserIds.Count);
-					var userx = await AbbybotUser.GetUserFromSocketUser(md.mentionedUserIds[rng]);
+					var rng = abbyrng.Next(0, md.mentionedUsers.Count);
+
+					var userx = await AbbybotUser.GetUserFromSocketUser(md.mentionedUsers[rng]);
 					sb.Append(userx.FavoriteCharacter);
 				}
 				else

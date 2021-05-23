@@ -10,7 +10,7 @@ namespace Abbybot_III.Apis
 {
     class Discord
     {
-        public static DiscordSocketClient _client;
+        public static DiscordSocketClient __client;
 
         static async Task StartDiscord()
         {
@@ -20,8 +20,8 @@ namespace Abbybot_III.Apis
                 try
                 {
                     DiscordApiKey dak = DiscordApiKey.Load(@"ApiKeys\Discord.json");
-                    await _client.LoginAsync(TokenType.Bot, dak.ApiKey);
-                    await _client.StartAsync();
+                    await __client.LoginAsync(TokenType.Bot, dak.ApiKey);
+                    await __client.StartAsync();
                     o = false;
                 }
                 catch
@@ -35,13 +35,13 @@ namespace Abbybot_III.Apis
         public static async Task IndefinitelyWaitUntilClose()
         {
             await Task.Delay(-1);
-            await _client.StopAsync();
+            await __client.StopAsync();
         }
 
         public static async Task DiscordMainAsync()
         {
-            _client = new DiscordSocketClient();
-            EventInitializer.Init(_client);
+            __client = new DiscordSocketClient();
+            EventInitializer.Init(__client);
 
             await StartDiscord();
         }

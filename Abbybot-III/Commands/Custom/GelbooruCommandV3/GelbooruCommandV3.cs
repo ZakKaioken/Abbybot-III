@@ -8,7 +8,7 @@ using Capi.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Commands.Contains.Gelbooru
@@ -29,21 +29,17 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 				guildId = aca.guild.Id;
 				channelId = aca.channel.Id;
 			}
-
-			ulong abbybotId = Apis.Discord._client.CurrentUser.Id;
-			await PassiveUserSql.IncreaseStat(abbybotId, guildId, channelId, aca.user.Id, "GelCommandUsages");
-			var e = await PassiveUserSql.GetChannelsinGuildStats(abbybotId, guildId, aca.user.Id, "GelCommandUsages");
+			var e = await aca.IncreasePassiveStat("GelCommandUsages");
 			foreach (var sta in e)
 			{
 				pcD.index += sta.stat;
 			}
 			pcD.favoriteCharacter = aca.user.FavoriteCharacter;
-			pcD.channelFavoriteCharacter = (await ChannelFCOverride.GetFCMAsync(aca.guild.Id, aca.channel.Id) is string sai && sai != "NO" ? sai : null);
-			if (aca.guild != null)
+			pcD.channelFavoriteCharacter = (await ChannelFCOverride.GetFCMAsync(guildId, channelId) is string sai && sai != "NO" ? sai : null);
+			if (aca.isGuild)
 			{
-				var ex = aca.user.Ratings.Contains((CommandRatings)2);
-				pcD.isNSFW = aca.user.Ratings.Contains((CommandRatings)2) && (await aca.IsNSFW()) && !aca.guild.NoNSFW;
-				pcD.isLoli = aca.user.Ratings.Contains((CommandRatings)3) && !aca.guild.NoLoli;
+				pcD.isNSFW = aca.user.HasRatings(2) && aca.IsChannelNSFW && !aca.guild.NoNSFW;
+				pcD.isLoli = aca.user.HasRatings(3) && !aca.guild.NoLoli;
 				pcD.isGuildChannel = true;
 			}
 			pcD.mentions = await aca.GetMentionedUsers();
@@ -52,7 +48,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 			pcD.badTags = (await UserBadTagListSql.GetbadtaglistTags(aca.user.Id)).ToArray();
 			try
 			{
-				await aca.Send(await pcI.GetPicture(pcD));
+				await aca.Send(await pcI.GetPicture(aca, pcD));
 			}
 			catch { }
 		}

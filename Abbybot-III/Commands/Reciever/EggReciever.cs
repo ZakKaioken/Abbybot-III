@@ -16,19 +16,9 @@ namespace Abbybot_III.Commands.Reciever
 	{
 		public override async Task<List<iCommand>> RecieveCommands()
 		{
-			var sb = new StringBuilder();
-
 			List<iCommand> cmds = new List<iCommand>();
 
-			sb.Append("SELECT * FROM eggs");
-			await ReadCommands(sb, cmds);
-
-			return cmds;
-		}
-
-		static async Task ReadCommands(StringBuilder sb, List<iCommand> cmds)
-		{
-			var table = await AbbysqlClient.FetchSQL(sb.ToString());
+			var table = await AbbysqlClient.FetchSQL("SELECT * FROM eggs");
 			foreach (AbbyRow row in table)
 			{
 				ulong id = (ulong)row["Id"];
@@ -42,6 +32,9 @@ namespace Abbybot_III.Commands.Reciever
 				gc.Type = (CommandType)1;
 				cmds.Add(gc);
 			}
+
+			return cmds;
 		}
+
 	}
 }

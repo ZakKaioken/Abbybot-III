@@ -53,7 +53,7 @@ namespace Abbybot_III.Core.Data.User
 
 		public static async Task<AbbybotUser> GetUserFromSocketGuildUser(ulong guildId, ulong sguId)
 		{
-			var sgu = Apis.Discord._client.GetGuild(guildId).GetUser(sguId);
+			var sgu = Apis.Discord.__client.GetGuild(guildId).GetUser(sguId);
 			var abbybotuser = new AbbybotUser();
 			await abbybotuser.Init(sgu);
 			return abbybotuser;
@@ -72,7 +72,12 @@ namespace Abbybot_III.Core.Data.User
 			await abbybotuser.Init(su);
 			return abbybotuser;
 		}
-
+		public bool HasRatings(int i) {
+			return HasRatings((CommandRatings)i);
+		}
+		public bool HasRatings(CommandRatings rating) {
+			return Ratings.Contains(rating);
+		}
 		async Task Init(SocketUser author)
 		{
 			if (author == null)
@@ -85,13 +90,15 @@ namespace Abbybot_III.Core.Data.User
 			//Abbybot.print(sgu.Guild.Name);
 			if (author is SocketGuildUser sgu)
 			{
+				Console.WriteLine("author is guild user");
 				isGuild = true;
 				GuildId = sgu.Guild.Id;
 
 				Nickname = sgu.Nickname;
-				Roles = await RoleManager.GetUserRoles(sgu);
+				var err = Apis.Discord.__client.GetGuild(sgu.Guild.Id).GetUser(sgu.Id);
+				Roles = await RoleManager.GetUserRoles(err);
 				admin = sgu.Roles.ToList().Any(rs => rs.Permissions.Administrator);
-				Ratings = (await RoleManager.GetRatings(Roles)).ToList();
+				Ratings = (await RoleManager.GetRatings(Roles)).ToList(); 
 			}
 			var eeeer = (isGuild && Nickname != null) ? Nickname : Username;
 			Preferedname = Regex.Replace(eeeer.ToString(),

@@ -42,12 +42,12 @@ namespace Abbybot_III.Core.AbbyBooru
                     List<string> tags = new List<string>();
                     try
                     {
-                        var Gl = Apis.Discord._client.Guilds.ToList().Any(x => x.Id == character.guildId);
+                        var Gl = Apis.Discord.__client.Guilds.ToList().Any(x => x.Id == character.guildId);
 
                         if (!Gl)
                             continue;
                         //Console.WriteLine($"{character.tag}, guild found!");
-                        var G = Apis.Discord._client.GetGuild(character.guildId);
+                        var G = Apis.Discord.__client.GetGuild(character.guildId);
                         channel = G.GetTextChannel(character.channelId);
 
                         tags.Add(character.tag);
@@ -61,7 +61,7 @@ namespace Abbybot_III.Core.AbbyBooru
                     if (safe)
                         tags.Add("rating:safe");
 
-                    SearchResult[] charpicx = (await Apis.Booru.AbbyBooru.GetLatest(tags.ToArray())).Take(5).ToArray();
+                    SearchResult[] charpicx = (await Apis.AbbyBooru.GetLatest(tags.ToArray())).Take(5).ToArray();
 
                     List<img> nngs = new List<img>();
                     var postIds = (await Character.GetLatestPostIdsAsync(character));
