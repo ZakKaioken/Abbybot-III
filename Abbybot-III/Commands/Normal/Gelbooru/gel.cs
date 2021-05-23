@@ -14,84 +14,81 @@ using System.Threading.Tasks;
 
 namespace Abbybot_III.Commands.Normal.Gelbooru
 {
-    [Capi.Cmd("abbybot gel", 1, 1)]
-    class gel : NormalCommand
-    {
-        public override async Task DoWork(AbbybotCommandArgs a)
-        {
-            StringBuilder tagss = new StringBuilder(a.Message.Replace(Command, ""));
-            if (tagss.Length < 1)
-            {
-                await a.Send("You gotta tell me some tags too silly!!!");
-                return;
-            }
-            while (tagss[0] == ' ')
-                tagss.Remove(0, 1);
-            while (tagss[^1] == ' ')
-                tagss.Remove(tagss.Length - 1, 1);
+	[Capi.Cmd("abbybot gel", 1, 1)]
+	class gel : NormalCommand
+	{
+		public override async Task DoWork(AbbybotCommandArgs a)
+		{
+			StringBuilder tagss = new StringBuilder(a.Message.Replace(Command, ""));
+			if (tagss.Length < 1)
+			{
+				await a.Send("You gotta tell me some tags too silly!!!");
+				return;
+			}
+			while (tagss[0] == ' ')
+				tagss.Remove(0, 1);
+			while (tagss[^1] == ' ')
+				tagss.Remove(tagss.Length - 1, 1);
 
-            if (a.abbybotUser.userFavoriteCharacter != null)
-            {
-                var fc = a.abbybotUser.userFavoriteCharacter.FavoriteCharacter;
-                tagss.Replace("&fc", $"{fc}*");
-            }
+			var fc = a.user.FavoriteCharacter;
+			tagss.Replace("&fc", $"{fc}*");
 
-            var tags = tagss.ToString().Split(' ').ToList();
+			var tags = tagss.ToString().Split(' ').ToList();
 
-            var blacklisttags = await UserBlacklistSql.GetBlackListTags(a.abbybotUser.Id);
+			var badtaglisttags = await UserBadTagListSql.GetbadtaglistTags(a.user.Id);
 
-            foreach (var item in blacklisttags)
-            {
-                tags.Add($"-{item}");
-            }
+			foreach (var item in badtaglisttags)
+			{
+				tags.Add($"-{item}");
+			}
 
-            if (a.abbybotGuild != null)
-            {
-                var ratings = a.abbybotUser.userPerms.Ratings;
-                var sgc = (ITextChannel)a.channel;
-                if (sgc == null) return;
-                if (!sgc.IsNsfw || !a.abbybotUser.userFavoriteCharacter.IsLewd || !ratings.Contains(CommandRatings.hot))
-                {
-                    tags.Add("rating:safe");
-                }
-            }
-            EmbedBuilder eb = null;
-            try
-            {
-                BooruSharp.Search.Post.SearchResult imgdata = await service(tags);
-                ImgData im = (new ImgData { });
+			if (a.guild != null)
+			{
+				var ratings = a.user.Ratings;
+				var sgc = (ITextChannel)a.channel;
+				if (sgc == null) return;
+				if (!sgc.IsNsfw || !a.user.IsLewd || !ratings.Contains(CommandRatings.hot))
+				{
+					tags.Add("rating:safe");
+				}
+			}
+			EmbedBuilder eb = null;
+			try
+			{
+				BooruSharp.Search.Post.SearchResult imgdata = await service(tags);
+				ImgData im = (new ImgData { });
 
-                if (imgdata.FileUrl != null)
-                {
-                    im.Imageurl = imgdata.FileUrl.ToString();
-                }
-                if (imgdata.Source != null)
-                {
-                    im.source = imgdata.Source;
-                }
+				if (imgdata.FileUrl != null)
+				{
+					im.Imageurl = imgdata.FileUrl.ToString();
+				}
+				if (imgdata.Source != null)
+				{
+					im.source = imgdata.Source;
+				}
 
-                try
-                {
-                    eb = Contains.Gelbooru.embed.GelEmbed.Build(im, new StringBuilder("abbybot"));
-                }
-                catch
-                {
-                    eb = new EmbedBuilder { Description = "It didn't work... :(" };
-                }
-            }
-            catch { }
+				try
+				{
+					eb = Contains.Gelbooru.embed.GelEmbed.Build(im, new StringBuilder("abbybot"));
+				}
+				catch
+				{
+					eb = new EmbedBuilder { Description = "It didn't work... :(" };
+				}
+			}
+			catch { }
 
-            await a.Send(eb);
-        }
+			await a.Send(eb);
+		}
 
-        public virtual async Task<BooruSharp.Search.Post.SearchResult> service(List<string> tags)
-        {
-            return await Apis.Booru.AbbyBooru.Execute(tags.ToArray());
-        }
+		public virtual async Task<BooruSharp.Search.Post.SearchResult> service(List<string> tags)
+		{
+			return await Apis.Booru.AbbyBooru.Execute(tags.ToArray());
+		}
 
-        public override async Task<string> toHelpString(AbbybotCommandArgs aca)
-        {
-            return $"a random picture finder, 1 to 1 ratio to gelbooru's own search bar";
-        }
-    }
+		public override async Task<string> toHelpString(AbbybotCommandArgs aca)
+		{
+			return $"a random picture finder, 1 to 1 ratio to gelbooru's own search bar";
+		}
+	}
 }

@@ -25,7 +25,7 @@ namespace Abbybot_III.Clocks.Guild.User
 		public override async Task OnWork(DateTime time)
 		{
 			var roleIds = await MostActiveSql.GetRoles();
-			var client = Apis.Discord.Discord._client;
+			var client = Apis.Discord._client;
 			var abbybotid = client.CurrentUser.Id;
 
 			foreach (var role in roleIds)

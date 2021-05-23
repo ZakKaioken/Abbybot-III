@@ -1,6 +1,6 @@
 ﻿using Discord.WebSocket;
 
-namespace Abbybot_III.Apis.Discord.Events
+namespace Abbybot_III.Apis.Events
 {
     class EventInitializer
     {

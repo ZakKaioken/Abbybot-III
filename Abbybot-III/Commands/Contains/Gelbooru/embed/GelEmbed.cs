@@ -1,4 +1,5 @@
 ﻿using Abbybot_III.Commands.Contains.Gelbooru.dataobject;
+using Abbybot_III.Core.Data.User;
 using Abbybot_III.extentions;
 
 using Discord;
@@ -25,7 +26,10 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
 			string fcn = fcbuilder(sb.ToString());
 
 			message.Clear();
-			MentionsEmbed(imgdata, message);
+			if (imgdata.mentions.Count > 0)
+			{
+				MentionsEmbed(imgdata.user, imgdata.command, imgdata.mentions);
+			}
 			string fixedsource = FixSource(imgdata.source);
 			embededodizer.AddField($"{fcn}  :)", $"[Image Source]({fixedsource})");
 			embededodizer.Color = Color.LightOrange;
@@ -34,52 +38,49 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
 			return embededodizer;
 		}
 
-		static void MentionsEmbed(ImgData imgd, StringBuilder message)
+		static StringBuilder MentionsEmbed(AbbybotUser user, string command, List<AbbybotUser> mentions)
 		{
-			if (imgd.mentions != null)
+			if (mentions == null || mentions.Count == 0) return null;
+			StringBuilder message = new StringBuilder();
+			if (mentions.Count == 1 && mentions[0].Id == Apis.Discord._client.CurrentUser.Id)
 			{
-				if (imgd.mentions.Count > 0)
-				{
-					if (imgd.mentions.Count == 1 && imgd.mentions[0].Id == Apis.Discord.Discord._client.CurrentUser.Id)
-					{
-						message.Append("You ");
-						message.Append(imgd.command.Replace("abbybot ", ""));
-						message.Append("ed me!! Thank you so much!!! **");
-						message.Append(imgd.user.userNames.PreferedName);
-						message.Append("**! <:abbyheart:699636931839000606> <a:AbbyHearts:829759075969531984>");
-					}
-					else if (imgd.user.Id == Apis.Discord.Discord._client.CurrentUser.Id)
-					{
-						message.Append("I ");
-						message.Append(imgd.command.Replace("abbybot ", ""));
-						message.Append("ed you ");
-						for (int hu = 0; hu < imgd.mentions.Count; hu++)
-						{
-							message.Append($"**{imgd.mentions[hu].userNames.PreferedName}**");
-							if (imgd.mentions.Count - hu >= 1)
-								message.Append(", ");
-						}
-						message.Append("!!! <a:abbyrich:731562550923100162> <:abbybearsquish:744219531454709820>");
-					}
-					else
-					{
-						message.Append(" Hey");
-
-						for (int hu = 0; hu < imgd.mentions.Count; hu++)
-						{
-							message.Append($" **{imgd.mentions[hu].userNames.PreferedName}**");
-							if (imgd.mentions.Count - hu >= 1)
-								message.Append(", ");
-						}
-
-						message.Append("you were ");
-						message.Append(imgd.command.Replace("abbybot ", ""));
-						message.Append("ed by **");
-						message.Append(imgd.user.userNames.PreferedName);
-						message.Append("**! :)");
-					}
-				}
+				message.Append("You ");
+				message.Append(command.Replace("abbybot ", ""));
+				message.Append("ed me!! Thank you so much!!! **");
+				message.Append(user.Preferedname);
+				message.Append("**! <:abbyheart:699636931839000606> <a:AbbyHearts:829759075969531984>");
 			}
+			else if (user.Id == Apis.Discord._client.CurrentUser.Id)
+			{
+				message.Append("I ");
+				message.Append(command.Replace("abbybot ", ""));
+				message.Append("ed you ");
+				for (int hu = 0; hu < mentions.Count; hu++)
+				{
+					message.Append($"**{mentions[hu].Preferedname}**");
+					if (mentions.Count - hu >= 1)
+						message.Append(", ");
+				}
+				message.Append("!!! <a:abbyrich:731562550923100162> <:abbybearsquish:744219531454709820>");
+			}
+			else
+			{
+				message.Append(" Hey");
+
+				for (int hu = 0; hu < mentions.Count; hu++)
+				{
+					message.Append($" **{mentions[hu].Preferedname}**");
+					if (mentions.Count - hu >= 1)
+						message.Append(", ");
+				}
+
+				message.Append("you were ");
+				message.Append(command.Replace("abbybot ", ""));
+				message.Append("ed by **");
+				message.Append(user.Preferedname);
+				message.Append("**! :)");
+			}
+			return message;
 		}
 
 		static string FixSource(string source)
@@ -96,11 +97,12 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
 			return s.Replace("* ~ ", " or ").Replace("* ", " and ").Replace("{", "").Replace("}", "").Replace("_", " ").Replace("*", "");
 		}
 
-		public static EmbedBuilder Build(string fileurl, string source, string fc, List<Core.Data.User.AbbybotUser> mentionedUsers, string command)
+		public static EmbedBuilder Build(string fileurl, string source, string fc, List<Core.Data.User.AbbybotUser> mentionedUsers, string command, AbbybotUser user)
 		{
 			StringBuilder message = new StringBuilder();
 
 			EmbedBuilder embededodizer = new EmbedBuilder();
+
 			var iu = fileurl;
 			if (iu.Contains(new string[] { "mp4", "avi", "webm" }))
 				embededodizer.Url = iu;
@@ -109,8 +111,11 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
 			string fcn = fcbuilder(fc.ToString());
 
 			message.Clear();
-			//MentionsEmbed(imgd, message);
 			string fixedsource = FixSource(source);
+			if (mentionedUsers.Count > 0)
+			{
+				message = MentionsEmbed(user, command, mentionedUsers);
+			}
 			embededodizer.AddField($"{fcn}  :)", $"[Image Source]({fixedsource})");
 			embededodizer.Color = Color.LightOrange;
 			embededodizer.Description = message.ToString();
@@ -137,7 +142,6 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
 				}
 			string fcn = fcbuilder(imgdrata.favoritecharacter.ToString());
 
-			MentionsEmbed(imgdrata, message);
 			string fixedsource = FixSource(imgdrata.source);
 			string title = ((rolling) ? "r" : "") + $"{fcn} :)";
 			if (found)
@@ -145,6 +149,9 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
 			else
 				embededodizer.AddField($"I couldn't find a {imgdrata.command.ReplaceA("abbybot ", "")} picture of {fcn}...  :o", $"[Image Source]({fixedsource})");
 			embededodizer.Color = Color.LightOrange;
+			if (imgdrata.mentions.Count > 0)
+				message = MentionsEmbed(imgdrata.user, imgdrata.command, imgdrata.mentions);
+
 			embededodizer.Description = message.ToString();
 
 			return embededodizer;

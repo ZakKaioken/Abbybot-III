@@ -1,12 +1,12 @@
-﻿using Abbybot_III.Apis.Discord.ApiKeys;
-using Abbybot_III.Apis.Discord.Events;
+﻿using Abbybot_III.Apis.ApiKeys;
+using Abbybot_III.Apis.Events;
 
 using Discord;
 using Discord.WebSocket;
 
 using System.Threading.Tasks;
 
-namespace Abbybot_III.Apis.Discord
+namespace Abbybot_III.Apis
 {
     class Discord
     {

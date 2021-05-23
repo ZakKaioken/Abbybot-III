@@ -1,5 +1,6 @@
 ﻿using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
+using Abbybot_III.Core.Data.User;
 using Abbybot_III.Core.LevelingManager;
 using Abbybot_III.Core.Users.sql;
 using Abbybot_III.Sql.Abbybot.User;
@@ -19,44 +20,44 @@ namespace Abbybot_III.Commands.Contains
 		{
 			StringBuilder sb = new StringBuilder();
 
-			sb.AppendLine($"**{abd.abbybotUser.userNames.PreferedName}**'s profile:");
-			sb.Append($"Username: {abd.abbybotUser.userNames.Username}");
-			if (abd.abbybotUser.userNames.Nickname != null)
-				if (abd.abbybotUser.userNames.Nickname.Length > 0)
-					sb.Append($", Nickname: {abd.abbybotUser.userNames.Nickname}");
+			sb.AppendLine($"**{abd.user.Preferedname}**'s profile:");
+			sb.Append($"Username: {abd.user.Username}");
+			if (abd.user.Nickname != null)
+				if (abd.user.Nickname.Length > 0)
+					sb.Append($", Nickname: {abd.user.Nickname}");
 			sb.Append("\n");
-			sb.AppendLine($"Your favorite character is: {abd.abbybotUser.userFavoriteCharacter.FavoriteCharacter}");
-			if (abd.abbybotUser.userMarry.MarriedUserId != 0)
+			sb.AppendLine($"Your favorite character is: {abd.user.FavoriteCharacter}");
+			if (abd.user.MarriedUserId != 0)
 			{
-				var married = await UserSql.GetUser(abd.abbybotUser.Id);
-				sb.AppendLine($"You're married to {married.userNames.PreferedName}");
+				var married = await AbbybotUser.GetUserFromSocketGuildUser(abd.guild.Id, abd.user.Id);
+				sb.AppendLine($"You're married to {married.Preferedname}");
 			}
 			else
 			{
 				sb.AppendLine("You're not married to anyone.");
 			}
 			sb.Append("AutoFcDms: ");
-			if (await AutoFcDmSqls.GetAutoFcDmAsync(abd.abbybotUser.Id))
+			if (await AutoFcDmSqls.GetAutoFcDmAsync(abd.user.Id))
 				sb.Append("✅ ");
 			else
 				sb.Append("❌ ");
 
 			sb.Append("FCMentions: ");
-			if (await FCMentionsSql.GetFCMAsync(abd.abbybotUser.Id))
+			if (await FCMentionsSql.GetFCMAsync(abd.user.Id))
 				sb.Append("✅ ");
 			else
 				sb.Append("❌ ");
 
 			sb.Append("\n");
-			var client = Apis.Discord.Discord._client;
+			var client = Apis.Discord._client;
 			var abbybotid = client.CurrentUser.Id;
-			if (abd.abbybotGuild != null)
+			if (abd.guild != null)
 			{
 				sb.Append("Your favorite channel in this server is: ");
 
-				var MSC = await PassiveUserSql.GetChannelsinGuildStats(abbybotid, abd.abbybotGuild.GuildId, abd.abbybotUser.Id, "MessagesSent");
+				var MSC = await PassiveUserSql.GetChannelsinGuildStats(abbybotid, abd.guild.Id, abd.user.Id, "MessagesSent");
 				var orderedlist = MSC.OrderBy(x => x.stat).ToList()[0];
-				var chan = client.GetGuild(abd.abbybotGuild.GuildId).GetChannel(orderedlist.channel);
+				var chan = client.GetGuild(abd.guild.Id).GetChannel(orderedlist.channel);
 				sb.AppendLine(chan.Name);
 
 				ulong i = 0;
@@ -69,7 +70,7 @@ namespace Abbybot_III.Commands.Contains
 				sb.AppendLine($"You are level {e.level}. ({e.exp}/{e.expleft})");
 			}
 
-			sb.AppendLine($"You have sent {abd.abbybotUser.userInterestingFacts.MessagesSent} messages and {abd.abbybotUser.userInterestingFacts.CommandsSent} commands");
+			sb.AppendLine($"You have sent {abd.user.MessagesSent} messages and {abd.user.CommandsSent} commands");
 
 			await abd.Send(sb.ToString());
 		}

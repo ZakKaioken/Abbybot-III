@@ -18,7 +18,7 @@ namespace Abbybot_III.Apis.Booru
 			new Safebooru()
 		};
 
-		public static string[] blacklist = { "bondage", "beastiality", "suicide", "injury", "furry", "guro", "sofra" };
+		public static string[] badtaglist = { "bondage", "beastiality", "suicide", "injury", "furry", "guro", "sofra" };
 
 		public static async Task<SearchResult> Execute(string[] tags)
 		{
@@ -125,7 +125,7 @@ namespace Abbybot_III.Apis.Booru
 				tagz.Add(" " + item);
 			}
 
-			foreach (string item in blacklist)
+			foreach (string item in badtaglist)
 			{
 				tagz.Add($" -{item}");
 			}

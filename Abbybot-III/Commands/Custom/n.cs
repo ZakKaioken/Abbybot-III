@@ -11,82 +11,82 @@ using System.Threading.Tasks;
 
 namespace Abbybot_III.Commands.Custom
 {
-    [Capi.Cmd("n", 1, 1)]
-    class n : ContainCommand
-    {
-        StringBuilder nhen = new StringBuilder();
-        List<int> books = new List<int>();
+	[Capi.Cmd("n", 1, 1)]
+	class n : ContainCommand
+	{
+		StringBuilder nhen = new StringBuilder();
+		List<int> books = new List<int>();
 
-        public override async Task DoWork(AbbybotCommandArgs message)
-        {
-            nhen.Clear();
-            foreach (var b in books)
-            {
-                nhen.AppendLine($"https://nhentai.net/g/{b}");
-            }
-            await message.Send(nhen);
-        }
+		public override async Task DoWork(AbbybotCommandArgs message)
+		{
+			nhen.Clear();
+			foreach (var b in books)
+			{
+				nhen.AppendLine($"https://nhentai.net/g/{b}");
+			}
+			await message.Send(nhen);
+		}
 
-        public override async Task<bool> Evaluate(AbbybotCommandArgs cea)
-        {
-            books.Clear();
-            var msg = cea.Message.ToLower().Split(" ");
-            var cmd = Command.ToLower();
-            bool verification = false;
-            foreach (var m in msg)
-            {
-                bool v = m.Contains(cmd.ToLower());
-                if (v)
-                {
-                    int o = 0;
-                    var book = m.Split(cmd);
-                    if (int.TryParse(book[1], out o))
-                    {
-                        bool hen = await IsHentai(o);
-                        if (hen)
-                        {
-                            books.Add(o);
-                            verification = true;
-                        }
-                    }
-                }
-            }
-            bool isnsfwchannel = false;
-            if (cea.channel is SocketDMChannel sdc)
-            {
-                isnsfwchannel = true;
-            }
-            else if (cea.channel is ITextChannel itc)
-            {
-                isnsfwchannel = itc.IsNsfw;
-            }
+		public override async Task<bool> Evaluate(AbbybotCommandArgs cea)
+		{
+			books.Clear();
+			var msg = cea.Message.ToLower().Split(" ");
+			var cmd = Command.ToLower();
+			bool verification = false;
+			foreach (var m in msg)
+			{
+				bool v = m.Contains(cmd.ToLower());
+				if (v)
+				{
+					int o = 0;
+					var book = m.Split(cmd);
+					if (int.TryParse(book[1], out o))
+					{
+						bool hen = await IsHentai(o);
+						if (hen)
+						{
+							books.Add(o);
+							verification = true;
+						}
+					}
+				}
+			}
+			bool isnsfwchannel = false;
+			if (cea.channel is SocketDMChannel sdc)
+			{
+				isnsfwchannel = true;
+			}
+			else if (cea.channel is ITextChannel itc)
+			{
+				isnsfwchannel = itc.IsNsfw;
+			}
 
-            if (!cea.abbybotUser.userFavoriteCharacter.IsLewd || !isnsfwchannel)
-                verification = false;
-            return verification;
-        }
+			if (!cea.user.IsLewd || !isnsfwchannel)
+				verification = false;
+			return verification;
+		}
 
-        public async Task<bool> IsHentai(int book)
-        {
-            StringBuilder sb = new StringBuilder();
-            object o = null;
-            try
-            {
-                o = await NHentaiSharp.Core.SearchClient.SearchByIdAsync(book);
-            }
-            catch { }
+		public async Task<bool> IsHentai(int book)
+		{
+			StringBuilder sb = new StringBuilder();
+			object o = null;
+			try
+			{
+				o = await NHentaiSharp.Core.SearchClient.SearchByIdAsync(book);
+			}
+			catch { }
 
-            bool isbook = false;
-            if (o != null)
-            {
-                isbook = true;
-            }
-            return isbook;
-        }
+			bool isbook = false;
+			if (o != null)
+			{
+				isbook = true;
+			}
+			return isbook;
+		}
 
-        public override async Task<string> toHelpString(AbbybotCommandArgs aca)
-        {
-            return "just add an n in front of an nhentai number and i will give you it's link. It doesn't work with numbers that aren't hentais on nhentai";
-        }
-    }
+		public override async Task<string> toHelpString(AbbybotCommandArgs aca)
+		{
+			return "just add an n in front of an nhentai number and i will give you it's link. It doesn't work with numbers that aren't hentais on nhentai";
+		}
+	}
 }

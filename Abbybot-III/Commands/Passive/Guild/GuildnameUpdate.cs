@@ -12,8 +12,8 @@ namespace Abbybot_III.Commands.Custom.PassiveUsage
     {
         public override async Task DoWork(AbbybotCommandArgs aca)
         {
-            if (aca.abbybotGuild != null)
-                await GuildSql.UpdateGuildName(aca.abbybotGuild);
+            if (aca.guild != null)
+                await GuildSql.UpdateGuildName(aca.guild);
         }
     }
 }

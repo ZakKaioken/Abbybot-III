@@ -23,15 +23,15 @@ namespace Abbybot_III.Commands.Passive.User
         {
             ulong guildId = 0, channelId = 0;
 
-            if (aca.abbybotGuild != null)
+            if (aca.guild != null)
             {
-                guildId = aca.abbybotGuild.GuildId;
+                guildId = aca.guild.Id;
                 channelId = aca.channel.Id;
             }
-            ulong abbybotId = Apis.Discord.Discord._client.CurrentUser.Id;
+            ulong abbybotId = Apis.Discord._client.CurrentUser.Id;
             foreach (var w in words)
                 if (aca.Message.ReplaceA("abbybot ", "").ToLower().Contains(w.word))
-                    await PassiveUserSql.IncreaseStat(abbybotId, guildId, channelId, aca.abbybotUser.Id, w.column);
+                    await PassiveUserSql.IncreaseStat(abbybotId, guildId, channelId, aca.user.Id, w.column);
         }
     }
 

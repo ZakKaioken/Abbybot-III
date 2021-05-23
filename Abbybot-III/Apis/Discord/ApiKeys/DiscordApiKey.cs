@@ -2,7 +2,7 @@
 
 using System.IO;
 
-namespace Abbybot_III.Apis.Discord.ApiKeys
+namespace Abbybot_III.Apis.ApiKeys
 {
     class DiscordApiKey
     {

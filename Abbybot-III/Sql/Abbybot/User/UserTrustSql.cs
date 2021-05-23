@@ -8,29 +8,28 @@ using System.Threading.Tasks;
 
 namespace Abbybot_III.Core.Users.sql
 {
-    class UserTrustSql
-    {
-        public static async Task<AbbybotUser> GetUserTimeout(AbbybotUser au)
-        {
-            var abisb = new StringBuilder();
-            abisb.Append($"SELECT * FROM `usertimeout` WHERE `UserId` = '{au.Id}';");
-            var table = await AbbysqlClient.FetchSQL(abisb.ToString());
+	class UserTrustSql
+	{
+		public static async Task<(bool inTimeout, DateTime timeoutEndDate, string reason)> GetUserTimeout(ulong auId)
+		{
+			var abisb = new StringBuilder();
+			abisb.Append($"SELECT * FROM `usertimeout` WHERE `UserId` = '{auId}';");
+			var table = await AbbysqlClient.FetchSQL(abisb.ToString());
+			(bool t, DateTime ted, string r) vars = (false, DateTime.Now, "");
+			if (table.Count > 0)
+			{
+				vars.t = true;
+				vars.ted = (table[0]["Time"] is string s) ? DateTime.Parse(s) : DateTime.Now;
+				vars.r = (table[0]["Reason"] is string z) ? z : "";
+			}
 
-            if (table.Count > 0)
-            {
-                au.userTrust = new Data.User.Subsets.UserTrust();
-                au.userTrust.inTimeOut = true;
-                au.userTrust.TimeOutEndDate = (table[0]["Time"] is string s) ? DateTime.Parse(s) : DateTime.Now;
-                au.userTrust.timeoutReason = (table[0]["Reason"] is string z) ? z : "";
-            }
+			if (vars.ted < DateTime.Now)
+			{
+				await AbbysqlClient.RunSQL($"DELETE FROM `usertimeout` WHERE `UserId` = '{auId}'");
+				vars.t = false;
+			}
 
-            if (au.userTrust.TimeOutEndDate < DateTime.Now)
-            {
-                await AbbysqlClient.RunSQL($"DELETE FROM `usertimeout` WHERE `UserId` = '{au.Id}'");
-                au.userTrust.inTimeOut = false;
-            }
-
-            return au;
-        }
-    }
+			return vars;
+		}
+	}
 }

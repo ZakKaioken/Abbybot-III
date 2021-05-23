@@ -39,7 +39,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 
             if (FavoriteCharacter.Length < 1)
             {
-                var e = await FCMentionsSql.GetFCMAsync(a.abbybotUser.Id);
+                var e = await FCMentionsSql.GetFCMAsync(a.user.Id);
                 var word = (e) ? activationwords.random() : deactivatewords.random();
                 await a.Send($"your favorite character mentions modifier is {word}");
                 return;
@@ -83,7 +83,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 
             if (!wordused)
             {
-                state = await FCMentionsSql.GetFCMAsync(a.abbybotUser.Id);
+                state = await FCMentionsSql.GetFCMAsync(a.user.Id);
             }
             foreach (var ad in negativewords)
             {
@@ -93,7 +93,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
                 }
             }
 
-            await FCMentionsSql.SetFCMAsync(a.abbybotUser.Id, state);
+            await FCMentionsSql.SetFCMAsync(a.user.Id, state);
             EmbedBuilder eb = new EmbedBuilder();
             if (state)
             {

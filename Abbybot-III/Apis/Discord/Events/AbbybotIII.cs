@@ -5,7 +5,7 @@ using Discord.WebSocket;
 using System;
 using System.Threading.Tasks;
 
-namespace Abbybot_III.Apis.Discord.Events
+namespace Abbybot_III.Apis.Events
 {
     public class AbbybotIII
     {

@@ -1,104 +1,116 @@
-﻿using Abbybot_III.Core.Data.User.Subsets;
+﻿
 using Abbybot_III.Core.Mysql;
 using Abbybot_III.Core.Users.sql;
+
+using Capi.Interfaces;
 
 using Discord.WebSocket;
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Core.Data.User
 {
-    public class AbbybotUser
-    {
-        public ulong Id;
-        public UserGuild userGuild;
-        public UserNames userNames;
-        public UserPerms userPerms;
-        public UserTwitter userTwitter;
-        public UserFavoriteCharacter userFavoriteCharacter;
-        public UserMarry userMarry;
-        public UserTrust userTrust;
-        public UserInterestingFacts userInterestingFacts;
+	public class AbbybotUser
+	{
+		public ulong Id;
+		public bool isNsfw;
+		public bool isGuild;
+		public ulong GuildId;
+		public string Username;
+		public bool admin;
+		public List<AbbybotRole> Roles;
 
-        public AbbybotUser()
-        {
-            //Init(user).GetAwaiter().GetResult();
-        }
+		public string Nickname = "";
+		public string Preferedname = "";
+		public List<CommandRatings> Ratings = new List<CommandRatings>();
 
-        public static async Task<AbbybotUser> GetUserFromSocketGuildUser(SocketGuildUser sgu)
-        {
-            var abbybotuser = new AbbybotUser();
-            await abbybotuser.Init(sgu);
-            return abbybotuser;
-        }
+		public string Twitter;
+		public string TwitterChannel;
+		public int TweetCount;
 
-        public static async Task<AbbybotUser> GetUserFromSocketUser(SocketUser su)
-        {
-            var abbybotuser = new AbbybotUser();
-            await abbybotuser.Init(su);
-            return abbybotuser;
-        }
+		public string FavoriteCharacter;
+		public bool IsLewd = true;
+		public ulong MarriedUserId;
 
-        async Task Init(SocketUser author)
-        {
-            if (author == null)
-                throw new Exception("author is null");
+		public int ActivityLevel;
+		public int Love;
 
-            Id = author.Id;
+		public bool inTimeOut;
+		public DateTime TimeOutEndDate;
+		public string timeoutReason;
 
-            userNames = new UserNames
-            {
-                Username = author.Username
-            };
-            userPerms = new UserPerms();
+		public int MessagesSent;
+		public int CommandsSent;
 
-            try
-            {
-                await GetGuild(author);
-            }
-            catch { }
+		public AbbybotUser()
+		{
+			//Init(user).GetAwaiter().GetResult();
+		}
 
-            var eeeer = (userGuild != null && userNames.Nickname != null) ? userNames.Nickname : userNames.Username;
+		public static async Task<AbbybotUser> GetUserFromSocketGuildUser(ulong guildId, ulong sguId)
+		{
+			var sgu = Apis.Discord._client.GetGuild(guildId).GetUser(sguId);
+			var abbybotuser = new AbbybotUser();
+			await abbybotuser.Init(sgu);
+			return abbybotuser;
+		}
 
-            var eex = Regex.Replace(eeeer.ToString(),
-                @"([(\u2100-\u27ff)(\uD83C\uDC00 - \uD83C\uDFFF)(\uD83D\uDC00 - \uD83D\uDFFF)(\uD83E\uDD00 - \uD83E\uDFFF)])",
-                @"\$1").Replace("\\ ", " ");
+		public static async Task<AbbybotUser> GetUserFromSocketGuildUser(SocketGuildUser sgu)
+		{
+			var abbybotuser = new AbbybotUser();
+			await abbybotuser.Init(sgu);
+			return abbybotuser;
+		}
 
-            userNames.PreferedName = eex;
-            userTrust = new UserTrust();
-            await UserTrustSql.GetUserTimeout(this);
+		public static async Task<AbbybotUser> GetUserFromSocketUser(SocketUser su)
+		{
+			var abbybotuser = new AbbybotUser();
+			await abbybotuser.Init(su);
+			return abbybotuser;
+		}
 
-            var u = await UserSql.GetUser(Id);
-            userFavoriteCharacter = u.userFavoriteCharacter;
-            userMarry = u.userMarry;
-            userInterestingFacts = u.userInterestingFacts;
-            userTrust = u.userTrust;
-        }
+		async Task Init(SocketUser author)
+		{
+			if (author == null)
+				throw new Exception("author is null");
 
-        public static object GetUserFromTwitterUser(string screenName)
-        {
-            throw new NotImplementedException();
-        }
+			Id = author.Id;
 
-        async Task GetGuild(SocketUser author)
-        {
-            //Abbybot.print(sgu.Guild.Name);
-            if (author is SocketGuildUser sgu)
-            {
-                //Abbybot.print("found guild");
-                userGuild = new UserGuild
-                {
-                    GuildId = sgu.Guild.Id
-                };
-                userNames.Nickname = sgu.Nickname;
-                userGuild.Roles = await RoleManager.GetUserRoles(sgu);
-                userGuild.admin = sgu.Roles.ToList().Any(rs => rs.Permissions.Administrator);
-                userPerms.Ratings = (await RoleManager.GetRatings(userGuild.Roles)).ToList();
-                //userPerms.Ratings.Add(Capi.Interfaces.CommandRatings.cutie);
-            }
-        }
-    }
+			Username = author.Username;
+
+			//Abbybot.print(sgu.Guild.Name);
+			if (author is SocketGuildUser sgu)
+			{
+				isGuild = true;
+				GuildId = sgu.Guild.Id;
+
+				Nickname = sgu.Nickname;
+				Roles = await RoleManager.GetUserRoles(sgu);
+				admin = sgu.Roles.ToList().Any(rs => rs.Permissions.Administrator);
+				Ratings = (await RoleManager.GetRatings(Roles)).ToList();
+			}
+			var eeeer = (isGuild && Nickname != null) ? Nickname : Username;
+			Preferedname = Regex.Replace(eeeer.ToString(),
+				@"([(\u2100-\u27ff)(\uD83C\uDC00 - \uD83C\uDFFF)(\uD83D\uDC00 - \uD83D\uDFFF)(\uD83E\uDD00 - \uD83E\uDFFF)])",
+				@"\$1").Replace("\\ ", " ");
+
+			await UserTrustSql.GetUserTimeout(Id);
+
+			var u = await UserSql.GetUserData(Id);
+			FavoriteCharacter = u.favoritecharacter;
+			MarriedUserId = u.marriedid;
+
+			IsLewd = u.isLewd;
+		}
+
+		public static object GetUserFromTwitterUser(string screenName)
+		{
+			throw new NotImplementedException();
+		}
+
+	}
 }

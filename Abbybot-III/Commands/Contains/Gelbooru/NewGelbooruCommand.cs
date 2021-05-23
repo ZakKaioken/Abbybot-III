@@ -52,8 +52,8 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 			List<AbbybotUser> mentionedUsers = await aca.GetMentionedUsers();
 
 			var cfc = "NO";
-			if (aca.abbybotGuild != null)
-				cfc = await ChannelFCOverride.GetFCMAsync(aca.abbybotGuild.GuildId, aca.channel.Id);
+			if (aca.guild != null)
+				cfc = await ChannelFCOverride.GetFCMAsync(aca.guild.Id, aca.channel.Id);
 			string fc = await GetFavoriteCharacterTagAsync(aca, mentionedUsers);
 
 			if (fc.Contains(" ~ "))
@@ -62,21 +62,22 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 
 				ulong guildId = 0, channelId = 0;
 
-				if (aca.abbybotGuild != null)
+				if (aca.guild != null)
 				{
-					guildId = aca.abbybotGuild.GuildId;
+					guildId = aca.guild.Id;
 					channelId = aca.channel.Id;
 				}
 
-				ulong abbybotId = Apis.Discord.Discord._client.CurrentUser.Id;
-				await PassiveUserSql.IncreaseStat(abbybotId, guildId, channelId, aca.abbybotUser.Id, "GelCommandUsages");
-				var e = await PassiveUserSql.GetChannelsinGuildStats(abbybotId, guildId, aca.abbybotUser.Id, "GelCommandUsages");
+				ulong abbybotId = Apis.Discord._client.CurrentUser.Id;
+				await PassiveUserSql.IncreaseStat(abbybotId, guildId, channelId, aca.user.Id, "GelCommandUsages");
+				var e = await PassiveUserSql.GetChannelsinGuildStats(abbybotId, guildId, aca.user.Id, "GelCommandUsages");
 
 				foreach (var sta in e)
 				{
 					ix += sta.stat;
 				}
-				ix = ix % (ulong)fcc.Length;
+				ix %= (ulong)fcc.Length;
+
 				if (!rolling)
 				{
 					Random r = new Random();
@@ -91,6 +92,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 			List<string> tagz;
 			SearchResult imgdata;
 			bool found = true;
+
 			var ufc = "abigail_williams*";
 			try
 			{
@@ -102,24 +104,31 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 
 				if (imgdata.Source == "noimagefound")
 				{
+					Console.WriteLine("cfc+fc failed");
 					throw new Exception("CFC+FC FAILED");
 				}
-				ufc = GelEmbed.fcbuilder($"{fc} {cfc}");
+				ufc = GelEmbed.fcbuilder($"{fc} and {cfc}");
 			}
 			catch
 			{
 				try
 				{
-					if (cfc == "NO") throw new Exception("cfc not set");
+					if (cfc == "NO")
+					{
+						Console.WriteLine("No channel favorite character");
+						throw new Exception("cfc not set");
+					}
+
 					tagz = await GenerateTags(aca, cfc);
 
 					imgdata = await Apis.Booru.AbbyBooru.Execute(tagz.ToArray());
 
 					if (imgdata.Source == "noimagefound")
 					{
+						Console.WriteLine("No image found for the channel favorite character...");
 						throw new Exception("CFC FAILED");
-						//ufc = GelEmbed.fcbuilder($"{cfc}");
 					}
+					ufc = GelEmbed.fcbuilder($"{cfc}");
 				}
 				catch
 				{
@@ -131,6 +140,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 
 						if (imgdata.Source == "noimagefound")
 						{
+							Console.WriteLine("no picture found for the users fc");
 							throw new Exception("FC FAILED");
 						}
 						ufc = GelEmbed.fcbuilder($"{fc}");
@@ -143,6 +153,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 
 						if (imgdata.Source == "noimagefound")
 						{
+							Console.WriteLine("No picture found as a whole...");
 							throw new Exception("FC FAILED");
 						}
 					}
@@ -163,16 +174,18 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 
 			bool guildloli = false;
 			bool guildnsfw = false;
-			if (aca.abbybotGuild != null)
+			if (aca.guild != null)
 			{
-				guildloli = aca.abbybotGuild.NoLoli;
-				guildnsfw = aca.abbybotGuild.NoNSFW;
+				guildloli = aca.guild.NoLoli;
+				guildnsfw = aca.guild.NoNSFW;
 			}
 
 			if ((loli && guildloli) || (nsfw && guildnsfw))
 				await aca.Send("I can't send that to this server due to it opting not to allow nsfw.");
 			else
 			{
+				var w = ufc.Replace("-abigail williams", "any waifu");
+				Console.WriteLine($"sending an image using {w} as the favorite character");
 				ImgData imgdrata = new ImgData()
 				{
 					command = Command,
@@ -183,9 +196,9 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 					safe = !nsfw,
 					shot = shot,
 					source = source,
-					user = aca.abbybotUser,
-					sudouser = aca.abbybotSudoUser,
-					favoritecharacter = fc
+					user = aca.user,
+					sudouser = aca.sudoUser,
+					favoritecharacter = w
 				};
 
 				var e = GelEmbed.Build(imgdrata, found, rolling);
@@ -203,18 +216,18 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 
 			if (aca.channel is not SocketDMChannel sdc)
 			{
-				if (!aca.abbybotUser.userPerms.Ratings.Contains((CommandRatings)2) || !await aca.IsNSFW())
+				if (!aca.user.Ratings.Contains((CommandRatings)2) || !await aca.IsNSFW())
 				{
 					tagz.Add("rating:safe");
 				}
-				if (!aca.abbybotUser.userPerms.Ratings.Contains((CommandRatings)3))
+				if (!aca.user.Ratings.Contains((CommandRatings)3))
 				{
 					tagz.Add("-loli");
 				}
 			}
 
-			var blacklisttags = await UserBlacklistSql.GetBlackListTags(aca.abbybotUser.Id);
-			foreach (var item in blacklisttags)
+			var badtaglisttags = await UserBadTagListSql.GetbadtaglistTags(aca.user.Id);
+			foreach (var item in badtaglisttags)
 			{
 				tagz.Add($"-{item}");
 			}
@@ -224,22 +237,22 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 
 		static async Task<string> GetFavoriteCharacterTagAsync(AbbybotCommandArgs aca, List<AbbybotUser> mentionedUsers)
 		{
-			if (aca.abbybotSudoUser != null)
+			if (aca.sudoUser != null)
 				return "Abigail_Williams*";
 
-			var ufcm = await FCMentionsSql.GetFCMAsync(aca.abbybotUser.Id);
+			var ufcm = await FCMentionsSql.GetFCMAsync(aca.user.Id);
 			if (ufcm && mentionedUsers.Count > 0)
-				return mentionedUsers.random().userFavoriteCharacter.FavoriteCharacter;
+				return mentionedUsers.random().FavoriteCharacter;
 			else
 			{
-				return aca.abbybotUser.userFavoriteCharacter.FavoriteCharacter;
+				return aca.user.FavoriteCharacter;
 			}
 		}
 
 		public override async Task<string> toHelpString(AbbybotCommandArgs aca)
 		{
 			await Task.CompletedTask;
-			return $"These commands will show a picture of your favorite character ({aca.abbybotUser.userFavoriteCharacter.FavoriteCharacter}) doing what's in the command. (for example: abbybot hug has hugging inside it)";
+			return $"These commands will show a picture of your favorite character ({aca.user.FavoriteCharacter}) doing what's in the command. (for example: abbybot hug has hugging inside it)";
 		}
 	}
 }

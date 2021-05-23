@@ -1,66 +1,66 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
-    <RootNamespace>Abbybot_III</RootNamespace>
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net5.0</TargetFramework>
+		<RootNamespace>Abbybot_III</RootNamespace>
 
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <OutputPath>C:\Users\Zacha\Documents\GitHub\Abbybot-III\Release\Abbybot-III</OutputPath>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+		<OutputPath>C:\Users\Zacha\Documents\GitHub\Abbybot-III\Release\Abbybot-III</OutputPath>
 
-    <OutDir>Abbybot\III</OutDir>
+		<OutDir>Abbybot\III</OutDir>
 
-    <ApplicationIcon>Abby Kaioken Badge b.ico</ApplicationIcon>
-  </PropertyGroup>
+		<ApplicationIcon>Abby Kaioken Badge b.ico</ApplicationIcon>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <Optimize>false</Optimize>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<Optimize>false</Optimize>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Abbybot\**" />
-    <EmbeddedResource Remove="Abbybot\**" />
-    <None Remove="Abbybot\**" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="Abbybot\**" />
+		<EmbeddedResource Remove="Abbybot\**" />
+		<None Remove="Abbybot\**" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Apis\Mysql\lib\" />
-    <Folder Include="Apis\Twitter\lib\" />
-    <Folder Include="Core\CommandHandler\lib\" />
-    <Folder Include="Core\Users\extentions\" />
-  </ItemGroup>
+	<ItemGroup>
+		<Folder Include="Apis\Mysql\lib\" />
+		<Folder Include="Apis\Twitter\lib\" />
+		<Folder Include="Core\CommandHandler\lib\" />
+		<Folder Include="Core\Users\extentions\" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="BooruSharp" Version="3.0.2" />
-    <PackageReference Include="Discord.Net" Version="2.3.1" />
-    <PackageReference Include="MoonSharp" Version="2.0.0" />
-    <PackageReference Include="MySql.Data" Version="8.0.23" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="NHentaiSharp" Version="1.1.1" />
-    <PackageReference Include="PrettyBin" Version="1.1.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="BooruSharp" Version="3.0.2" />
+		<PackageReference Include="Discord.Net" Version="2.3.1" />
+		<PackageReference Include="MoonSharp" Version="2.0.0" />
+		<PackageReference Include="MySql.Data" Version="8.0.23" />
+		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+		<PackageReference Include="NHentaiSharp" Version="1.1.1" />
+		<PackageReference Include="PrettyBin" Version="1.1.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="AbbySql">
-      <HintPath>Apis\Mysql\lib\AbbySql.dll</HintPath>
-    </Reference>
-    <Reference Include="Capi">
-      <HintPath>Core\CommandHandler\lib\Capi.dll</HintPath>
-    </Reference>
-    <Reference Include="Hammock.ClientProfile">
-      <HintPath>Apis\Twitter\lib\Hammock.ClientProfile.dll</HintPath>
-    </Reference>
-    <Reference Include="TweetSharp">
-      <HintPath>Apis\Twitter\lib\TweetSharp.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup>
+		<Reference Include="AbbySql">
+			<HintPath>Apis\Mysql\lib\AbbySql.dll</HintPath>
+		</Reference>
+		<Reference Include="Capi">
+			<HintPath>Core\CommandHandler\lib\Capi.dll</HintPath>
+		</Reference>
+		<Reference Include="Hammock.ClientProfile">
+			<HintPath>Apis\Twitter\lib\Hammock.ClientProfile.dll</HintPath>
+		</Reference>
+		<Reference Include="TweetSharp">
+			<HintPath>Apis\Twitter\lib\TweetSharp.dll</HintPath>
+		</Reference>
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Update="Abby Kaioken Badge b.ico">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="lua\commands\test.lua">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Update="Abby Kaioken Badge b.ico">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="lua\commands\test.lua">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 </Project>

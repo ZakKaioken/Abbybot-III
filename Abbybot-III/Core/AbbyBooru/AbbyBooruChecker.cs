@@ -42,12 +42,12 @@ namespace Abbybot_III.Core.AbbyBooru
                     List<string> tags = new List<string>();
                     try
                     {
-                        var Gl = Apis.Discord.Discord._client.Guilds.ToList().Any(x => x.Id == character.guildId);
+                        var Gl = Apis.Discord._client.Guilds.ToList().Any(x => x.Id == character.guildId);
 
                         if (!Gl)
                             continue;
                         //Console.WriteLine($"{character.tag}, guild found!");
-                        var G = Apis.Discord.Discord._client.GetGuild(character.guildId);
+                        var G = Apis.Discord._client.GetGuild(character.guildId);
                         channel = G.GetTextChannel(character.channelId);
 
                         tags.Add(character.tag);

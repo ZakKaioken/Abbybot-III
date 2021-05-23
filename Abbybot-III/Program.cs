@@ -6,24 +6,26 @@ using Abbybot_III.Core.Heart;
 using Abbybot_III.Core.Twitter;
 
 using System.Diagnostics;
+using System.IO;
 using System.Threading.Tasks;
 
 Abbybot.print("Abbybot III starting!");
-if (Process.GetProcessesByName("AbbybotSleep").Length < 1)
-    Process.Start("AbbybotSleep.exe");
+if (File.Exists("AbbybotSleep.exe"))
+	if (Process.GetProcessesByName("AbbybotSleep").Length < 1)
+		Process.Start("AbbybotSleep.exe");
 await MysqlCore.CheckMysql(@"ApiKeys\mysqlbinpath.abbytxt");
 AbbySql.AbbysqlClient.connectionstring = Abbybot_III.Apis.Mysql.ApiKeys.MysqlApiKeys.Load(@"ApiKeys\Mysql.json").ToString();
 await InitAll();
-await Abbybot_III.Apis.Discord.Discord.DiscordMainAsync();
+await Abbybot_III.Apis.Discord.DiscordMainAsync();
 AbbyHeart.Start();
 while (true)
 {
-    await Task.Delay(1);
+	await Task.Delay(1);
 }
 static async Task InitAll()
 {
-    await Twitter.init();
-    AbbyBooruChecker.Init();
-    if (Twitter.tson)
-        AbbybotTwitter.init();
+	await Twitter.init();
+	AbbyBooruChecker.Init();
+	if (Twitter.tson)
+		AbbybotTwitter.init();
 }

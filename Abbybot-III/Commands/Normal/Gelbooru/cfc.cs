@@ -21,7 +21,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 		public override async Task DoWork(AbbybotCommandArgs a)
 		{
 			StringBuilder FavoriteCharacter = new StringBuilder(a.Message.ToLower().Replace(Command.ToLower(), ""));
-			var cfc = await ChannelFCOverride.GetFCMAsync(a.abbybotGuild.GuildId, a.channel.Id);
+			var cfc = await ChannelFCOverride.GetFCMAsync(a.guild.Id, a.channel.Id);
 			if (FavoriteCharacter.Length < 1)
 			{
 				if (cfc == "NO")
@@ -49,35 +49,35 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 				}
 				if (s == "remove")
 				{
-					await ChannelFCOverride.SetCFCAsync(a.abbybotGuild.GuildId, a.channel.Id, "NO");
+					await ChannelFCOverride.SetCFCAsync(a.guild.Id, a.channel.Id, "NO");
 					return;
 				}
 			}
 
 			string fc = FavoriteCharacter.ToString();
 			Gelbooru.Fc.FCBuilder(FavoriteCharacter);
-			string pictureurl = "https://img2.gelbooru.com/samples/ee/e2/sample_eee286783bfa37e088d1ffbcf8f098ba.jpg";
+			//string pictureurl = "https://img2.gelbooru.com/samples/ee/e2/sample_eee286783bfa37e088d1ffbcf8f098ba.jpg";
 			var o = new string[1];
 			o[0] = FavoriteCharacter.ToString();
 
 			var canr = await Fc.awa(o);
 			fc = canr.fc;
 			EmbedBuilder eb = new EmbedBuilder();
-			eb.ImageUrl = new Uri(canr.pictureurl).AbsoluteUri;
-			var u = a.abbybotUser;
+			eb.ImageUrl = canr.pictureurl.AbsoluteUri;
+			var u = a.user;
 			if (canr.canrun)
 			{
-				await ChannelFCOverride.SetCFCAsync(a.abbybotGuild.GuildId, a.channel.Id, FavoriteCharacter.ToString());
+				await ChannelFCOverride.SetCFCAsync(a.guild.Id, a.channel.Id, FavoriteCharacter.ToString());
 
 				eb.Title = $"{fc} Yayy!!";
 				eb.Color = Color.Green;
-				eb.Description = $"I set the channels favorite character hehehehe!!! cutie master!! {u.userNames.PreferedName} master!! ";
+				eb.Description = $"I set the channels favorite character hehehehe!!! cutie master!! {u.Preferedname} master!! ";
 			}
 			else
 			{
 				eb.Title = $"oof... {fc}...";
 				eb.Color = Color.Red;
-				eb.Description = $"sorry {u.userNames.PreferedName}... i couldn't find {fc} ({FavoriteCharacter}) ...";
+				eb.Description = $"sorry {u.Preferedname}... i couldn't find {fc} ({FavoriteCharacter}) ...";
 			}
 			await a.Send(eb);
 		}

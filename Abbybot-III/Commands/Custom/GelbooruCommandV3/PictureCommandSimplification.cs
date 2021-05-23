@@ -1,0 +1,128 @@
+using System.Threading.Tasks;
+using System.Linq;
+using System.Text;
+using System;
+using System.Collections.Generic;
+using Abbybot_III.Apis.Booru;
+using Capi.Interfaces;
+using Abbybot_III.Commands.Contains.Gelbooru.embed;
+using Discord;
+
+class PictureCommandSimplification
+{
+	public async Task<EmbedBuilder> GetPicture(PictureCommandData message)
+	{
+		EmbedBuilder eb = new EmbedBuilder();
+
+		var Commands = await AbbySql.AbbysqlClient.FetchSQL("Select * from discord.gelboorucommands");
+		if (Commands.Count <= 0) throw new Exception("I'm sorry master I'm so dizzy... I don't see any picture commands anymore...");
+
+		var picture = Commands.ToList().Where(x => message.message.Contains(x["Command"] is string cc ? $"abbybot {cc}" : "anotherunlikelycommand")).Take(3).ToList();
+
+		if (picture.Count <= 0) throw new Exception("The message did not have any matching picture commands");
+		string pfc = null;
+		foreach (var command in picture)
+		{
+			string tags = command["Tags"] is string ta ? ta : "";
+			int rating = command["RatingId"] is int rI ? rI : -1;
+			if (tags == "" || rating == -1) continue;
+
+			if (!message.ratings.Contains((CommandRatings)rating)) continue;
+			if (message.favoriteCharacter.Contains(" ~ "))
+			{
+				var smfc = message.favoriteCharacter.Replace("{", "").Replace("}", "").Split(" ~ ");
+				message.index %= (ulong)smfc.Length;
+				pfc = (message.Rolling) ? smfc[message.index++] : smfc[(new Random()).Next(0, smfc.Length)];
+			}
+
+			(string, string)[] types = new (string, string)[] {
+				(message.channelFavoriteCharacter, pfc),
+				(message.channelFavoriteCharacter, null),
+				(pfc, null),
+				("abigail_williams_(fate/grand_order)", null)
+			};
+
+			List<string> tagd = tags.Split(" ").ToList();
+			if (message.isGuildChannel)
+			{
+				if (!message.isNSFW) tagd.Add("rating:safe");
+				if (!message.isLoli)
+				{
+					tagd.Add("-loli");
+					tagd.Add("-shota");
+				}
+			}
+			foreach (var badTag in message.badTags)
+			{
+				tagd.Add($"-{badTag}");
+			}
+
+			int triesIndex = 0;
+			ImageData imageData = null;
+			do
+			{
+				try
+				{
+					var tagz = tagd.ToList();
+					string ww = "";
+					if (types[triesIndex].Item1 is string i1)
+					{
+						tagz.Add(i1);
+						ww += i1;
+					}
+					if (types[triesIndex].Item2 is string i2)
+					{
+						tagz.Add(i2);
+						ww += $" {i2}";
+					}
+
+					var imgdata = await AbbyBooru.Execute(tagz.ToArray());
+					imageData = new ImageData()
+					{
+						pictureCharacter = ww,
+						FileUrl = imgdata.FileUrl,
+						PreviewUrl = imgdata.PreviewUrl,
+						Tags = imgdata.Tags.ToArray(),
+						Source = (imgdata.Source is string sos && sos.Length > 0 && sos != "noimagefound") ? sos : "No source",
+						Nsfw = imgdata.Rating != BooruSharp.Search.Post.Rating.Safe
+					};
+				}
+				catch
+				{
+					triesIndex++;
+				}
+			} while (imageData == null && triesIndex <= 3);
+			if (triesIndex > 3)
+			{
+				//sb.AppendLine("No picture found.");
+				continue;
+			}
+
+			if (imageData.Source == "No source")
+			{
+				//sb.AppendLine($"Master... I didn't find a {command["Command"]}ing picture...");
+				continue;
+			}
+			Console.WriteLine($"{message.isNSFW}, {imageData.Nsfw}");
+			if (!message.isNSFW && imageData.Nsfw)
+			{
+				eb.Description = ("Master that's a lewd image... I can't send it...");
+				continue;
+			}
+
+			if (!message.isLoli && imageData.ContainsLoli)
+			{
+				//sb.AppendLine("Master... I found an image, but it's against discord's tos so i'm not going to send it.");
+				continue;
+			}
+			var pc = imageData.pictureCharacter;
+			var filrl = imageData.FileUrl;
+			var ssss = imageData.Nsfw;
+			var soai = imageData.Source;
+			var iisu = imageData.ContainsLoli;
+
+			eb = GelEmbed.Build(filrl.ToString(), soai, pc, message.mentions, command["Command"] as string, message.user);
+		}
+		return eb;
+	}
+}

@@ -15,13 +15,13 @@ namespace Abbybot_III.Commands.Passive.User
 		public override async Task DoWork(AbbybotCommandArgs aca)
 		{
 			var n = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-			if (aca.abbybotGuild != null)
+			if (aca.guild != null)
 			{
-				await LastTimeSql.SetTimeSql(aca.abbybotUser.Id, aca.abbybotGuild.GuildId, "Message", n);
+				await LastTimeSql.SetTimeSql(aca.user.Id, aca.guild.Id, "Message", n);
 			}
 			else
 			{
-				await LastTimeSql.SetTimeSql(aca.abbybotUser.Id, 0, "Message", n);
+				await LastTimeSql.SetTimeSql(aca.user.Id, 0, "Message", n);
 			}
 		}
 	}

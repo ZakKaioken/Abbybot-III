@@ -2,7 +2,7 @@
 {
     public class AbbybotGuild
     {
-        public ulong GuildId;
+        public ulong Id;
         public string Name;
         public bool NoLoli;
         public bool NoNSFW;

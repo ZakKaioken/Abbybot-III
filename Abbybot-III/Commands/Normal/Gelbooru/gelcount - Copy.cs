@@ -30,11 +30,8 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 			while (tagss[^1] == ' ')
 				tagss.Remove(tagss.Length - 1, 1);
 
-			if (a.abbybotUser.userFavoriteCharacter != null)
-			{
-				var fc = a.abbybotUser.userFavoriteCharacter.FavoriteCharacter;
-				tagss.Replace("&fc", $"{fc}");
-			}
+			var fc = a.user.FavoriteCharacter;
+			tagss.Replace("&fc", $"{fc}");
 
 			Fc.FCBuilder(tagss).Replace("*", "");
 
@@ -47,19 +44,19 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 			}
 			tags = sts;
 			/*
-			var blacklisttags = await UserBlacklistSql.GetBlackListTags(a.abbybotUser.Id);
+			var badtaglisttags = await UserbadtaglistSql.GetbadtaglistTags(a.abbybotUser.Id);
 
-			foreach (var item in blacklisttags)
+			foreach (var item in badtaglisttags)
 			{
 				tags.Add($"-{item}");
 			}
 			*/
-			if (a.abbybotGuild != null)
+			if (a.guild != null)
 			{
-				var ratings = a.abbybotUser.userPerms.Ratings;
+				var ratings = a.user.Ratings;
 				var sgc = (ITextChannel)a.channel;
 				if (sgc == null) return;
-				if (!sgc.IsNsfw || !a.abbybotUser.userFavoriteCharacter.IsLewd || !ratings.Contains(CommandRatings.hot))
+				if (!sgc.IsNsfw || !a.user.IsLewd || !ratings.Contains(CommandRatings.hot))
 				{
 					tags.Add("rating:safe");
 				}

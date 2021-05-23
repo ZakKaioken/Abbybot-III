@@ -354,3 +354,4 @@ MigrationBackup/
 .ionide/
 Abbybot-III/Commands/Contains/DmSpy.cs
 Abbybot-III/Commands/Normal/ForceSendTweet.cs
+/Abbybot-III/.vscode

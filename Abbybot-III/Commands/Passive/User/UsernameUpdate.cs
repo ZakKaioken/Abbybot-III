@@ -12,7 +12,7 @@ namespace Abbybot_III.Commands.Custom.PassiveUsage
 	{
 		public override async Task DoWork(AbbybotCommandArgs aca)
 		{
-			await PassiveUserSql.SetUsernameSql(aca.abbybotUser.Id, aca.abbybotUser.userNames.Username, aca.abbybotUser.userNames.Nickname);
+			await PassiveUserSql.SetUsernameSql(aca.user.Id, aca.user.Username, aca.user.Nickname);
 		}
 	}
 }

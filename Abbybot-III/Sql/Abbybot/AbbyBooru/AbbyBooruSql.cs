@@ -24,7 +24,7 @@ namespace Abbybot_III.Core.AbbyBooru.sql
                 throw new Exception("CharacterAlreadyAdded");
             }
 
-            await AbbysqlClient.RunSQL($"INSERT INTO `discord`.`abbyboorucharacters` ( `tag`,`channelId`, `guildId`, `IsLewd` ) VALUES ('{tag}','{channel.Id}','{abbybotGuild.GuildId}', '{nsf}'); ");
+            await AbbysqlClient.RunSQL($"INSERT INTO `discord`.`abbyboorucharacters` ( `tag`,`channelId`, `guildId`, `IsLewd` ) VALUES ('{tag}','{channel.Id}','{abbybotGuild.Id}', '{nsf}'); ");
         }
 
         public static async Task RemoveCharacterAsync(ISocketMessageChannel channel, string v)

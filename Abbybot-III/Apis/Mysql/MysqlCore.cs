@@ -26,6 +26,7 @@ namespace Abbybot_III.Apis.Mysql
                 UseShellExecute = false
             };
             Process.Start(psi);
+            await Task.CompletedTask;
         }
 
         public static void Save(string path)

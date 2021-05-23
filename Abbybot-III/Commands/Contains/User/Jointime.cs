@@ -20,11 +20,11 @@ namespace Abbybot_III.Commands.Normal
         {
             if (!(a.originalMessage.Author is SocketGuildUser sgu))
             {
-                var usu = Apis.Discord.Discord._client.GetUser(a.abbybotUser.Id);
+                var usu = Apis.Discord._client.GetUser(a.user.Id);
                 StringBuilder sb = new StringBuilder();
                 foreach (var g in usu.MutualGuilds.ToList())
                 {
-                    var zkz = g.GetUser(a.abbybotUser.Id);
+                    var zkz = g.GetUser(a.user.Id);
                     if (!zkz.JoinedAt.HasValue)
                     {
                         sb.AppendLine($"you didn't have a join time in {g.Name}... somehow...");
@@ -39,12 +39,12 @@ namespace Abbybot_III.Commands.Normal
             else
             {
                 var po = a.originalMessage.Author is SocketGuildUser sgk;
-                var zoz = Apis.Discord.Discord._client.GetGuild(sgu.Guild.Id);
+                var zoz = Apis.Discord._client.GetGuild(sgu.Guild.Id);
                 var zzz = zoz.GetUser(sgu.Id);
                 foreach (var ax in a.mentionedUserIds)
                 {
                     if (!(ax is SocketGuildUser sgum)) continue;
-                    var zzx = Apis.Discord.Discord._client.GetGuild(sgum.Guild.Id).GetUser(sgum.Id);
+                    var zzx = Apis.Discord._client.GetGuild(sgum.Guild.Id).GetUser(sgum.Id);
                     if (!zzx.JoinedAt.HasValue)
                     {
                         await a.Send($"{ax.Username} didn't have a join time... somehow...");
@@ -72,7 +72,7 @@ namespace Abbybot_III.Commands.Normal
         {
             if (aca.originalMessage.Author is SocketGuildUser sgk)
             {
-                var zoz = Apis.Discord.Discord._client.GetGuild(sgk.Guild.Id);
+                var zoz = Apis.Discord._client.GetGuild(sgk.Guild.Id);
                 var zzz = zoz.GetUser(sgk.Id);
                 var ms = (TimeSpan)(DateTime.Now - zzz.JoinedAt.Value);
                 var ts = TimeStringGenerator.MilistoTimeString((decimal)ms.TotalMilliseconds);
