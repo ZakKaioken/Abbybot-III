@@ -37,23 +37,17 @@ namespace Abbybot_III.Commands.Contains
 				sb.AppendLine("You're not married to anyone.");
 			}
 			sb.Append("AutoFcDms: ");
-			if (await AutoFcDmSqls.GetAutoFcDmAsync(abd.user.Id))
-				sb.Append("✅ ");
-			else
-				sb.Append("❌ ");
-
+			sb.Append((await abd.GetAutoFcDms())? "✅ ":"❌ ");
 			sb.Append("FCMentions: ");
-			if (await FCMentionsSql.GetFCMAsync(abd.user.Id))
-				sb.Append("✅ ");
-			else
-				sb.Append("❌ ");
+			sb.Append((await abd.GetFCMentions())? "✅ ":"❌ ");
+
 
 			sb.Append("\n");
 			if (abd.guild != null)
 			{
 				sb.Append("Your favorite channel in this server is: ");
 
-				var MSC = await PassiveUserSql.GetChannelsinGuildStats(abd.abbybotId, abd.guild.Id, abd.user.Id, "MessagesSent");
+				var MSC = await abd.GetPassiveStat("MessagesSent");
 				var orderedlist = MSC.OrderBy(x => x.stat).ToList()[0];
 				var chan = abd.GetGuildChannel(abd.guild.Id, orderedlist.channel);
 				sb.AppendLine(chan.Name);

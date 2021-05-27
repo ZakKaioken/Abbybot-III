@@ -24,7 +24,7 @@ class PictureCommandSimplification
 		string pfc = null;
 		foreach (var command in picture)
 		{
-			Console.WriteLine($"testing {command["Command"]}");
+			
 			string tags = command["Tags"] is string ta ? ta : "";
 			int rating = command["RatingId"] is int rI ? rI : -1;
 			if (tags == "" || rating == -1) continue;
@@ -80,7 +80,6 @@ class PictureCommandSimplification
 						ww += $" {i2}";
 					}
 					if (ww.Length < 3) throw new Exception("it didn't work right...");
-					Console.WriteLine($"set tags as [{ww}]");
 					var imgdata = await AbbyBooru.Execute(tagz.ToArray());
 					imageData = new ImageData()
 					{

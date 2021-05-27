@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Abbybot_III.Core.Users.sql
 {
-    class FCMentionsSql
+    class FCMentionosSql
     {
         public static async Task SetFCMAsync(ulong userId, bool FCMentions)
         {

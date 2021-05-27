@@ -21,7 +21,6 @@ namespace Abbybot_III.Commands.Contains
 		public override async Task DoWork(AbbybotCommandArgs abd)
 		{
 			StringBuilder sb = new StringBuilder();
-			Random r = new Random();
 			var heads = "heads";
 			var tails = "tails";
 			var hot = abd.ReplaceSplit(Command, " or ");
@@ -30,7 +29,7 @@ namespace Abbybot_III.Commands.Contains
 				heads = hot[0];
 				tails = hot[1];
 			}
-			bool side = r.Next(0, 100 + 1) <= 50;
+			bool side = abd.AbbyRngRoll(0, 100 + 1) <= 50;
 			string coin = side ? heads : tails;
 
 			var eb = new EmbedBuilder();

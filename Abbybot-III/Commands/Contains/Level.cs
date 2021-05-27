@@ -21,7 +21,7 @@ namespace Abbybot_III.Commands.Contains
 				guildid = abd.guild.Id;
 			}
 
-			var MSC = await abd.IncreasePassiveStat("MessagesSent");
+			var MSC = await abd.GetPassiveStat("MessagesSent");
 
 			ulong i = 0;
 			foreach (var sta in MSC)

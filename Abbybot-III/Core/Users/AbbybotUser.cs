@@ -90,7 +90,7 @@ namespace Abbybot_III.Core.Data.User
 			//Abbybot.print(sgu.Guild.Name);
 			if (author is SocketGuildUser sgu)
 			{
-				Console.WriteLine("author is guild user");
+				
 				isGuild = true;
 				GuildId = sgu.Guild.Id;
 

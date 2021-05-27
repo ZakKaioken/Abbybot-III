@@ -68,8 +68,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 					channelId = aca.channel.Id;
 				}
 
-				await PassiveUserSql.IncreaseStat(aca.abbybotId, guildId, channelId, aca.user.Id, "GelCommandUsages");
-				var e = await PassiveUserSql.GetChannelsinGuildStats(aca.abbybotId, guildId, aca.user.Id, "GelCommandUsages");
+				var e = await aca.IncreasePassiveStat("GelCommandUsages");
 
 				foreach (var sta in e)
 				{
@@ -184,7 +183,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 			else
 			{
 				var w = ufc.Replace("-abigail williams", "any waifu");
-				Console.WriteLine($"sending an image using {w} as the favorite character");
+				
 				ImgData imgdrata = new ImgData()
 				{
 					command = Command,
@@ -215,11 +214,11 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 
 			if (aca.channel is not SocketDMChannel sdc)
 			{
-				if (!aca.user.Ratings.Contains((CommandRatings)2) || !await aca.IsNSFW())
+				if (!aca.user.HasRatings(2) || !aca.IsChannelNSFW)
 				{
 					tagz.Add("rating:safe");
 				}
-				if (!aca.user.Ratings.Contains((CommandRatings)3))
+				if (!aca.user.HasRatings(3))
 				{
 					tagz.Add("-loli");
 				}
@@ -239,8 +238,8 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 			if (aca.sudoUser != null)
 				return "Abigail_Williams*";
 
-			var ufcm = await FCMentionsSql.GetFCMAsync(aca.user.Id);
-			if (ufcm && mentionedUsers.Count > 0)
+			var ufcm = await aca.GetFCMentions();
+			if (ufcm && aca.isMentioning)
 				return mentionedUsers.random().FavoriteCharacter;
 			else
 			{

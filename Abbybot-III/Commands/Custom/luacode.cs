@@ -50,7 +50,7 @@ namespace Abbybot_III.Commands.Custom
 				if (lu[0] != "lua") continue;
 
 				StringBuilder sb = new StringBuilder(item);
-				sb.Remove(0, 4); //removes lua\\n from lua
+				sb.Remove(0, 4); 
 
 				try
 				{

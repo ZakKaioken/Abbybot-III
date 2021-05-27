@@ -23,18 +23,6 @@ namespace Abbybot_III.Core.Mysql
 
         public static async Task<List<CommandRatings>> GetRatings(List<AbbybotRole> rolz)
         {
-            Console.WriteLine("getting ratings");
-            foreach (var r in rolz)
-            {
-                
-                Console.WriteLine($"role    {r.role}");
-foreach (var rr in r.allowedRatings)
-            {
-                
-                Console.WriteLine($"    rating    {rr}");
-
-            }
-            }
             List<CommandRatings> cmdrts = new List<CommandRatings>();
             foreach (var rol in rolz)
                 cmdrts.AddRange(rol.allowedRatings);
@@ -48,17 +36,13 @@ foreach (var rr in r.allowedRatings)
         {
             await GetRoles(sgu.Guild);
             var rolez = new List<AbbybotRole>();
-            Console.WriteLine($"Socket Guild user roles?!?! {sgu.Roles.Count}");
-            Console.WriteLine($"Abbybot user roles?!?! {roles.Count}");
+            
             foreach (SocketRole role in sgu.Roles)
             {
-                Console.Write($"\n[{role.Name}]");
                 foreach (AbbybotRole Role in roles)
                 {
-                    Console.Write($"-[d-{role.Name}-{Role.role}]-!");
                     if (role.Id == Role.role)
                     {
-                        Console.Write("<- Added!!...");
                         rolez.Add(Role);
                         await Task.FromResult(Role);
                         await RoleSql.SetRole(sgu.Id, sgu.Guild.Id, role.Id);

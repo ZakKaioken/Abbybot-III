@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Abbybot_III.Core.Users.sql
 {
-    class AutoFcDmSqls
+    class AutoFcDmoSqls
     {
         public static async Task SetAutoFcDmAsync(ulong userId, bool FCMentions)
         {

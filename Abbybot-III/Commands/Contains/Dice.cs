@@ -17,8 +17,7 @@ namespace Abbybot_III.Commands.Contains
         public override async Task DoWork(AbbybotCommandArgs abd)
         {
             StringBuilder sb = new StringBuilder();
-            Random r = new Random();
-            int coin = r.Next(0, 6);
+            int coin = abd.AbbyRngRoll(0, 6);
             sb.Append("You rolled a **").Append(coin).Append("**!");
             await abd.Send(sb.ToString());
         }

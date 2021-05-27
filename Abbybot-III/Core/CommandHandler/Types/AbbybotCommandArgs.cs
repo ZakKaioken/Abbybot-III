@@ -2,6 +2,7 @@
 using Abbybot_III.Core.Data.User;
 using Abbybot_III.Core.Guilds;
 using Abbybot_III.Core.Guilds.sql;
+using Abbybot_III.Core.Users.sql;
 using Abbybot_III.Sql.Abbybot.Abbybot;
 using Abbybot_III.Sql.Abbybot.User;
 using BooruSharp.Search.Post;
@@ -126,6 +127,7 @@ namespace Abbybot_III.Core.CommandHandler.Types
 		public DiscordSocketClient discordClient;
 		public ulong abbybotId;
 		public bool isGuild;
+		public Random random;
 		public bool isMentioning {
 			get => mentionedUsers.Count > 0;
 		}
@@ -137,6 +139,19 @@ namespace Abbybot_III.Core.CommandHandler.Types
 		public SocketGuild GetGuild(ulong guildId) {
 			return discordClient.GetGuild(guildId);
 		}
+		public async Task<bool> GetFCMentions() {
+			return await FCMentionosSql.GetFCMAsync(user.Id);
+		}
+		public async Task SetFCMentions(bool state) {
+			await FCMentionosSql.SetFCMAsync(user.Id, state);
+		}
+		public async Task<bool> GetAutoFcDms() {
+			return await AutoFcDmoSqls.GetAutoFcDmAsync(user.Id);
+		}
+
+		public int AbbyRngRoll(int i, int o) {
+			return random.Next(i,o);
+		}
 
 		public async Task<List<(ulong channel, ulong stat)>> IncreasePassiveStat(string stat) {
 			List<(ulong channel, ulong stat)> osi = null;
@@ -146,6 +161,15 @@ namespace Abbybot_III.Core.CommandHandler.Types
 			} catch {}
 			return osi;
 		}
+
+		public async Task<List<(ulong channel, ulong stat)>> GetPassiveStat(string stat) {
+			List<(ulong channel, ulong stat)> osi = null;
+			try {
+			 osi = await PassiveUserSql.GetChannelsinGuildStats(abbybotId, guild?.Id != null ? guild.Id:0, user.Id, "GelCommandUsages");
+			} catch {}
+			return osi;
+		}
+
 		public async Task<SearchResult> GetPicture(string[] tags)
 		{
 			return await Apis.AbbyBooru.Execute(tags);
