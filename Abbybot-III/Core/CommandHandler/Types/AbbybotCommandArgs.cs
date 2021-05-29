@@ -231,7 +231,8 @@ namespace Abbybot_III.Core.CommandHandler.Types
 
         public string InvertName(string v)
         {
-           return AbbybooruTagGenerator.InvertName(v);
+			var a = AbbybooruTagGenerator.InvertName(v);
+           return a;
         }
     }
 }

@@ -19,6 +19,8 @@ namespace Abbybot_III.Commands.Normal.AbbyBooruChecker
 		public override async Task DoWork(AbbybotCommandArgs a)
 		{
 			var FavoriteCharacter = a.Replace(Command);
+
+			
 			if (a.user.isGuild && !a.user.admin)
 				await a.Send($"silly {a.user.Preferedname}, you're not an admin here!!!");
 			Abbybot.print("acadd called");

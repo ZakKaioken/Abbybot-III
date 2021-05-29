@@ -9,12 +9,14 @@ namespace Abbybot_III.Core.AbbyBooru
         }
         public static StringBuilder FCBuilder(StringBuilder FavoriteCharacter)
 		{
+			if (FavoriteCharacter == null) return null;
 			FavoriteCharacter.Replace(" ", "_").Replace("abbybot", "abigail_williams").Replace("abby_kaioken", "abigail_williams");
+			if (FavoriteCharacter.Length > 0) {
 			if (FavoriteCharacter[^1] != '~')
 				FavoriteCharacter.Append("*");
 			else
 				FavoriteCharacter.Remove(FavoriteCharacter.Length - 1, 1);
-
+			}
 			if (FavoriteCharacter.ToString().Contains("_~_") || FavoriteCharacter.ToString().Contains("_or_"))
 			{
 				FavoriteCharacter.Insert(0, "{").Append("}");

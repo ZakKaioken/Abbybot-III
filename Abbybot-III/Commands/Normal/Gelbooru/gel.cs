@@ -6,7 +6,7 @@ using Abbybot_III.Core.Users.sql;
 using Capi.Interfaces;
 
 using Discord;
-
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -68,8 +68,9 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 				{
 					eb = Contains.Gelbooru.embed.GelEmbed.Build(a,im, new StringBuilder("abbybot"));
 				}
-				catch
+				catch (Exception e)
 				{
+					Console.WriteLine(e.Message+e.StackTrace);
 					eb = new EmbedBuilder { Description = "It didn't work... :(" };
 				}
 			}

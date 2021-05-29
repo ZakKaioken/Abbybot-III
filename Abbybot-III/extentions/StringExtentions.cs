@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Collections.Generic;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Abbybot_III.extentions
 {
@@ -19,5 +21,10 @@ namespace Abbybot_III.extentions
         {
             return Regex.Replace(s, word, replacement, RegexOptions.IgnoreCase);
         }
+
+        public static string[] Split(this StringBuilder stringBuilder, string split) {
+            return stringBuilder.ToString().Split(split);
+        }
+
     }
 }

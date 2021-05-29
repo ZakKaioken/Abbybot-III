@@ -27,6 +27,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
 			string fcn = a.BreakAbbybooruTag(sb).ToString();
 
 			message.Clear();
+			if (imgdata.mentions != null)
 			if (imgdata.mentions.Count > 0)
 			{
 				message = MentionsEmbed(imgdata.user, imgdata.command, imgdata.mentions);

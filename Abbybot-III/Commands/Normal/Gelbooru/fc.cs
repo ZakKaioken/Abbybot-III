@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Abbybot_III.Commands.Normal.Gelbooru
 {
-	[Capi.Cmd("abbybot fc", 1, 1)]
+	//[Capi.Cmd("abbybot fc", 1, 1)]
 	class Fc : NormalCommand
 	{
 		public override async Task DoWork(AbbybotCommandArgs a)
@@ -26,7 +26,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 			var zxxx = a.user.FavoriteCharacter;
 
 			string[] fccx = a.GetFCList();
-			if (a.hasMultipleFcs)
+			if (FavoriteCharacter.Length <1)
 			{
 
 				if (zxxx.Contains(" ~ "))
@@ -63,12 +63,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 				return;
 			}
 
-			while (FavoriteCharacter[0] == ' ')
-				FavoriteCharacter.Remove(0, 1);
-			while (FavoriteCharacter.ToString().Contains("  "))
-				FavoriteCharacter.Replace("  ", " ");
-			while (FavoriteCharacter[^1] == ' ')
-				FavoriteCharacter.Remove(FavoriteCharacter.Length - 1, 1);
+			
 
 			Console.WriteLine("set up fc to be used");
 			if (FavoriteCharacter.Length > 1)

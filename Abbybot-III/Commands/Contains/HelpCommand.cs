@@ -120,11 +120,15 @@ namespace Abbybot_III.Commands.Contains
 					currentitem.Clear();
 				}
 			}
+
+			foreach (var fff in fields.Where(fzf => fzf.Length <1)) {
+				fields.Remove(fff);
+			}
+
 			foreach (var f in fields)
 			{
 				eb.AddField("\u200b", f.Replace("ab!", "%"));
 			}
-			//eb.AddField("\u200b", fields[^1]);
 			await abd.SendDM(eb);
 
 			if (abd.user.inTimeOut)

@@ -18,8 +18,8 @@ namespace Abbybot_III.Apis
 			new Safebooru()
 		};
 
-		public static string[] badtaglist = { "bondage", "beastiality", "suicide", "injury", "furry", "guro", "sofra" };
-
+		public static string[] badtaglist = { "bondage", "beastiality", "suicide", "injury", "furry", "guro", "sofra", "asian", "photo_(medium)" };
+		//I swear i'm not racist but this is an anime bot for anime girls
 		public static async Task<SearchResult> Execute(string[] tags)
 		{
 			var e = ExecuteAsync(tags).GetAwaiter();

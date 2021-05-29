@@ -8,6 +8,7 @@ using Abbybot_III.Commands.Contains.Gelbooru.embed;
 using Discord;
 using Abbybot_III.Apis;
 using Abbybot_III.Core.CommandHandler.Types;
+using Abbybot_III.Core.CommandHandler.extentions;
 
 class PictureCommandSimplification
 {
@@ -98,25 +99,25 @@ class PictureCommandSimplification
 			} while (imageData == null && triesIndex <= 3);
 			if (triesIndex > 3)
 			{
-				//sb.AppendLine("No picture found.");
+				await aca.Send("No picture found.");
 				continue;
 			}
 
 			if (imageData.Source == "No source")
 			{
-				//sb.AppendLine($"Master... I didn't find a {command["Command"]}ing picture...");
+				await aca.Send($"Master... I didn't find a {command["Command"]}ing picture of {aca.BreakAbbybooruTag( imageData.pictureCharacter)}");
 				continue;
 			}
 			Console.WriteLine(imageData.pictureCharacter);
 			if (!message.isNSFW && imageData.Nsfw)
 			{
-				eb.Description = ("Master that's a lewd image... I can't send it...");
+				await aca.Send("Master that's a lewd image... I can't send it...");
 				continue;
 			}
 
 			if (!message.isLoli && imageData.ContainsLoli)
 			{
-				//sb.AppendLine("Master... I found an image, but it's against discord's tos so i'm not going to send it.");
+				await aca.Send("Master... I found an image, but it's against discord's tos so i'm not going to send it.");
 				continue;
 			}
 			var pc = imageData.pictureCharacter;
@@ -126,7 +127,8 @@ class PictureCommandSimplification
 			var iisu = imageData.ContainsLoli;
 
 			eb = GelEmbed.Build(aca, filrl.ToString(), soai, pc, message.mentions, command["Command"] as string, message.user);
+			await aca.Send(eb);
 		}
-		return eb;
+		return null;
 	}
 }

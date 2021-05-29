@@ -21,6 +21,18 @@ namespace Abbybot_III.Core.CommandHandler.extentions
                 return null;
             return await arg.channel.SendMessageAsync(st.ToString());
         }
+public static async Task<List<RestUserMessage>> Send<t>(this AbbybotCommandArgs arg, List<t> st)
+        {
+            if (st==null) return null;
+            List<RestUserMessage> rums = new();
+            foreach (var item in st)
+            {
+                var ww = await Send(arg: arg, item);
+                if (item!=null&&ww!=null)
+                rums.Add(ww);
+            }
+            return rums;
+        }
 
         public static async Task<RestUserMessage> Send(this AbbybotCommandArgs arg, EmbedBuilder eb)
         {
