@@ -1,4 +1,5 @@
 using System.Text;
+using Abbybot_III.extentions;
 
 namespace Abbybot_III.Core.AbbyBooru
 {
@@ -7,23 +8,33 @@ namespace Abbybot_III.Core.AbbyBooru
         public static string FCBuilder(string str) {
             return FCBuilder(new StringBuilder(str)).ToString();
         }
-        public static StringBuilder FCBuilder(StringBuilder FavoriteCharacter)
+        public static StringBuilder FCBuilder(StringBuilder FCString)
 		{
-			if (FavoriteCharacter == null) return null;
-			FavoriteCharacter.Replace(" ", "_").Replace("abbybot", "abigail_williams").Replace("abby_kaioken", "abigail_williams");
-			if (FavoriteCharacter.Length > 0) {
-			if (FavoriteCharacter[^1] != '~')
-				FavoriteCharacter.Append("*");
+			if (FCString == null) return null;
+			
+			var noWildOrs = new string[] {"~_or_","~_~_", "~,_"};
+			var wildOrs = new string[] {",_", "_~_", "_or_"};
+			var noWildAnds = new string[] {"~_&&_","~_and_"};
+			var wildAnds = new string[] {"_&&_", "_and_"};
+
+			FCString.Replace(" ", "_").Replace(new string[] {"abbybot","abby_kaioken"}, "abigail_williams");
+
+			if (FCString.Length > 0) {
+				;
+			if (!FCString.EndsWith('~'))
+				FCString.Append("*");
 			else
-				FavoriteCharacter.Remove(FavoriteCharacter.Length - 1, 1);
+				FCString.RemoveEnd(1);
 			}
-			if (FavoriteCharacter.ToString().Contains("_~_") || FavoriteCharacter.ToString().Contains("_or_"))
+
+			if (FCString.Contains(wildOrs))
 			{
-				FavoriteCharacter.Insert(0, "{").Append("}");
-				FavoriteCharacter.Replace("~_or_", " ~ ").Replace("~_~_", " ~ ").Replace("_~_", "* ~ ").Replace("_or_", "* ~ ");
+				FCString.AppendStartEnd("{", "}");
+				FCString.Replace(noWildOrs, " ~ ").Replace(wildOrs, "* ~ ");
 			}
-			FavoriteCharacter.Replace("~_&&_", " ").Replace("~_and_", " ").Replace("_&&_", "* ").Replace("_and_", "* ");
-			return FavoriteCharacter;
+			
+			FCString.Replace(noWildAnds, " ").Replace(wildAnds, "* ");
+			return FCString;
 		}
 
 		public static string InvertName(string sbsb)
@@ -32,10 +43,10 @@ namespace Abbybot_III.Core.AbbyBooru
 			var orchars = sbsb.Split(" ~ ");
 			foreach (var orchar in orchars)
 			{
-				var andchars = orchar.Replace("{", "").Replace("}", "").Split(" ");
+				var andchars = orchar.Remove(new string[] {"{","}"}).Split(" ");
 				foreach (var andchar in andchars)
 				{
-					var subnames = andchar.Replace("*", "").Split("_");
+					var subnames = andchar.Remove("*").Split("_");
 					if (subnames.Length == 1)
 					{
 						sb.Append(subnames[0]);
