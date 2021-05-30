@@ -16,11 +16,12 @@ namespace Abbybot_III.Core.AbbyBooru
 			var wildOrs = new string[] {",_", "_~_", "_or_"};
 			var noWildAnds = new string[] {"~_&&_","~_and_"};
 			var wildAnds = new string[] {"_&&_", "_and_"};
+			var abbyAlts = new string[] {"abbybot","abby_kaioken"};
 
-			FCString.Replace(" ", "_").Replace(new string[] {"abbybot","abby_kaioken"}, "abigail_williams");
+			FCString.Replace(" ", "_").Replace(abbyAlts, "abigail_williams");
 
 			if (FCString.Length > 0) {
-				;
+				
 			if (!FCString.EndsWith('~'))
 				FCString.Append("*");
 			else
