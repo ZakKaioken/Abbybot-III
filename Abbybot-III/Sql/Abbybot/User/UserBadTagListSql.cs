@@ -13,12 +13,12 @@ namespace Abbybot_III.Core.Users.sql
 		public static async Task<bool> AddBadTag(ulong did, string item)
 		{
 			item = AbbySql.AbbysqlClient.EscapeString(item);
-			var table = await AbbysqlClient.FetchSQL($"SELECT * FROM `usergelbadtaglist` WHERE `userId` = '{did}' && `tag`= '{item}';");
+			var table = await AbbysqlClient.FetchSQL($"SELECT * FROM `user`.`gelbadtaglist` WHERE `UserId` = '{did}' && `Tag`= '{item}';");
 			
 			if (table.Count > 0)
 				throw new Exception($"You already have {item} badtaglisted...");
 
-			var e = await AbbysqlClient.RunSQL($"INSERT INTO `discord`.`usergelbadtaglist`(`userId`, `tag`) VALUES ('{did}', '{item}'); ");
+			var e = await AbbysqlClient.RunSQL($"INSERT INTO `user`.`gelbadtaglist`(`UserId`, `Tag`) VALUES ('{did}', '{item}'); ");
 			return e > 0;
 		}
 
@@ -26,10 +26,10 @@ namespace Abbybot_III.Core.Users.sql
 		{
 			List<string> tags = new List<string>();
 
-			var table = await AbbysqlClient.FetchSQL($"SELECT `tag` FROM `usergelbadtaglist` WHERE `userId` = '{id}';");
+			var table = await AbbysqlClient.FetchSQL($"SELECT `Tag` FROM `user`.`gelbadtaglist` WHERE `UserId` = '{id}';");
 			foreach (AbbyRow row in table)
 			{
-				tags.Add((row["tag"] is string favchan) ? favchan : "");
+				tags.Add((row["Tag"] is string favchan) ? favchan : "");
 			}
 			return tags;
 		}
@@ -37,7 +37,7 @@ namespace Abbybot_III.Core.Users.sql
 		internal static async Task<bool> UnbadtaglistTag(ulong id, string item)
 		{
 			item = AbbySql.AbbysqlClient.EscapeString(item);
-			var e = await AbbysqlClient.RunSQL($"DELETE FROM `discord`.`usergelbadtaglist` WHERE `userId` = '{id}' and `tag` = '{item}';");
+			var e = await AbbysqlClient.RunSQL($"DELETE FROM `user`.`gelbadtaglist` WHERE `UserId` = '{id}' and `Tag` = '{item}';");
 
 			if (e < 1) throw new Exception("I failed to remove the tag from your list");
 			return e > 0;

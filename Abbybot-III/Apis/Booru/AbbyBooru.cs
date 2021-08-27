@@ -20,15 +20,7 @@ namespace Abbybot_III.Apis
 
 		public static string[] badtaglist = { "bondage", "beastiality", "suicide", "injury", "furry", "guro", "sofra", "asian", "photo_(medium)" };
 		//I swear i'm not racist but this is an anime bot for anime girls
-		public static async Task<SearchResult> Execute(string[] tags)
-		{
-			var e = ExecuteAsync(tags).GetAwaiter();
-
-			while (!e.IsCompleted)
-				await Task.Delay(1);
-
-			return e.GetResult();
-		}
+		
 
 		public static async Task<int> GetPostCount(string[] tags)
 		{
@@ -50,6 +42,19 @@ namespace Abbybot_III.Apis
 			}
 
 			return totalposts;
+		}
+
+		public static async Task<SearchResult> GetPictureById(int id) {
+
+			SearchResult sr = new SearchResult();
+		var booru = boorus[0];
+				try {
+					sr = await booru.GetPostByIdAsync(id);
+				}catch{
+					throw new Exception("No post found...");
+				}
+			
+			return sr;
 		}
 
 		public static async Task<List<BooruSharp.Search.Tag.SearchResult>> GetTagData(string[] tags)
@@ -78,31 +83,34 @@ namespace Abbybot_III.Apis
 			return totalposts;
 		}
 
-		static async Task<SearchResult> ExecuteAsync(string[] tags)
+		public static async Task<List<SearchResult>> ExecuteAsync(string[] tags)
 		{
 			List<string> tagz = GetTags(tags);
-
-			SearchResult searchResult = new SearchResult(new Uri("https://img2.gelbooru.com/samples/ee/e2/sample_eee286783bfa37e088d1ffbcf8f098ba.jpg"), new Uri("https://img2.gelbooru.com/samples/ee/e2/sample_eee286783bfa37e088d1ffbcf8f098ba.jpg"), new Uri("https://gelbooru.com/index.php?page=post&s=view&id=4325788&tags=crying+abigail_williams_%28fate%2Fgrand_order%29"), Rating.Safe, new string[] { "abigail_williams_(fate/grand_order)" }, 0, null, 1000, 1000, null, null, null, "noimagefound", 1000000, "47");
+			
+			List<SearchResult> results = new List<SearchResult>();
 			foreach (var booru in boorus)
 			{
-				bool allowedtopost;
 				try
 				{
-					do
-					{
-						searchResult = await booru.GetRandomPostAsync(tagz.ToArray());
-						allowedtopost = true;
-						if (searchResult.Source.Contains("sofra"))
-						{ //please eventually add twitter user block list, so we can skip artists that hate us.
-							allowedtopost = false;
+					var rs = await booru.GetRandomPostsAsync(25, tagz.ToArray());
+
+					foreach (var searchResult in rs.Where(x => x.FileUrl != null))
+						if (!searchResult.Source.Contains("sofra"))
+						{
+							results.Add(searchResult);
 						}
-					} while (!allowedtopost);
 
 					break;
 				}
-				catch { }
+				catch { throw new Exception(); }
+				
 			}
-			return searchResult;
+			if (results.Count == 0)
+			{
+				Console.WriteLine("results 0");
+				throw new Exception("AAAA");
+			}
+				return results;
 		}
 
 		public static async Task<SearchResult[]> GetLatest(string[] tags)

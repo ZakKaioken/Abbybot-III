@@ -130,6 +130,8 @@ namespace Abbybot_III.Commands
 
 			try
 			{
+				var cmdW = aca.commandsRun++;
+				Console.WriteLine($"[c{cmdW}] {Command}");
 				await DoWork(aca);
 			}
 			catch (Exception e)
@@ -165,7 +167,12 @@ namespace Abbybot_III.Commands
 
 		async Task<bool> iCommand.Evaluate(iMsgData message)
 		{
-			return await Evaluate(message as AbbybotCommandArgs);
+			AbbybotCommandArgs aca = message as AbbybotCommandArgs;
+			var cmdI = ++aca.commandsTested;
+			bool gonnaRun = await Evaluate(aca);
+			if (gonnaRun)
+				Console.WriteLine($"[t{cmdI}]. {Command}");
+			return gonnaRun;
 		}
 
 		async Task iCommand.RegenHelpString(iMsgData md)

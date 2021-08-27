@@ -15,6 +15,8 @@ namespace Abbybot_III.Apis
         static async Task StartDiscord()
         {
             bool o = true;
+
+            bool oo = (o =!o) ? true:false;
             do
             {
                 try

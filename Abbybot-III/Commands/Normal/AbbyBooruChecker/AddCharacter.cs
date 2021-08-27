@@ -1,6 +1,7 @@
 ﻿using Abbybot_III.Core.AbbyBooru.sql;
 using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
+using Abbybot_III.Sql.abbybooru;
 
 using BooruSharp.Search.Post;
 

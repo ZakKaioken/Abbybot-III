@@ -22,11 +22,12 @@ namespace Abbybot_III.Commands.Custom
 			azr = 0;
 			UserData.RegisterType<AbbybotUser>();
 			UserData.RegisterType<AbbybotGuild>();
-			Script script = new Script(CoreModules.Preset_HardSandbox); //no io/sys calls allowed
+			Script script = new Script(CoreModules.Preset_SoftSandbox); //no io/sys calls allowed
 			script.Options.DebugPrint = async s =>
 			{
 				if (azr < 3)
 					await message.Send(s); //when print is used send message
+					azr++;
 				await Task.Delay(100);
 			};
 			Abbybot.print($"user {message.user}, guild {message.guild}");

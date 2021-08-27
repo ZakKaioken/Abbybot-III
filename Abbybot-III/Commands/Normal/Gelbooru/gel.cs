@@ -52,7 +52,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 			EmbedBuilder eb = null;
 			try
 			{
-				BooruSharp.Search.Post.SearchResult imgdata = await a.GetPicture(tags);
+				BooruSharp.Search.Post.SearchResult imgdata = await a.GetPicture(tags.ToArray());
 				ImgData im = (new ImgData { });
 
 				if (imgdata.FileUrl != null)

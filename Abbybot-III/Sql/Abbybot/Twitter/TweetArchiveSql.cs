@@ -12,7 +12,7 @@ namespace Abbybot_III.Core.Twitter.Queue.sql
     {
         public static async Task<int> Count()
         {
-            var table = await AbbysqlClient.FetchSQL("SELECT COUNT(*) as 'rows' FROM AbbybotTwitter.tweetarchive;");
+            var table = await AbbysqlClient.FetchSQL("SELECT COUNT(*) as 'rows' FROM twitter.tweetarchive;");
             int rows = 0;
             foreach (AbbyRow row in table)
                 rows = int.Parse(row["rows"].ToString());
@@ -21,7 +21,7 @@ namespace Abbybot_III.Core.Twitter.Queue.sql
 
         public static async Task Remove(Tweet I)
         {
-            await AbbysqlClient.RunSQL($"DELETE FROM `abbybottwitter`.`tweets` WHERE `Id` = '{I.id}';");
+            await AbbysqlClient.RunSQL($"DELETE FROM `twitter`.`tweetarchive` WHERE `Id` = '{I.id}';");
         }
 
         static Random r = new Random();
@@ -56,11 +56,11 @@ namespace Abbybot_III.Core.Twitter.Queue.sql
 
             if (message.Contains("new tweet just came in")) message = "Abby is a cutie!!";
 
-            var table = await AbbysqlClient.FetchSQL($"SELECT * FROM `abbybottwitter`.`tweetarchive` WHERE `ImgUrl` = '{url}' AND `Description` = '{message}';");
+            var table = await AbbysqlClient.FetchSQL($"SELECT * FROM `twitter`.`tweetarchive` WHERE `ImgUrl` = '{url}' AND `Description` = '{message}';");
             if (table.Count > 0)
                 return;
 
-            await AbbysqlClient.RunSQL($"INSERT INTO `abbybottwitter`.`tweetarchive` ( `ImgUrl`,`SrcUrl`, `Description`, `Priority` ) VALUES('{url}', '{sourceurl}', '{message}', '{priority}');");
+            await AbbysqlClient.RunSQL($"INSERT INTO `twitter`.`tweetarchive` ( `ImgUrl`,`SrcUrl`, `Description`, `Priority` ) VALUES('{url}', '{sourceurl}', '{message}', '{priority}');");
         }
     }
 }

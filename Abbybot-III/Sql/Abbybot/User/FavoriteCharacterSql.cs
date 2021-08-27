@@ -9,7 +9,7 @@ namespace Abbybot_III.Core.Users.sql
 		public static async Task SetFavoriteCharacterAsync(ulong userId, string favoriteCharacter)
 		{
 			string fc = AbbysqlClient.EscapeString(favoriteCharacter);
-			await AbbysqlClient.RunSQL($"UPDATE `discord`.`users` SET `FavoriteCharacter`= '{fc}' WHERE  `Id`= {userId};");
+			await AbbysqlClient.RunSQL($"UPDATE `user`.`users` SET `FavoriteCharacter`= '{fc}' WHERE  `UserId`= {userId};");
 		}
 	}
 }

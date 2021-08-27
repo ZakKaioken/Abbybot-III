@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using Abbybot_III.extentions;
 
@@ -8,7 +9,7 @@ namespace Abbybot_III.Core.AbbyBooru
         public static string FCBuilder(string str) {
             return FCBuilder(new StringBuilder(str)).ToString();
         }
-        public static StringBuilder FCBuilder(StringBuilder FCString)
+        public static StringBuilder FCBuilder(StringBuilder FCString, StringBuilder funbuilder = null)
 		{
 			if (FCString == null) return null;
 			
@@ -17,23 +18,18 @@ namespace Abbybot_III.Core.AbbyBooru
 			var noWildAnds = new string[] {"~_&&_","~_and_"};
 			var wildAnds = new string[] {"_&&_", "_and_"};
 			var abbyAlts = new string[] {"abbybot","abby_kaioken"};
-
 			FCString.Replace(" ", "_").Replace(abbyAlts, "abigail_williams");
-
 			if (FCString.Length > 0) {
-				
 			if (!FCString.EndsWith('~'))
 				FCString.Append("*");
 			else
 				FCString.RemoveEnd(1);
 			}
-
 			if (FCString.Contains(wildOrs))
 			{
 				FCString.AppendStartEnd("{", "}");
 				FCString.Replace(noWildOrs, " ~ ").Replace(wildOrs, "* ~ ");
 			}
-			
 			FCString.Replace(noWildAnds, " ").Replace(wildAnds, "* ");
 			return FCString;
 		}

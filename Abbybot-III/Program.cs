@@ -18,6 +18,7 @@ AbbySql.AbbysqlClient.connectionstring = Abbybot_III.Apis.Mysql.ApiKeys.MysqlApi
 await InitAll();
 await Abbybot_III.Apis.Discord.DiscordMainAsync();
 AbbyHeart.Start();
+
 while (true)
 {
 	await Task.Delay(1);

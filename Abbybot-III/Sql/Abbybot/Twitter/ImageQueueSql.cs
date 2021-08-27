@@ -11,12 +11,12 @@ namespace Abbybot_III.Core.Twitter.Queue.sql
     {
         public static async Task Add(Image I)
         {
-            await AbbysqlClient.RunSQL($"INSERT INTO `abbybottwitter`.`images` ( `ImgUrl`,`SrcUrl` ) VALUES ('{I.url}','{I.sourceurl}' ); ");
+            await AbbysqlClient.RunSQL($"INSERT INTO `twitter`.`images` ( `ImgUrl`,`SrcUrl` ) VALUES ('{I.url}','{I.sourceurl}' ); ");
         }
 
         public static async Task<int> Count()
         {
-            var table = await AbbysqlClient.FetchSQL("SELECT COUNT(*) as 'rows' FROM AbbybotTwitter.images;");
+            var table = await AbbysqlClient.FetchSQL("SELECT COUNT(*) as 'rows' FROM `twitter`.`images`;");
             int rows = 0;
             foreach (AbbyRow row in table)
                 rows = int.Parse(row["rows"].ToString());
@@ -25,13 +25,13 @@ namespace Abbybot_III.Core.Twitter.Queue.sql
 
         public static async Task Remove(Image I)
         {
-            await AbbysqlClient.RunSQL($"DELETE FROM `abbybottwitter`.`images` WHERE `Id` = '{I.id}';");
+            await AbbysqlClient.RunSQL($"DELETE FROM `twitter`.`images` WHERE `Id` = '{I.id}';");
         }
 
         public static async Task<Image> Peek()
         {
             Image image = null;
-            AbbyTable table = await AbbysqlClient.FetchSQL($"SELECT * FROM `abbybottwitter`.`images`ORDER BY Id LIMIT 1;");
+            AbbyTable table = await AbbysqlClient.FetchSQL($"SELECT * FROM `twitter`.`images`ORDER BY Id LIMIT 1;");
             foreach (AbbyRow row in table)
             {
                 image = new Image

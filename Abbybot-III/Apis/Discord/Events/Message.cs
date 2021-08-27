@@ -31,7 +31,7 @@ namespace Abbybot_III.Apis.Events
                 if (message.Channel.Id != channelId)
                     nowrite = true;
             }
-            if (nowrite)
+            if (!nowrite)
                 WriteMessage(message);
 
             ulong guidId = 0, chanelId = 0;

@@ -29,7 +29,7 @@ namespace Abbybot_III.Core.Roles.sql
 			bool ran = true;
 			try
 			{
-				await AbbysqlClient.RunSQL($"INSERT INTO `discord`.`roles` (`UserId`,`GuildId`,`RoleId`) VALUES ('{user}', '{guild}','{role}');");
+				await AbbysqlClient.RunSQL($"INSERT INTO `user`.`roles` (`UserId`,`GuildId`,`RoleId`) VALUES ('{user}', '{guild}','{role}');");
 			}
 			catch (Exception e)
 			{
@@ -42,10 +42,10 @@ namespace Abbybot_III.Core.Roles.sql
 		{
 			List<AbbybotRole> roles = new List<AbbybotRole>();
 
-			var table = await AbbysqlClient.FetchSQL($"SELECT * FROM `discord`.`guildroles` WHERE `GuildId` = '{g.Id}';");
+			var table = await AbbysqlClient.FetchSQL($"SELECT * FROM `guild`.`roles` WHERE `GuildId` = '{g.Id}';");
 			foreach (AbbyRow row in table)
 			{
-				ulong Roleid = (ulong)(row["Id"]);
+				ulong Roleid = (ulong)(row["RoleId"]);
 				int Ranking = (int)row["Ranking"];
 				roles.Add(new AbbybotRole((ulong)Roleid, new CommandRatings[] { (CommandRatings)Ranking }));
 			}
@@ -56,7 +56,7 @@ namespace Abbybot_III.Core.Roles.sql
 		{
 			List<AbbybotRole> roles = new List<AbbybotRole>();
 
-			var table = await AbbysqlClient.FetchSQL($"SELECT * FROM `discord`.`roles` WHERE `UserId` = '{u.Id}' && `GuildId` = '{u.GuildId}';");
+			var table = await AbbysqlClient.FetchSQL($"SELECT * FROM `user`.`roles` WHERE `UserId` = '{u.Id}' && `GuildId` = '{u.GuildId}';");
 			foreach (AbbyRow row in table)
 			{
 				long Roleid = (long)(row["RoleId"]);
@@ -67,7 +67,7 @@ namespace Abbybot_III.Core.Roles.sql
 
 		public static async Task<bool> DoesRoleExist(ulong user, ulong guild, ulong role)
 		{
-			var table = await AbbysqlClient.FetchSQL($"SELECT * FROM `discord`.`roles` WHERE `UserId` = '{user}' && `Roleid` ='{role}' && `GuildId` ='{guild}';");
+			var table = await AbbysqlClient.FetchSQL($"SELECT * FROM `user`.`roles` WHERE `UserId` = '{user}' && `Roleid` ='{role}' && `GuildId` ='{guild}';");
 
 			return (table.Count > 0);
 		}

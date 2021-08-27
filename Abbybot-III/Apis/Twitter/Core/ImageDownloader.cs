@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Abbybot_III.Apis.Twitter.Core
@@ -9,24 +10,23 @@ namespace Abbybot_III.Apis.Twitter.Core
     {
         public static async Task<string> DownloadImage(string u)
         {
-            WebClient client = new WebClient();
+			string dir = $@"{Directory.GetCurrentDirectory()}\Temp\";
 
-            string dir = $@"{Directory.GetCurrentDirectory()}\Temp\";
-
-            if (Directory.Exists(dir))
+			if (Directory.Exists(dir))
                 Directory.Delete(dir, true);
             Directory.CreateDirectory(dir);
 
             string name = Path.GetFileName(u.ToString());
             string location = $"{dir}{name}";
-            client.DownloadFileAsync(new Uri(u), location);
 
-            while (client.IsBusy)
+            int i = 0;
+            HttpClient client = new();
+            var response = await client.GetAsync(new Uri(u));
+            do
             {
-                await Task.Delay(0);
-            }
-            client.Dispose();
-
+				using var fs = new FileStream(location, FileMode.Create);
+				await response.Content.CopyToAsync(fs);
+			} while (i++ < 3);
             return location;
         }
     }

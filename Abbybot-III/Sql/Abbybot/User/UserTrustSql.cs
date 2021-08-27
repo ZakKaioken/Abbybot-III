@@ -12,7 +12,7 @@ namespace Abbybot_III.Core.Users.sql
 	{
 		public static async Task<(bool inTimeout, DateTime timeoutEndDate, string reason)> GetUserTimeout(ulong auId)
 		{
-			var table = await AbbysqlClient.FetchSQL($"SELECT * FROM `usertimeout` WHERE `UserId` = '{auId}';");
+			var table = await AbbysqlClient.FetchSQL($"SELECT * FROM `user`.`timeout` WHERE `UserId` = '{auId}';");
 			
 			(bool t, DateTime ted, string r) vars = (false, DateTime.Now, "");
 			if (table.Count > 0)
@@ -24,7 +24,7 @@ namespace Abbybot_III.Core.Users.sql
 
 			if (vars.ted < DateTime.Now)
 			{
-				await AbbysqlClient.RunSQL($"DELETE FROM `usertimeout` WHERE `UserId` = '{auId}'");
+				await AbbysqlClient.RunSQL($"DELETE FROM `user`.`timeout` WHERE `UserId` = '{auId}'");
 				vars.t = false;
 			}
 

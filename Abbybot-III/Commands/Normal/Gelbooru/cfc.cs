@@ -20,15 +20,15 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 		public override async Task DoWork(AbbybotCommandArgs a)
 		{
 			var FavoriteCharacter =a.Replace(Command, true);
-			var cfc = await ChannelFCOverride.GetFCMAsync(a.guild.Id, a.channel.Id);
+			var cfc = await ChannelFCOverrideSQL.GetFCMAsync(a.guild.Id, a.channel.Id);
 			if (FavoriteCharacter.Length < 1)
 			{
-				if (cfc == "NO")
+				if (cfc.fc == "NO")
 				{
 					await a.Send($"Master... You didn't set the channel's cfc!!");
 					return;
 				}
-				var fcfc = a.BreakAbbybooruTag(cfc);
+				var fcfc = a.BreakAbbybooruTag(cfc.fc);
 				await a.Send($"The channel's favorite character is: {fcfc}\nFor help do ``{Command} help``");
 				return;
 			}
@@ -48,7 +48,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 				}
 				if (s == "remove")
 				{
-					await ChannelFCOverride.SetCFCAsync(a.guild.Id, a.channel.Id, "NO");
+					await ChannelFCOverrideSQL.SetCFCAsync(a.guild.Id, a.channel.Id, false, "NO");
 					return;
 				}
 			}
@@ -65,7 +65,8 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 			var u = a.user;
 			if (canr.canrun)
 			{
-				await ChannelFCOverride.SetCFCAsync(a.guild.Id, a.channel.Id, FavoriteCharacter.ToString());
+				
+				await ChannelFCOverrideSQL.SetCFCAsync(a.guild.Id, a.channel.Id, a.IsChannelNSFW, FavoriteCharacter.ToString());
 
 				eb.Title = $"{fc} Yayy!!";
 				eb.Color = Color.Green;

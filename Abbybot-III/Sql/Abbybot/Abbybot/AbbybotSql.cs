@@ -12,7 +12,7 @@ namespace Abbybot_III.Sql.Abbybot.Abbybot
         {
             List<ulong> abbybots = new List<ulong>();
 
-            AbbyTable table = await AbbysqlClient.FetchSQL($"select * from `discord`.`abbybots`");
+            AbbyTable table = await AbbysqlClient.FetchSQL($"select * from `abbybot`.`discordbots`");
             foreach (AbbyRow row in table)
             {
                 abbybots.Add(table.Count >= 1 && (row["Id"] is ulong u) ? u : 0);
@@ -25,7 +25,7 @@ namespace Abbybot_III.Sql.Abbybot.Abbybot
         {
             List<(ulong guildId, ulong channelId)> abbybots = new List<(ulong guildId, ulong channelId)>();
 
-            AbbyTable table = await AbbysqlClient.FetchSQL($"select * from `discord`.`abbybotchannels`");
+            AbbyTable table = await AbbysqlClient.FetchSQL($"select * from `abbybot`.`channels`");
             foreach (AbbyRow row in table)
             {
                 var guild = table.Count >= 1 && (row["GuildId"] is ulong g) ? g : 0;

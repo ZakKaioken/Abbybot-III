@@ -32,15 +32,16 @@ namespace Abbybot_III.Core.Twitter.Queue
                 var count = await ImageQueueSql.Count();
                 if (count < 50)
                 {
-                    var e = await Apis.AbbyBooru.Execute(new string[] { "abigail_williams*" });
-
-                    Image img = new Image()
-                    {
-                        url = e.FileUrl.ToString(),
-                        sourceurl = e.Source
-                    };
-
-                    await ImageQueueSql.Add(img);
+                    var ee = await Apis.AbbyBooru.ExecuteAsync(new string[] { "abigail_williams*" });
+                    foreach (var e in ee) {
+                        await ImageQueueSql.Add(new Image()
+                        {
+                            url = e.FileUrl.ToString(),
+                            sourceurl = e.Source,
+                            gelId = e.ID,
+                            md5 = e.MD5
+                        });
+                    }
                 }
             }
         }

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Abbybot_III.Commands.Reciever
 {
-	[Capi.CmdReciever(true)]
+	//[Capi.CmdReciever(true)]
 	class GelbooruCommandReciever : CmdReciever
 	{
 		List<iCommand> cmds = new List<iCommand>();
@@ -27,7 +27,7 @@ namespace Abbybot_III.Commands.Reciever
 				string Comm = (row["Command"] is string comman) ? comman : "";
 				string Tags = (row["Tags"] is string tags) ? tags : "";
 				int RatingId = (int)row["RatingId"];
-				NewGelbooruCommand gc = new NewGelbooruCommand($"abbybot *{Comm}*", Tags.Split(' '), (CommandRatings)RatingId);
+				NewGelbooruCommand gc = new NewGelbooruCommand($"abbybot {Comm}", Tags.Split(' '), (CommandRatings)RatingId);
 				cmds.Add(gc);
 			}
 

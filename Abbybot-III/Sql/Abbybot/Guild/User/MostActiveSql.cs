@@ -14,7 +14,7 @@ namespace Abbybot_III.Sql.Abbybot.Guild.User
 		public static async Task<List<(ulong guildId, ulong roleId)>> GetRoles()
 		{
 			List<(ulong guildId, ulong roleId)> roleIds = new List<(ulong guildId, ulong roleId)>();
-			AbbyTable table = await AbbysqlClient.FetchSQL($"select * from `mostactiveroles`;");
+			AbbyTable table = await AbbysqlClient.FetchSQL($"select * from `guild`.`mostactiveroles`;");
 			if (table != null)
 				foreach (AbbyRow row in table)
 				{
@@ -27,7 +27,7 @@ namespace Abbybot_III.Sql.Abbybot.Guild.User
 
 		public static async Task<ulong> GetRole(ulong guildId)
 		{
-			AbbyTable t = await AbbysqlClient.FetchSQL($"select *  from `mostactiveroles` where `GuildId`='{guildId}';");
+			AbbyTable t = await AbbysqlClient.FetchSQL($"select *  from `guild`.`mostactiveroles` where `GuildId`='{guildId}';");
 			if (t.Count > 0)
 				return t[0]["roleId"] is ulong u ? u : 0;
 			return 0;
@@ -35,17 +35,17 @@ namespace Abbybot_III.Sql.Abbybot.Guild.User
 
 		public static async Task<bool> AddRole(ulong guildId, ulong roleId)
 		{
-			var t = await AbbysqlClient.FetchSQL($"select *  from `mostactiveroles` where `GuildId`='{guildId}' and `RoleId` = '{roleId}';");
+			var t = await AbbysqlClient.FetchSQL($"select *  from `guild`.`mostactiveroles` where `GuildId`='{guildId}' and `RoleId` = '{roleId}';");
 			if (t.Count < 1)
-				return await AbbysqlClient.RunSQL($"insert into `discord`.`users`(`GuildId`, `RoleId`) values ('{guildId}', '{roleId}');") > 0;
+				return await AbbysqlClient.RunSQL($"insert into `guild`.`mostactiveroles`(`GuildId`, `RoleId`) values ('{guildId}', '{roleId}');") > 0;
 			return false;
 		}
 
 		public static async Task<bool> RemoveRole(ulong guildId, ulong roleId)
 		{
-			AbbyTable t = await AbbysqlClient.FetchSQL($"select *  from `mostactiveroles` where `GuildId`='{guildId}';");
+			AbbyTable t = await AbbysqlClient.FetchSQL($"select *  from `guild`.`mostactiveroles` where `GuildId`='{guildId}';");
 			if (t.Count > 0)
-				return await AbbysqlClient.RunSQL($"insert into `discord`.`users`(`GuildId`, `RoleId`) values ('{guildId}', '{roleId}');") > 0;
+				return await AbbysqlClient.RunSQL($"insert into `guild`.`mostactiveroles`(`GuildId`, `RoleId`) values ('{guildId}', '{roleId}');") > 0;
 			return false;
 		}
 

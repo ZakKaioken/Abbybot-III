@@ -14,7 +14,7 @@ namespace Abbybot_III.Commands.Normal
 	{
 		public override async Task DoWork(AbbybotCommandArgs a)
 		{
-			var FavoriteCharacter = a.Replace("Command").Replace("--debugmode", "");
+			var FavoriteCharacter = a.Replace(Command).Replace("--debugmode", "").Replace("abbybot ", "%");
 
 			var o = await SaybadtaglistSql.GetbadtaglistTags();
 			foreach (var oo in o)

@@ -24,40 +24,79 @@ namespace Abbybot_III.Apis.Twitter.Core
         {
             Abbybot.print("ayo");
             var abbybotchannels = await AbbybotSql.GetAbbybotChannelIdAsync();
+
+            bool tellnano = abbybotchannels.Count > 0;
+            ulong guildId = 0, channelId = 0;
             var er = r.Next(0, abbybotchannels.Count);
-            var (guildId, channelId) = abbybotchannels[er];
-            var c = Discord.__client.GetGuild(guildId).GetTextChannel(channelId);
-            await c.SendMessageAsync("nano gonna work");
+            if (tellnano) {
+                var (g, ch) = abbybotchannels[er];
+            guildId = g; channelId = ch;
+            }
+			var c = Discord.__client?.GetGuild(guildId)?.GetTextChannel(channelId);
+            if (abbybotchannels.Count > 0) { 
+                await c.SendMessageAsync("nano gonna work");
+            }
             PingAbbybotClock.o = 6; //6 is the working state
             Tweet tweet = null;
-            try
-            {
-                tweet = await TweetQueueSql.Peek();
-            }
-            catch
-            {
-                try
+
+            Task<Tweet>[] tweets = new Task<Tweet>[] {
+                TweetQueueSql.Peek(),
+                TweetArchiveSql.Peek()
+            };
+            string location = "";
+            int i = 0, olo = 0;
+            do {
+                Console.WriteLine("starting do while");
+				try
+				{
+                    Console.WriteLine($"gonna fetch a picture attempt {olo} of the {i}th list");
+
+                    tweet = await tweets[i];
+                    Console.WriteLine("Gonna fetch the post i want from gelbooru");
+					if (tweet == null) Console.WriteLine("tweet is gone...");
+                    if (tweet.md5 == null) Console.WriteLine("the md5 was null...");
+					var post = await AbbyBooru.GetPictureById(tweet.GelId);
+                    tweet.url = post.FileUrl.ToString();
+                    Console.WriteLine(tweet.url);
+                    tweet.sourceurl = post.Source;
+                    location = post.FileUrl.ToString();
+                    if (location != "")
+                    Console.WriteLine($"we got the picture. The tweet we're gonna try to send is {tweet.message}");
+                    break;
+                } catch (Exception e){
+                    Console.WriteLine(e);
+				}
+
+                if (olo++ > 3)
                 {
-                    tweet = await TweetArchiveSql.Peek();
+                    i++;
+                    olo = 0;
                 }
-                catch { }
-            }
+            } while (location == "" && i < tweets.Length);
+            Console.Write($"location found? {location!=""}, i was bigger than or equal to dbs? {i>=tweets.Length}");
+            if (i >= tweets.Length) return;
 
             if (tweet == null)
             {
                 P("no tweet was found");
-                await c.SendMessageAsync("I'm done working nano");
-                PingAbbybotClock.o = 1;
+                if (tellnano)
+                {
+                    await c.SendMessageAsync("I'm done working nano");
+                    PingAbbybotClock.o = 1;
+                }
                 return;
             }
 
             var tempfilepath = await ImageDownloader.DownloadImage(tweet.url);
-
+            Console.WriteLine(tempfilepath);
             if (tempfilepath == null)
             {
                 P("no image found.");
-                await c.SendMessageAsync("I'm done working nano");
-                PingAbbybotClock.o = 1;
+                if (tellnano)
+                {
+                    await c.SendMessageAsync("I'm done working nano");
+                    PingAbbybotClock.o = 1;
+                }
                 return;
             }
 
@@ -74,8 +113,11 @@ namespace Abbybot_III.Apis.Twitter.Core
                 if (media == null)
                 {
                     Abbybot.print("failed to upload media");
-                    await c.SendMessageAsync("I'm done working nano");
-                    PingAbbybotClock.o = 1;
+                    if (tellnano)
+                    {
+                        await c.SendMessageAsync("I'm done working nano");
+                        PingAbbybotClock.o = 1;
+                    }
                     return;
                 }
                 file.Dispose();
@@ -85,9 +127,12 @@ namespace Abbybot_III.Apis.Twitter.Core
                 {
                     Abbybot.print("media type unregognized");
                     await TweetQueueSql.Remove(tweet);
-                    await SendTweet();
-                    await c.SendMessageAsync("I'm done working nano");
-                    PingAbbybotClock.o = 1;
+					await SendTweet();
+                    if (tellnano)
+                    {
+                        await c.SendMessageAsync("I'm done working nano");
+                        PingAbbybotClock.o = 1;
+                    }
                     return;
                 }
                 me = media.Value;
@@ -98,8 +143,11 @@ namespace Abbybot_III.Apis.Twitter.Core
                 await TweetArchiveSql.Add(tweet, true);
                 await TweetQueueSql.Remove(tweet);
                 await SendTweet();
-                await c.SendMessageAsync("I'm done working nano");
-                PingAbbybotClock.o = 1;
+                if (tellnano)
+                {
+                    await c.SendMessageAsync("I'm done working nano");
+                    PingAbbybotClock.o = 1;
+                }
                 return;
             }
 
@@ -121,8 +169,19 @@ namespace Abbybot_III.Apis.Twitter.Core
                 }
 
                 TwitterAsyncResult<TwitterStatus> tweeto = await o;
+
+
+                string a = tweeto?.Response?.Error?.Message switch {
+                    "Status is a duplicate." => await Archive(),
+                    _ => null
+                };
+                if (a!=null)
+                    Console.WriteLine(a);
                 tweetvalue = tweeto.Value;
             } while ((tweetvalue == null) && (tries <= 3));
+
+            if ((tweetvalue == null) || (tries >= 3))
+                return;
 
             if (tweetvalue != null)
             {
@@ -130,22 +189,38 @@ namespace Abbybot_III.Apis.Twitter.Core
                 SaveTweet(tweetvalue, tweet);
             }
 
-            await TweetArchiveSql.Add(tweet, true);
-            await TweetQueueSql.Remove(tweet);
+            await Archive();
 
             if (tweetvalue == null)
             {
                 await SendTweet();
-                await c.SendMessageAsync("I'm done working nano");
-                PingAbbybotClock.o = 1;
+                if (tellnano)
+                {
+                    await c.SendMessageAsync("I'm done working nano");
+                    PingAbbybotClock.o = 1;
+                }
                 return;
             }
-            await c.SendMessageAsync("I'm done working nano");
-            PingAbbybotClock.o = 1; //6 is the working state
+            if (tellnano)
+            {
+                await c.SendMessageAsync("I'm done working nano");
+                PingAbbybotClock.o = 1; //6 is the working state
+            }
+            async Task<string> Archive() {
+                try {
+                    await TweetArchiveSql.Add(tweet, true);
+                    await TweetQueueSql.Remove(tweet);
+                    return "archived";
+                } catch {
+
+                    return "Failed to archive";
+                }
+                }
         }
 
         static void SaveTweet(TwitterStatus tweetvalue, Tweet id)
         {
+            return;
             string dir = @".\Tweets\";
             if (!Directory.Exists(dir))
             {

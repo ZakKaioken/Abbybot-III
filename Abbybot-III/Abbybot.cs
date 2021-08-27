@@ -9,6 +9,9 @@ namespace Abbybot_III
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine(o.ToString());
             Console.ForegroundColor = ConsoleColor.White;
-        }
-    }
+			
+            
+		}
+
+	}
 }

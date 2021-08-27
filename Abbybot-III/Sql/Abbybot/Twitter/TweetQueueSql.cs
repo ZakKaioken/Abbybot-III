@@ -15,12 +15,12 @@ namespace Abbybot_III.Core.Twitter.Queue.sql
             var url = AbbysqlClient.EscapeString(I.url);
             var sourceurl = AbbysqlClient.EscapeString(I.sourceurl);
             var msg = AbbysqlClient.EscapeString(message);
-            await AbbysqlClient.RunSQL($"INSERT INTO `abbybottwitter`.`tweets` ( `ImgUrl`,`SrcUrl`, `Description`, `Priority` ) VALUES('{url}', '{sourceurl}', '{msg}','0');");
+            await AbbysqlClient.RunSQL($"INSERT INTO `twitter`.`tweets` ( `ImgUrl`,`SrcUrl`, `Description`, `Priority` ) VALUES('{url}', '{sourceurl}', '{msg}','0');");
         }
 
         public static async Task<int> Count()
         {
-            var table = await AbbysqlClient.FetchSQL("SELECT COUNT(*) as 'rows' FROM AbbybotTwitter.tweets;");
+            var table = await AbbysqlClient.FetchSQL("SELECT COUNT(*) as 'rows' FROM `twitter`.`tweets`;");
             int rows = 0;
             foreach (AbbyRow row in table)
                 rows = int.Parse(row["rows"].ToString());
@@ -29,13 +29,13 @@ namespace Abbybot_III.Core.Twitter.Queue.sql
 
         public static async Task Remove(Tweet I)
         {
-            await AbbysqlClient.RunSQL($"DELETE FROM `abbybottwitter`.`tweets` WHERE `Id` = '{I.id}';");
+            await AbbysqlClient.RunSQL($"DELETE FROM `twitter`.`tweets` WHERE `Id` = '{I.id}';");
         }
 
         public static async Task<Tweet> Peek()
         {
             Tweet tweet = null;
-            var table = await AbbysqlClient.FetchSQL($"SELECT * FROM `abbybottwitter`.`tweets` ORDER BY Priority DESC, Id ASC LIMIT 1;");
+            var table = await AbbysqlClient.FetchSQL($"SELECT * FROM `twitter`.`tweets` ORDER BY Priority DESC, Id ASC LIMIT 1;");
             if (table.Count < 1)
                 throw new Exception("no tweets in list");
 
@@ -59,7 +59,7 @@ namespace Abbybot_III.Core.Twitter.Queue.sql
             var url = AbbysqlClient.EscapeString(I.url);
             var sourceurl = AbbysqlClient.EscapeString(I.sourceurl);
             var message = AbbysqlClient.EscapeString(I.message);
-            await AbbysqlClient.RunSQL($"INSERT INTO `abbybottwitter`.`tweets` ( `ImgUrl`,`SrcUrl`, `Description`, `Priority` ) VALUES('{url}', '{sourceurl}', '{message}', '{priority}');");
+            await AbbysqlClient.RunSQL($"INSERT INTO `twitter`.`tweets` ( `ImgUrl`,`SrcUrl`, `Description`, `Priority` ) VALUES('{url}', '{sourceurl}', '{message}', '{priority}');");
         }
     }
 }

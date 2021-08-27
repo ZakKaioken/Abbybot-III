@@ -15,14 +15,18 @@ namespace Abbybot_III.Commands.Normal
 
 		public override async Task DoWork(AbbybotCommandArgs a)
 		{
-			var facts = await FunAbbybotFactsSql.GetLatestMentionIdsAsync(await a.IsNSFW());
+			var facts = await FunAbbybotFactsSql.GetFactsList(await a.IsNSFW());
 			var ra = r.Next(0, facts.Count);
-			await a.Send(facts[ra].fact.ReplaceA("ab!", "%"));
+			if (facts.Count > 0)
+				await a.Send(facts[ra].fact.ReplaceA("ab!", "%"));
+			else
+				await a.Send("I'm sorry master... My facts list is empty... I... I can't send you a fact :(");
 		}
 
 		public override async Task<string> toHelpString(AbbybotCommandArgs aca)
 		{
-			var facts = await FunAbbybotFactsSql.GetLatestMentionIdsAsync(await aca.IsNSFW());
+			var facts = await FunAbbybotFactsSql.GetFactsList(await aca.IsNSFW());
+			if (facts.Count == 0) return "I... I don't understand... My facts list is empty... %fact won't do anything...";
 			var ra = r.Next(0, facts.Count);
 			return $"{facts[ra].fact}, get another abbybot fact with this command!!";
 		}

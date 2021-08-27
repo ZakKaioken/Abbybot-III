@@ -8,3 +8,9 @@ dotnet_diagnostic.CS1998.severity = suggestion
 
 # CS0649: Field 'DiscordApiKey.jPath' is never assigned to, and will always have its default value null
 dotnet_diagnostic.CS0649.severity = none
+
+# IDE0055: Fix formatting
+dotnet_diagnostic.IDE0055.severity = suggestion
+
+# CS0162: Unreachable code detected
+dotnet_diagnostic.CS0162.severity = suggestion

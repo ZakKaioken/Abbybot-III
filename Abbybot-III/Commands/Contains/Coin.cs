@@ -2,8 +2,6 @@
 using Abbybot_III.Core.CommandHandler.Types;
 using Abbybot_III.Core.LevelingManager;
 using Abbybot_III.extentions;
-using Abbybot_III.Sql.Abbybot.Fun;
-using Abbybot_III.Sql.Abbybot.User;
 
 using Discord;
 
@@ -44,7 +42,7 @@ namespace Abbybot_III.Commands.Contains
 			};
 			eb.ImageUrl = side ? headsimgs.random() : tailssimgs.random();
 
-			eb.Title =await CoinMessageSql.GetMessage(false);
+			//zeb.Title =await CoinMessageSql.GetMessage(false);
 			sb.Append("You got **").Append(coin).Append("**!");
 			eb.Color = Color.LightOrange;
 			await abd.Send(eb);

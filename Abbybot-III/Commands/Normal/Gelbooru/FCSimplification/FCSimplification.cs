@@ -50,9 +50,9 @@ namespace Abbybot_III.Commands.Normal.Gelbooru.FCSimplification
             string[] o = new string[1];
             a.BuildAbbybooruTag(info.TitleFc);
 			a.BuildAbbybooruTag(info.Fc);
-            o[0] = (info.TitleFc !=null ? info.TitleFc : info.Fc).ToString(); 
+            o[0] = (info.TitleFc ?? info.Fc).ToString(); 
 
-            (bool canrun, Uri pictureurl, Uri previewurl, string fc) aaa;
+            (bool canrun, Uri pictureurl, Uri previewurl, string fc) aaa = (false, null, null, "");
 
             int failcount = 0;
             bool failed = false;
@@ -62,10 +62,18 @@ namespace Abbybot_III.Commands.Normal.Gelbooru.FCSimplification
                 bool set = false;
             do {
                 var sif = o[0];
-                aaa = await awa(a, o, info.type);
-                info.Fc.Clear().Append(aaa.fc);
+                try {
+                    aaa = await awa(a, o, info.type);
+                    if (!aaa.canrun)
+                        throw new Exception("Can't run");
+                } catch {
+                    failcount++;
+                    continue;
+                }
+                if (info.type == "set") {
+                    info.Fc.Clear().Append(aaa.fc);
                 o[0] = aaa.fc;
-
+            }
                 Console.WriteLine($"{sif}->{o[0]}");
                 Uri[] uris = new Uri[] {
                     aaa.pictureurl, aaa.previewurl
@@ -94,10 +102,14 @@ namespace Abbybot_III.Commands.Normal.Gelbooru.FCSimplification
 			}
 
             var oioio = a.BreakAbbybooruTag(((info.TitleFc !=null) ? info.TitleFc : info.Fc).ToString());
+            Console.WriteLine($"{oioio}: {info.TitleFc}, {info.Fc}");
+            Console.WriteLine(oioio);
             if (aaa.canrun) {
+                var u = await FavoriteCharacterHistorySql.GetFavoriteCharacterHistoryAsync(a.user.Id);
                 await FavoriteCharacterSql.SetFavoriteCharacterAsync(a.user.Id, info.Fc.ToString());
-				
-				await FavoriteCharacterHistorySql.SetFavoriteCharacterHistoryAsync(a.user.Id, info.Fc.ToString(), info.type, oioio);
+                var lastId = (u.Count > 0 ? u[0].Id : 0);
+                Console.WriteLine(lastId);
+                await FavoriteCharacterHistorySql.SetFavoriteCharacterHistoryAsync(a.user.Id, info.Fc.ToString(), info.type, oioio, lastId);
 
                 eb.Color = Color.Green;
 
@@ -138,9 +150,15 @@ namespace Abbybot_III.Commands.Normal.Gelbooru.FCSimplification
 				try
 				{
 					BooruSharp.Search.Post.SearchResult imgdata = await aca.GetPicture(o);
-					if (imgdata.Source.Contains("noimagefound"))
+                    Console.WriteLine("searched picture");
+                    if (imgdata.Source.Contains("noimagefound"))
+					{
+                        Console.WriteLine("failed first test");
 						throw new Exception("AAAA");
+
+					}
 					if (imgdata.Rating == BooruSharp.Search.Post.Rating.Safe)
+
 					{
 						pictureurl = imgdata.FileUrl;
 						previewurl = imgdata.PreviewUrl;
@@ -157,7 +175,8 @@ namespace Abbybot_III.Commands.Normal.Gelbooru.FCSimplification
 							pictureurl = i.FileUrl;
 							previewurl = i.PreviewUrl;
 						}
-						catch { }
+						catch { Console.WriteLine("first fc test failed"); }
+
 					}
 
 					canrun = true;
@@ -168,15 +187,17 @@ namespace Abbybot_III.Commands.Normal.Gelbooru.FCSimplification
 				{
 					if (e.ToString().Contains("AAAA"))
 					{
-                        Console.WriteLine($"{o[0]} failed...");
-						o[0] = aca.InvertName(o[0]);
-						fc = o[0];
+                        Console.WriteLine($"{o[0]} fail!ed...");
+
+                        o[0] = aca.InvertName(o[0]);
+
+                        fc = o[0];
 					}
 					else throw new Exception("failed");
 				}
 				tries++;
 			} while (tries <= 4);
-
+            Console.WriteLine($"ended with a fc of {fc}");
 			return (canrun, pictureurl, previewurl, fc);
 		}
 
@@ -202,7 +223,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru.FCSimplification
         private async Task<(string type, bool cons, StringBuilder Fc, StringBuilder TitleFc)> DoHistory(AbbybotCommandArgs a)
         {
             var axis = await FavoriteCharacterHistorySql.GetFavoriteCharacterHistoryAsync(a.user.Id);
-				var axis10 = axis.OrderByDescending(x => x.Id);
+				var axis10 = axis.OrderByDescending(x => x.Id).Take(5);
 				StringBuilder sbib = new StringBuilder();
 				sbib.AppendLine("FC History:");
 
@@ -220,16 +241,31 @@ namespace Abbybot_III.Commands.Normal.Gelbooru.FCSimplification
 
         private async Task<(string type, bool cons, StringBuilder Fc, StringBuilder TitleFc)> DoUndo(AbbybotCommandArgs a)
         {
-            var axis = await FavoriteCharacterHistorySql.GetFavoriteCharacterHistoryAsync(a.user.Id);
-				var axis10 = axis.OrderByDescending(x => x.Id).ToList();
+            Console.WriteLine("trying undo");
+                var axis = await FavoriteCharacterHistorySql.GetFavoriteCharacterHistoryAsync(a.user.Id);
+                var axis10 = axis.OrderByDescending(i=>i.Id).ToList();
 				if (axis10.Count > 1)
 				{
-					var iaxisuf = axis10[1].FavoriteCharacter;
-					await FavoriteCharacterSql.SetFavoriteCharacterAsync(a.user.Id, iaxisuf);
-					await FavoriteCharacterHistorySql.SetFavoriteCharacterHistoryAsync(a.user.Id, iaxisuf, "undo", $"undo back to fc history {axis10[1].Id}.");
-					EmbedBuilder ebxz = new EmbedBuilder();
+                Console.WriteLine("we can undo");
+					var undoid = axis10[0].UndoId;
+                    if (undoid == 0) return ("", false, null, null);
+                    foreach(var i in axis10) {
+                        Console.Write($"[{i.Id}]");
+					}
+                Console.WriteLine($"undoid is {undoid}");
+                Console.WriteLine("undoid wasn't 0");
+                var undo = axis10.Where(o => o.Id == undoid).ToList() ;
+                if (undo.Count == 0) return ("", false, null, null);
+                Console.WriteLine("there was an undo object");
+
+                var nextundoid = undo[0].UndoId;
+                if (nextundoid == 0) return ("", false, null, null);
+                Console.WriteLine("the undo's id is not 0");
+                await FavoriteCharacterSql.SetFavoriteCharacterAsync(a.user.Id, undo[0].FavoriteCharacter);
+					await FavoriteCharacterHistorySql.SetFavoriteCharacterHistoryAsync(a.user.Id, undo[0].FavoriteCharacter, "undo", $"set back to ...{new string(undo[0].FavoriteCharacter.TakeLast(250).ToArray())}.", nextundoid);
+					EmbedBuilder ebxz = new();
 					ebxz.Title = "undo";
-					ebxz.Description = $"Undone {axis10[0].type} {axis10[0].Info}... back to {axis10[1].type} {axis10[1].Info}";
+					ebxz.Description = $"Undone {new string(axis10[0].FavoriteCharacter.TakeLast(250).ToArray())}... was set back to ...{new string(undo[0].FavoriteCharacter.TakeLast(250).ToArray())}";
 
 					await a.Send(ebxz);
 				}
@@ -250,8 +286,8 @@ namespace Abbybot_III.Commands.Normal.Gelbooru.FCSimplification
 					{
 						var iaxisuf = axis10[iii].FavoriteCharacter;
 						await FavoriteCharacterSql.SetFavoriteCharacterAsync(a.user.Id, iaxisuf);
-						await FavoriteCharacterHistorySql.SetFavoriteCharacterHistoryAsync(a.user.Id, iaxisuf, "revert", $"reverted back to fc history: {axis10[iii].FavoriteCharacter}.");
-						EmbedBuilder ebxz = new EmbedBuilder();
+						await FavoriteCharacterHistorySql.SetFavoriteCharacterHistoryAsync(a.user.Id, iaxisuf, "revert", $"reverted back to fc history: {axis10[iii].FavoriteCharacter}.", axis10[0].Id);
+						EmbedBuilder ebxz = new();
 						ebxz.Title = "reverted fc!";
 						ebxz.Description = $"reverted {axis10[0].type} {axis10[0].Info}... back to {axis10[iii].type} {axis10[iii].Info}";
 
@@ -271,15 +307,23 @@ namespace Abbybot_III.Commands.Normal.Gelbooru.FCSimplification
 				FavoriteCharacter.Remove(0, 4);
 				TitleFC.Remove(0, 4);
 
-				if ((FavoriteCharacter.Length <= 1)) return ("add", false, null, null);
+			if ((FavoriteCharacter.Length <= 1)) return ("add", false, null, null);
 
-				foreach (var chr in a.GetFCList())
-				{
-					if (chr == "*" || chr == "**" || chr.Length <= 1) continue;
-					if (chr.EndsWith("*"))
-						FavoriteCharacter.Insert(0, $"{chr.Remove(chr.Length - 1)} or ");
-					else FavoriteCharacter.Insert(0, $"{chr} or ");
-				}
+			string[] o = new string[1] { a.BuildAbbybooruTag(FavoriteCharacter.ToString()) };
+			var ava = await awa(a, o, "");
+			FavoriteCharacter.Clear().Append(ava.fc);
+            TitleFC.Clear().Append(ava.fc);
+			a.BuildAbbybooruTag(FavoriteCharacter);
+			foreach (var chr in a.GetFCList())
+			{
+				if (chr == "*" || chr == "**" || chr.Length <= 1) continue;
+				if (chr.EndsWith("*"))
+					FavoriteCharacter.Insert(0, $"{chr.Remove(chr.Length - 1)} or ");
+				else FavoriteCharacter.Insert(0, $"{chr} or ");
+			}
+            while (FavoriteCharacter.Contains("__")) FavoriteCharacter.Replace("__", "_");
+
+            Console.WriteLine($"{FavoriteCharacter},!!, {TitleFC}");
             return ("add", true, FavoriteCharacter, TitleFC);
         }
 
@@ -324,7 +368,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru.FCSimplification
 
         private static List<StringBuilder> GetMultiFCStringBuilders(AbbybotCommandArgs e)
         {
-            var fcs = e.GetFCList();
+            var fcs = e.GetFCList().OrderBy(w=>w).ToArray();
 
             List<StringBuilder> sbs = new();
             StringBuilder currentSb = new($"You have {fcs.Length} favorite characters set!!!\n");

@@ -192,7 +192,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 
 				try
 				{
-					imgdata = await Apis.AbbyBooru.Execute(tagz.ToArray());
+					imgdata = (await Apis.AbbyBooru.ExecuteAsync(tagz.ToArray()))[0];
 				}
 				catch
 				{

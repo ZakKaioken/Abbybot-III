@@ -19,9 +19,10 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 		public override async Task DoWork(AbbybotCommandArgs aca)
 		{
 			PictureCommandSimplification pcI = new PictureCommandSimplification();
-
+			if (aca.Contains(new string[] { "abbybot say", "abbybot whisper" })) return;
 			PictureCommandData pcD = new PictureCommandData();
 			pcD.user = aca.user;
+		
 			ulong guildId = 0, channelId = 0;
 
 			if (aca.guild != null)
@@ -35,7 +36,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 				pcD.index += sta.stat;
 			}
 			pcD.favoriteCharacter = aca.user.FavoriteCharacter;
-			pcD.channelFavoriteCharacter = (await ChannelFCOverride.GetFCMAsync(guildId, channelId) is string sai && sai != "NO" ? sai : null);
+			pcD.channelFavoriteCharacter = ((await ChannelFCOverrideSQL.GetFCMAsync(guildId, channelId)).fc is string sai && sai != "NO" ? sai : null);
 			if (aca.isGuild)
 			{
 				pcD.isNSFW = aca.user.HasRatings(2) && aca.IsChannelNSFW && !aca.guild.NoNSFW;

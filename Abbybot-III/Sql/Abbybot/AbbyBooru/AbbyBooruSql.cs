@@ -8,7 +8,7 @@ using Discord.WebSocket;
 using System;
 using System.Threading.Tasks;
 
-namespace Abbybot_III.Core.AbbyBooru.sql
+namespace Abbybot_III.Sql.abbybooru
 {
     class AbbyBooruSql
     {

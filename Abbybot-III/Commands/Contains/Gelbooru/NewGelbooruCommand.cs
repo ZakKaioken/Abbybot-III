@@ -51,11 +51,11 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 
 			List<AbbybotUser> mentionedUsers = await aca.GetMentionedUsers();
 
-			var cfc = "NO";
+			var cfc = ("NO", false);
 			if (aca.guild != null)
-				cfc = await ChannelFCOverride.GetFCMAsync(aca.guild.Id, aca.channel.Id);
+				cfc = await ChannelFCOverrideSQL.GetFCMAsync(aca.guild.Id, aca.channel.Id);
 			string fc = await GetFavoriteCharacterTagAsync(aca, mentionedUsers);
-
+			Console.WriteLine(fc);
 			if (fc.Contains(" ~ "))
 			{
 				string[] fcc = fc.Replace("{", "").Replace("}", "").Split(" ~ ");
@@ -94,9 +94,9 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 			var ufc = "abigail_williams*";
 			try
 			{
-				if (cfc == "NO") throw new Exception("cfc not set");
+				if (cfc.Item1 == "NO") throw new Exception("cfc not set");
 
-				tagz = await GenerateTags(aca, fc, cfc);
+				tagz = await GenerateTags(aca, fc, cfc.Item1);
 
 				imgdata = await aca.GetPicture(tagz.ToArray());
 
@@ -105,19 +105,19 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 					Console.WriteLine("cfc+fc failed");
 					throw new Exception("CFC+FC FAILED");
 				}
-				ufc = aca.BreakAbbybooruTag($"{fc} and {cfc}");
+				ufc = aca.BreakAbbybooruTag($"{fc} and {cfc.Item1}");
 			}
 			catch
 			{
 				try
 				{
-					if (cfc == "NO")
+					if (cfc.Item1 == "NO")
 					{
 						Console.WriteLine("No channel favorite character");
 						throw new Exception("cfc not set");
 					}
 
-					tagz = await GenerateTags(aca, cfc);
+					tagz = await GenerateTags(aca, cfc.Item1);
 
 					imgdata = await aca.GetPicture(tagz.ToArray());
 
@@ -126,7 +126,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 						Console.WriteLine("No image found for the channel favorite character...");
 						throw new Exception("CFC FAILED");
 					}
-					ufc = aca.BreakAbbybooruTag($"{cfc}");
+					ufc = aca.BreakAbbybooruTag($"{cfc.Item1}");
 				}
 				catch
 				{
@@ -237,7 +237,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 		{
 			if (aca.sudoUser != null)
 				return "Abigail_Williams*";
-
+			
 			var ufcm = await aca.GetFCMentions();
 			if (ufcm && aca.isMentioning)
 				return mentionedUsers.random().FavoriteCharacter;

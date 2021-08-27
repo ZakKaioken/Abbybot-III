@@ -2,6 +2,8 @@
 using Abbybot_III.Core.Heart;
 using Abbybot_III.Core.Twitter.Queue.sql;
 using Abbybot_III.Core.Twitter.Queue.types;
+using Abbybot_III.Sql.abbybooru;
+using Abbybot_III.Sql.Abbybot.AbbyBooru;
 
 using BooruSharp.Search.Post;
 
@@ -32,7 +34,7 @@ namespace Abbybot_III.Core.AbbyBooru
                 //Abbybot.print("running abc!!");
                 CheckTime = CheckTime.AddMinutes(1);
                 SocketTextChannel channel = null;
-                List<Character> characters = await Character.GetListFromSqlAsync();
+                List<Character> characters = await AbbyBooruCharacterSql.GetListFromSqlAsync();
 
                 foreach (var character in characters)
                 {
@@ -61,10 +63,11 @@ namespace Abbybot_III.Core.AbbyBooru
                     if (safe)
                         tags.Add("rating:safe");
 
-                    SearchResult[] charpicx = (await Apis.AbbyBooru.GetLatest(tags.ToArray())).Take(5).ToArray();
+                    SearchResult[] charpicx = (await Apis.AbbyBooru.GetLatest(tags.ToArray()));
+                    if (charpicx.Length > 0) charpicx = charpicx.Take(5).ToArray();
 
                     List<img> nngs = new List<img>();
-                    var postIds = (await Character.GetLatestPostIdsAsync(character));
+                    var postIds = (await AbbyBooruCharacterSql.GetLatestPostIdsAsync(character));
 
                     SearchResult[] eeee = charpicx.Where(x => !postIds.Contains((ulong)x.ID)).Take(5).ToArray();
 
@@ -75,7 +78,9 @@ namespace Abbybot_III.Core.AbbyBooru
                             Id = (ulong)ex.ID,
                             imgurl = ex.FileUrl.ToString(),
                             source = ex.Source,
-                            safe = (ex.Rating == Rating.Safe)
+                            safe = (ex.Rating == Rating.Safe),
+                            GelId = ex.ID,
+                            md5 = ex.MD5
                         };
                         nngs.Add(nng);
                     }
@@ -102,7 +107,7 @@ namespace Abbybot_III.Core.AbbyBooru
                         }
                         catch { }
 
-                        await Character.AddLatestPostIdAsync(character.Id, sr.Id);
+                        await AbbyBooruCharacterSql.AddLatestPostIdAsync(character.Id, sr.Id, sr.GelId);
 
                         if (character.Id == 3)
                         {
@@ -110,7 +115,8 @@ namespace Abbybot_III.Core.AbbyBooru
                             {
                                 message = "A new tweet just came in from gelbooru!!",
                                 url = sr.imgurl,
-                                sourceurl = fixedsource
+                                sourceurl = fixedsource,
+                                GelId = sr.GelId
                             };
 
                             await TweetQueueSql.Add(tweet, true);

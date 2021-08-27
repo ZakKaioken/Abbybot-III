@@ -113,7 +113,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 				{
 					var iaxisuf = axis10[1].FavoriteCharacter;
 					await FavoriteCharacterSql.SetFavoriteCharacterAsync(a.user.Id, iaxisuf);
-					await FavoriteCharacterHistorySql.SetFavoriteCharacterHistoryAsync(a.user.Id, iaxisuf, type, $"undo back to fc history {axis10[1].Id}.");
+					await FavoriteCharacterHistorySql.SetFavoriteCharacterHistoryAsync(a.user.Id, iaxisuf, type, $"undo back to fc history {axis10[1].Id}.", axis10[1].UndoId);
 					EmbedBuilder ebxz = new EmbedBuilder();
 					ebxz.Title = "undo";
 					ebxz.Description = $"Undone {axis10[0].type} {axis10[0].Info}... back to {axis10[1].type} {axis10[1].Info}";
@@ -138,7 +138,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 					{
 						var iaxisuf = axis10[iii].FavoriteCharacter;
 						await FavoriteCharacterSql.SetFavoriteCharacterAsync(a.user.Id, iaxisuf);
-						await FavoriteCharacterHistorySql.SetFavoriteCharacterHistoryAsync(a.user.Id, iaxisuf, type, $"reverted back to fc history: {axis10[iii].FavoriteCharacter}.");
+						await FavoriteCharacterHistorySql.SetFavoriteCharacterHistoryAsync(a.user.Id, iaxisuf, type, $"reverted back to fc history: {axis10[iii].FavoriteCharacter}.", axis10[iii].UndoId);
 						EmbedBuilder ebxz = new EmbedBuilder();
 						ebxz.Title = "reverted fc!";
 						ebxz.Description = $"reverted {axis10[0].type} {axis10[0].Info}... back to {axis10[iii].type} {axis10[iii].Info}";
@@ -258,7 +258,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 				await FavoriteCharacterSql.SetFavoriteCharacterAsync(u.Id, t);
 				var foc = a.BreakAbbybooruTag(fc);
 				var oioio = (addedtoexistingfc || removedfromexistingfc) ? a.BreakAbbybooruTag(TitleFC.ToString()) : foc;
-				await FavoriteCharacterHistorySql.SetFavoriteCharacterHistoryAsync(u.Id, t, type, oioio);
+				await FavoriteCharacterHistorySql.SetFavoriteCharacterHistoryAsync(u.Id, t, type, oioio, 42);
 
 				eb.Color = Color.Green;
 

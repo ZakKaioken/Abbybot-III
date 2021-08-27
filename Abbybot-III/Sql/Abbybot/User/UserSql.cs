@@ -11,19 +11,19 @@ namespace Abbybot_III.Core.Users.sql
 	{
 		public static async Task<(string favoritecharacter, bool isLewd, ulong marriedid)> GetUserData(ulong Id)
 		{
-			var table = await AbbysqlClient.FetchSQL($"SELECT `Id` FROM `users` WHERE `Id` = '{Id}';");
+			var table = await AbbysqlClient.FetchSQL($"SELECT `UserId` FROM `user`.`users` WHERE `UserId` = '{Id}';");
 			if (table.Count < 1)
-				await AbbysqlClient.RunSQL($"INSERT INTO `discord`.`users`(Id, FavoriteCharacter) VALUES ('{Id}','Abigail_Williams*');");
+				await AbbysqlClient.RunSQL($"INSERT INTO `user`.`users`(UserId, FavoriteCharacter) VALUES ('{Id}','Abigail_Williams*');");
 
-			table = await AbbysqlClient.FetchSQL($"SELECT users.* FROM `users` WHERE users.Id = {Id};");
+			table = await AbbysqlClient.FetchSQL($"SELECT `user`.`users`.* FROM `user`.`users` WHERE users.UserId = {Id};");
 
 			AbbyRow row = table[0];
 
 			(string favoritecharacter, bool isLewd, ulong marriedid) gol = ("Abigail_Williams*", true, 0);
 
 			gol.favoritecharacter = (row["FavoriteCharacter"] is string s) ? s : "abigail_williams*";
-			gol.isLewd = (sbyte)row["IsLewd"] == 1;
-			gol.marriedid = (ulong)row["MarriedUserId"];
+			gol.isLewd = row["IsLewd"] is int il && il == 1;
+			gol.marriedid = row["MarriedUserId"] is ulong mid ? mid : 0;
 
 			return gol;
 		}

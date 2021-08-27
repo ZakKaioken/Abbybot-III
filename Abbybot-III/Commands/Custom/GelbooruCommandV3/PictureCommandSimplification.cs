@@ -9,6 +9,7 @@ using Discord;
 using Abbybot_III.Apis;
 using Abbybot_III.Core.CommandHandler.Types;
 using Abbybot_III.Core.CommandHandler.extentions;
+using Abbybot_III.extentions;
 
 class PictureCommandSimplification
 {
@@ -16,29 +17,33 @@ class PictureCommandSimplification
 	{
 		EmbedBuilder eb = new EmbedBuilder();
 
-		var Commands = await AbbySql.AbbysqlClient.FetchSQL("Select * from discord.gelboorucommands");
+		var Commands = await AbbySql.AbbysqlClient.FetchSQL("Select * from `abbybooru`.`commands`;");
 		if (Commands.Count <= 0) throw new Exception("I'm sorry master I'm so dizzy... I don't see any picture commands anymore...");
 
 		var picture = Commands.ToList().Where(x => message.message.Contains(x["Command"] is string cc ? $"abbybot {cc}" : "anotherunlikelycommand")).Take(3).ToList();
 
 		if (picture.Count <= 0) throw new Exception("The message did not have any matching picture commands");
-		string pfc = null;
+		string pfc = message.favoriteCharacter;;
 		foreach (var command in picture)
 		{
-			
 			string tags = command["Tags"] is string ta ? ta : "";
 			int rating = command["RatingId"] is int rI ? rI : -1;
+			string nick = command["Nickname"] is string tw ? tw : "";
 			if (tags == "" || rating == -1) continue;
 
 			if (!message.ratings.Contains((CommandRatings)rating)) continue;
 			if (message.favoriteCharacter.Contains(" ~ "))
-			{
-				var smfc = message.favoriteCharacter.Replace("{", "").Replace("}", "").Split(" ~ ");
-				message.index %= (ulong)smfc.Length;
-				pfc = (message.Rolling) ? smfc[message.index++] : smfc[(new Random()).Next(0, smfc.Length)];
-			}
-
-			(string, string)[] types = new (string, string)[] {
+				{
+					var smfc = message.favoriteCharacter.Replace("{", "").Replace("}", "").Split(" ~ ");
+					message.index %= (ulong)smfc.Length;
+					pfc = (message.Rolling) ? smfc[message.index++] : smfc[(new Random()).Next(0, smfc.Length)];
+				}
+				Console.WriteLine("[");
+				Console.WriteLine(message.favoriteCharacter);
+				Console.WriteLine(pfc);
+				Console.WriteLine("]");
+			
+				(string, string)[] types = new (string, string)[] {
 				(message.channelFavoriteCharacter, pfc),
 				(message.channelFavoriteCharacter, null),
 				(pfc, null),
@@ -81,7 +86,7 @@ class PictureCommandSimplification
 						ww += $" {i2}";
 					}
 					if (ww.Length < 3) throw new Exception("it didn't work right...");
-					var imgdata = await AbbyBooru.Execute(tagz.ToArray());
+					var imgdata = await aca.GetPicture(tagz.ToArray());
 					imageData = new ImageData()
 					{
 						pictureCharacter = ww,

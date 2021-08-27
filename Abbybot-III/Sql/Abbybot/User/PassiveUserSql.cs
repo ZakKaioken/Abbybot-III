@@ -13,12 +13,11 @@ namespace Abbybot_III.Sql.Abbybot.User
 		public static async Task SetUsernameSql(ulong userId, string username, string nickname = "")
 		{
 			nickname ??= "";
-
 			string u = (username.Length > 1) ? AbbysqlClient.EscapeString(username) : "";
 			string n = (nickname.Length > 1) ? AbbysqlClient.EscapeString(nickname) : "";
-			string ss = $"UPDATE `discord`.`users` SET `Username`='{u}'";
+			string ss = $"UPDATE `user`.`names` SET `Username`='{u}'";
 			if (n.Length > 1) ss += $", `Name`= '{n}'";
-			ss += $" WHERE  `Id`= {userId}; ";
+			ss += $" WHERE  `UserId`= {userId}; ";
 			await AbbysqlClient.RunSQL(ss);
 		}
 
@@ -28,19 +27,20 @@ namespace Abbybot_III.Sql.Abbybot.User
 				return;
 
 			var it = AbbysqlClient.EscapeString(stat);
-			var month = DateTime.Now.ToString("MMMM yyyy");
-			var a = await AbbysqlClient.FetchSQL($"select * from `discord`.`guilduserthismonthstats` where `Stat`='{stat}' and `AbbybotId` = '{abbybotId}' and `Month`='{month}' and `GuildId`='{guildId}' and `ChannelId`='{channelId}' and `UserId`='{userId}'");
+			//var month = DateTime.Now.ToString("MMMM yyyy");
+		
+			var a = await AbbysqlClient.FetchSQL($"select * from `guild`.`userstats` where `Stat`='{stat}' and `AbbybotId` = '{abbybotId}' and `GuildId`='{guildId}' and `ChannelId`='{channelId}' and `UserId`='{userId}'");
 			if (a.Count != 0)
 			{
 				ulong num = (a[0]["Points"] is ulong points) ? points : 0;
 
 				ulong n = ++num;
-				string s = $"UPDATE `discord`.`guilduserthismonthstats` SET `Points`= '{n}' WHERE `Stat`='{stat}' and `AbbybotId` = '{abbybotId}' and `Month`='{month}' and `GuildId`='{guildId}' and `ChannelId`='{channelId}' and `UserId`='{userId}';";
+				string s = $"UPDATE `guild`.`userstats` SET `Points`= '{n}' WHERE `Stat`='{stat}' and `AbbybotId` = '{abbybotId}' and `GuildId`='{guildId}' and `ChannelId`='{channelId}' and `UserId`='{userId}';";
 				await AbbysqlClient.RunSQL(s);
 			}
 			else
 			{
-				await AbbysqlClient.RunSQL($"insert into `discord`.`guilduserthismonthstats` (`AbbybotId`, `Month`, `GuildId`, `ChannelId`,`UserId`, `Stat`, `Points`) values ('{abbybotId}', '{month}', '{guildId}', '{channelId}', '{userId}','{stat}', '1');");
+				await AbbysqlClient.RunSQL($"insert into `guild`.`userstats` (`AbbybotId`,`GuildId`, `ChannelId`,`UserId`, `Stat`, `Points`) values ('{abbybotId}', '{guildId}', '{channelId}', '{userId}','{stat}', '1');");
 			}
 		}
 
@@ -48,8 +48,7 @@ namespace Abbybot_III.Sql.Abbybot.User
 		{
 			List<(ulong userId, ulong stat)> stats = new List<(ulong userId, ulong stat)>();
 			var ori = AbbysqlClient.EscapeString(v);
-			var month = DateTime.Now.ToString("MMMM yyyy");
-			var a = await AbbysqlClient.FetchSQL($"select * from `discord`.`guilduserthismonthstats` where `AbbybotId` = '{abbybotId}' and `GuildId`='{guildId}' and `Stat`='{ori}';");
+			var a = await AbbysqlClient.FetchSQL($"select * from `guild`.`userstats` where `AbbybotId` = '{abbybotId}' and `GuildId`='{guildId}' and `Stat`='{ori}';");
 			foreach (AbbyRow abr in a)
 			{
 				var point = abr["Points"] is ulong p ? p : 0;
@@ -74,8 +73,7 @@ namespace Abbybot_III.Sql.Abbybot.User
 		{
 			List<(ulong, ulong)> statchannels = new List<(ulong, ulong)>();
 			var ori = AbbysqlClient.EscapeString(v);
-			var month = DateTime.Now.ToString("MMMM yyyy");
-			var a = await AbbysqlClient.FetchSQL($"select * from `discord`.`guilduserthismonthstats` where `AbbybotId` = '{abbybotId}' and `Month`='{month}' and `GuildId`='{guildId}' and `UserId`='{userId}' and `Stat`='{ori}';");
+			var a = await AbbysqlClient.FetchSQL($"select * from `guild`.`userstats` where `AbbybotId` = '{abbybotId}' and `GuildId`='{guildId}' and `UserId`='{userId}' and `Stat`='{ori}';");
 
 			foreach (AbbyRow abr in a)
 			{
@@ -92,12 +90,12 @@ namespace Abbybot_III.Sql.Abbybot.User
 			if (item.Length == 0)
 				return;
 			var it = AbbysqlClient.EscapeString(item);
-			var a = await AbbysqlClient.FetchSQL($"select * from `discord`.`users` where `Id`='{userId}'");
+			var a = await AbbysqlClient.FetchSQL($"select * from `users`.`userstats` where `Id`='{userId}'");
 			if (a.Count == 0) return;
 			int num = (int)a[0][item];
 
 			int n = ++num;
-			string s = $"UPDATE `discord`.`users` SET `{it}`= '{n}' WHERE `Id`= {userId};";
+			string s = $"UPDATE `users`.`userstats` SET `{it}`= '{n}' WHERE `Id`= {userId};";
 
 			await AbbysqlClient.RunSQL(s);
 		}

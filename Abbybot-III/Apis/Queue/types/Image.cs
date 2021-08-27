@@ -5,5 +5,7 @@
         public int id;
         public string url;
         public string sourceurl;
+        public int gelId;
+        public string md5;
     }
 }
