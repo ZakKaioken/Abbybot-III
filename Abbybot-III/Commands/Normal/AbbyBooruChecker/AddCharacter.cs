@@ -1,7 +1,7 @@
 ﻿using Abbybot_III.Core.AbbyBooru.sql;
 using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
-using Abbybot_III.Sql.abbybooru;
+using Abbybot_III.Sql.AbbyBooru;
 
 using BooruSharp.Search.Post;
 
@@ -41,7 +41,7 @@ namespace Abbybot_III.Commands.Normal.AbbyBooruChecker
 			{
 				try
 				{
-					await AbbyBooruSql.AddCharacterAsync(a.channel, a.guild, ee.fc);
+					await AbbyBooruCharacterSql.AddCharacterAsync(a.channel, a.guild, ee.fc);
 				}
 				catch (Exception e)
 				{

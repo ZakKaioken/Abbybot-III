@@ -1,7 +1,12 @@
 ﻿using Abbybot_III.Core.AbbyBooru.types;
+using Abbybot_III.Core.Guilds;
 
 using AbbySql;
 using AbbySql.Types;
+
+using Discord.WebSocket;
+
+using Discord;
 
 using System;
 using System.Collections.Generic;
@@ -9,10 +14,40 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Abbybot_III.Sql.Abbybot.AbbyBooru
+namespace Abbybot_III.Sql.AbbyBooru
 {
 	class AbbyBooruCharacterSql
 	{
+
+		public static async Task AddCharacterAsync(ISocketMessageChannel channel, AbbybotGuild abbybotGuild, string v)
+		{
+			var tag = AbbysqlClient.EscapeString(v);
+			var nsf = (channel as ITextChannel).IsNsfw ? 0 : 1;
+
+			var tbl = await AbbysqlClient.FetchSQL($"SELECT * FROM `abbybooru`.`characters` WHERE `Tag` = '{tag}' AND `ChannelId` = '{channel.Id}';");
+
+			if (tbl.Count > 0)
+			{
+				throw new Exception("CharacterAlreadyAdded");
+			}
+
+			await AbbysqlClient.RunSQL($"INSERT INTO `abbybooru`.`characters` ( `Tag`,`ChannelId`, `GuildId`, `IsLewd` ) VALUES ('{tag}','{channel.Id}','{abbybotGuild.Id}', '{nsf}'); ");
+		}
+
+		public static async Task RemoveCharacterAsync(ISocketMessageChannel channel, string v)
+		{
+			var tag = AbbysqlClient.EscapeString(v);
+
+			var tbl = await AbbysqlClient.FetchSQL($"SELECT * FROM `abbybooru`.`characters` WHERE `Tag` = '{tag}' AND `ChannelId` = '{channel.Id}';");
+
+			if (tbl.Count < 1)
+			{
+				throw new Exception("nocharacter");
+			}
+
+			await AbbysqlClient.RunSQL($"DELETE FROM `abbybooru`.`characters` WHERE `Tag` = '{tag}' AND `ChannelId` = '{channel.Id}';");
+		}
+
 		internal static async Task<List<Character>> GetListFromSqlAsync()
 		{
 			List<Character> c = new();

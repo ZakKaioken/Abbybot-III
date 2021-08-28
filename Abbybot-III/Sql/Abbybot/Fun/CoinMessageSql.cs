@@ -11,7 +11,7 @@ namespace Abbybot_III.Sql.Abbybot.Fun
             if (messages.Count == 0) return null;
 
             Random r = new Random(); 
-            return messages[r.Next(0, messages.Count)]["Message"]is string s ? s : null;
+            return messages[r.Next(0, messages.Count)]["Message"] is string s ? s : null;
         }
     }
 }

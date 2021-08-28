@@ -1,7 +1,7 @@
 ﻿using Abbybot_III.Core.AbbyBooru.sql;
 using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
-using Abbybot_III.Sql.abbybooru;
+using Abbybot_III.Sql.AbbyBooru;
 
 using Discord;
 
@@ -34,7 +34,7 @@ namespace Abbybot_III.Commands.Normal.AbbyBooruChecker
 
 			try
 			{
-				await AbbyBooruSql.RemoveCharacterAsync(a.channel, FavoriteCharacter.ToString());
+				await AbbyBooruCharacterSql.RemoveCharacterAsync(a.channel, FavoriteCharacter.ToString());
 				eb.Title = $"{fc} aww ok...";
 				eb.Color = Color.Green;
 				eb.Description = $"I removed the character from the channel {u.Preferedname} master...";

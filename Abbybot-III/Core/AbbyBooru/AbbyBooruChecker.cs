@@ -2,8 +2,7 @@
 using Abbybot_III.Core.Heart;
 using Abbybot_III.Core.Twitter.Queue.sql;
 using Abbybot_III.Core.Twitter.Queue.types;
-using Abbybot_III.Sql.abbybooru;
-using Abbybot_III.Sql.Abbybot.AbbyBooru;
+using Abbybot_III.Sql.AbbyBooru;
 
 using BooruSharp.Search.Post;
 

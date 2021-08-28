@@ -11,20 +11,19 @@ namespace Abbybot_III.Core.Users.sql
         {
             int fcm = FCMentions ? 1 : 0;
 
-            AbbyTable table = await AbbysqlClient.FetchSQL($"select * from `discord`.`fcmentions` where `UserId` = {userId}");
+            AbbyTable table = await AbbysqlClient.FetchSQL($"select * from `abbybooru`.`userfcmentions` where `UserId` = {userId}");
             if (table.Count < 1)
             {
-                await AbbysqlClient.RunSQL($"insert into `discord`.`fcmentions` (`UserId`, `FCM`) values ('{userId}','{fcm}');");
+                await AbbysqlClient.RunSQL($"insert into `abbybooru`.`userfcmentions` (`UserId`, `FCM`) values ('{userId}','{fcm}');");
                 return;
             }
-            await AbbysqlClient.RunSQL($"UPDATE `discord`.`fcmentions` SET `FCM`= '{fcm}' WHERE  `UserId`= {userId};");
+            await AbbysqlClient.RunSQL($"UPDATE `abbybooru`.`userfcmentions` SET `FCM`= '{fcm}' WHERE  `UserId`= {userId};");
         }
 
         public static async Task<bool> GetFCMAsync(ulong userId)
         {
-            AbbyTable table = await AbbysqlClient.FetchSQL($"select * from `discord`.`fcmentions` where `UserId` = {userId}");
-            return table.Count >= 1 && (((sbyte)table[0]["FCM"]) == 1 ? true : false);
-            ;
+            AbbyTable table = await AbbysqlClient.FetchSQL($"select * from `abbybooru`.`userfcmentions` where `UserId` = {userId}");
+            return table.Count >= 1 && (((sbyte)table[0]["FCM"]) == 1);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Abbybot_III.Commands.Contains.Gelbooru.dataobject;
 using Abbybot_III.Commands.Contains.Gelbooru.embed;
+using Abbybot_III.Commands.Normal.Gelbooru;
 using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
 using Abbybot_III.Core.Data.User;
@@ -17,6 +18,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
+using static Google.Protobuf.WellKnownTypes.Field.Types;
 
 namespace Abbybot_III.Commands.Contains.Gelbooru
 {
@@ -50,23 +53,21 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 			bool rolling = true; ulong ix = 0;
 
 			List<AbbybotUser> mentionedUsers = await aca.GetMentionedUsers();
+			SearchResult imgdata = new();
+			var ufc = "";
 
 			var cfc = ("NO", false);
 			if (aca.guild != null)
 				cfc = await ChannelFCOverrideSQL.GetFCMAsync(aca.guild.Id, aca.channel.Id);
-			string fc = await GetFavoriteCharacterTagAsync(aca, mentionedUsers);
-			Console.WriteLine(fc);
-			if (fc.Contains(" ~ "))
+
+			bool found = false;
+			int tries = 0;
+			while (!found || tries < 5)
+			{
+				string fc = await GetFavoriteCharacterTagAsync(aca, mentionedUsers);
+				if (fc.Contains(" ~ "))
 			{
 				string[] fcc = fc.Replace("{", "").Replace("}", "").Split(" ~ ");
-
-				ulong guildId = 0, channelId = 0;
-
-				if (aca.guild != null)
-				{
-					guildId = aca.guild.Id;
-					channelId = aca.channel.Id;
-				}
 
 				var e = await aca.IncreasePassiveStat("GelCommandUsages");
 
@@ -86,78 +87,23 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 					fc = fcc[ix];
 				}
 			}
-
-			List<string> tagz;
-			SearchResult imgdata;
-			bool found = true;
-
-			var ufc = "abigail_williams*";
-			try
-			{
-				if (cfc.Item1 == "NO") throw new Exception("cfc not set");
-
-				tagz = await GenerateTags(aca, fc, cfc.Item1);
-
-				imgdata = await aca.GetPicture(tagz.ToArray());
-
-				if (imgdata.Source == "noimagefound")
-				{
-					Console.WriteLine("cfc+fc failed");
-					throw new Exception("CFC+FC FAILED");
-				}
-				ufc = aca.BreakAbbybooruTag($"{fc} and {cfc.Item1}");
-			}
-			catch
-			{
 				try
 				{
-					if (cfc.Item1 == "NO")
-					{
-						Console.WriteLine("No channel favorite character");
-						throw new Exception("cfc not set");
-					}
-
-					tagz = await GenerateTags(aca, cfc.Item1);
-
-					imgdata = await aca.GetPicture(tagz.ToArray());
-
-					if (imgdata.Source == "noimagefound")
-					{
-						Console.WriteLine("No image found for the channel favorite character...");
-						throw new Exception("CFC FAILED");
-					}
-					ufc = aca.BreakAbbybooruTag($"{cfc.Item1}");
+					var o = await GetPicture(aca, fc, cfc.Item1, "abigail_williams*");
+					imgdata = o.imgdata;
+					ufc = o.ufc;
+					found = true;
 				}
-				catch
+				catch (Exception e)
 				{
-					try
-					{
-						tagz = await GenerateTags(aca, fc);
-
-						imgdata = await aca.GetPicture(tagz.ToArray());
-
-						if (imgdata.Source == "noimagefound")
-						{
-							Console.WriteLine("no picture found for the users fc");
-							throw new Exception("FC FAILED");
-						}
-						ufc = aca.BreakAbbybooruTag($"{fc}");
-					}
-					catch
-					{
-						tagz = await GenerateTags(aca, ufc);
-						found = false;
-						imgdata = await aca.GetPicture(tagz.ToArray());
-
-						if (imgdata.Source == "noimagefound")
-						{
-							Console.WriteLine("No picture found as a whole...");
-							throw new Exception("FC FAILED");
-						}
-					}
+					Console.WriteLine(e);
+					tries++;
 				}
 			}
-
+			if (!found) {
+				await aca.Send("I tried 6 different characters, as i could and still didn't find any pictures... ");
+				return;
+			}
 			bool loli = imgdata.Tags.Contains("loli");
 			bool shot = imgdata.Tags.Contains("shota");
 			bool nsfw = imgdata.Rating != BooruSharp.Search.Post.Rating.Safe;
@@ -184,7 +130,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 			{
 				var w = ufc.Replace("-abigail williams", "any waifu");
 				
-				ImgData imgdrata = new ImgData()
+				ImgData imgdrata = new()
 				{
 					command = Command,
 					Imageurl = fileurl,
@@ -204,6 +150,62 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 			}
 		}
 
+		async Task<(SearchResult imgdata, string ufc)> GetPicture(AbbybotCommandArgs aca, string fc, string cfc, string ufc) {
+			(SearchResult imgdata, string ufc) picture = (new(), ufc);
+			(string favoriteCharacter, string channelFavoriteCharacter)[] kinds = {
+				(fc, cfc), (cfc,null), (fc, null), (ufc, null)
+			};
+			int index = 0;
+
+			(List<string> tags, string fc, string cfc) set;
+			do
+			{
+				try
+				{
+					set = await GenerateTags(aca, kinds[index]);
+					picture.imgdata = await aca.GetPicture(set.tags.ToArray());
+					if (picture.imgdata.Source == "noimagefound") 
+						throw new Exception("CFC+FC FAILED");
+					var cf = fc;
+					if (set.cfc != null) 
+						cf += $" and {set.cfc}";
+
+					ufc = aca.BreakAbbybooruTag(cf);
+				}
+				catch (Exception e)
+{
+					Console.WriteLine(e);
+					index++;
+				}
+			} while (index < kinds.Length);
+
+			if (picture.imgdata.Source == "noimagefound")
+				throw new Exception("noimagefound");
+			return picture;
+		}
+
+		private async Task<(List<string> tags, string fc, string cfc)> GenerateTags(AbbybotCommandArgs aca, (string favoriteCharacter, string channelFavoriteCharacter) p)
+		{
+			(List<string> tags, string fc, string cfc) set = (tags.ToList(), p.favoriteCharacter, null);
+			set.tags = tags.ToList();
+			set.tags.Add($"{p.favoriteCharacter}*");
+			if (p.channelFavoriteCharacter != null)
+			{
+				set.cfc = p.channelFavoriteCharacter;
+				set.tags.Add($"{p.channelFavoriteCharacter}*");
+
+			}
+			if (aca.channel is not SocketDMChannel sdc)
+			{
+				if (!aca.user.HasRatings(2) || !aca.IsChannelNSFW) set.tags.Add("rating:safe");
+				if (!aca.user.HasRatings(3)) set.tags.Add("-loli");
+			}
+
+			var badtaglisttags = (await UserBadTagListSql.GetbadtaglistTags(aca.user.Id));
+			badtaglisttags.ForEach(tag => set.tags.Add($"-{tag}"));
+			return set;
+		}
+
 		async Task<List<string>> GenerateTags(AbbybotCommandArgs aca, string fc, string cfc = "NO")
 		{
 			var tagz = tags.ToList();
@@ -214,14 +216,8 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 
 			if (aca.channel is not SocketDMChannel sdc)
 			{
-				if (!aca.user.HasRatings(2) || !aca.IsChannelNSFW)
-				{
-					tagz.Add("rating:safe");
-				}
-				if (!aca.user.HasRatings(3))
-				{
-					tagz.Add("-loli");
-				}
+				if (!aca.user.HasRatings(2) || !aca.IsChannelNSFW) tagz.Add("rating:safe");
+				if (!aca.user.HasRatings(3)) tagz.Add("-loli");
 			}
 
 			var badtaglisttags = await UserBadTagListSql.GetbadtaglistTags(aca.user.Id);
