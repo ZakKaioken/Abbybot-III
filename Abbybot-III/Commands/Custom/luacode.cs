@@ -22,12 +22,12 @@ namespace Abbybot_III.Commands.Custom
 			azr = 0;
 			UserData.RegisterType<AbbybotUser>();
 			UserData.RegisterType<AbbybotGuild>();
-			Script script = new Script(CoreModules.Preset_SoftSandbox); //no io/sys calls allowed
+			Script script = new(CoreModules.Preset_SoftSandbox); //no io/sys calls allowed
 			script.Options.DebugPrint = async s =>
 			{
 				if (azr < 3)
 					await message.Send(s); //when print is used send message
-					azr++;
+				azr++;
 				await Task.Delay(100);
 			};
 			Abbybot.print($"user {message.user}, guild {message.guild}");
@@ -57,8 +57,9 @@ namespace Abbybot_III.Commands.Custom
 				{
 					DynValue d = script.DoString(sb.ToString());
 				}
-				catch
+				catch (ScriptRuntimeException e)
 				{
+					Console.WriteLine(e);
 					await message.Send("I had a hard time reading your lua master im sorry...");
 				}
 			}
