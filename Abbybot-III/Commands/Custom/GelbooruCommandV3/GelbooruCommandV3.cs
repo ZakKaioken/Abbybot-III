@@ -57,7 +57,6 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 			onFail: s=> {
 				Console.WriteLine(s);
 			});
-			await aca.Send(eb);
 		}
 
 		public override async Task<bool> Evaluate(AbbybotCommandArgs aca)

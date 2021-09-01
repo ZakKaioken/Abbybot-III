@@ -119,28 +119,34 @@ class PictureCommandSimplification
 				continue;
 			}
 
-			OnSuccess?.Invoke(GelEmbed.Build(aca,
+			int deleteTime = aca.guild.AutoDeleteTime;
+			var adt = -1;
+			if (imageData.ContainsLoli)
+				adt = deleteTime / 2;
+			else if (imageData.Nsfw)
+				adt = deleteTime;
+
+
+			var embed = GelEmbed.Build(aca,
 				fileurl: imageData.FileUrl.ToString(),
 				source: imageData.Source,
 				fc: imageData.pictureCharacter,
 				mentionedUsers: message.mentions,
 				command: nick,
-				user: message.user
-			));
+				user: message.user,
+				autoDeleteTime: adt
+
+			); 
+
+			var embi = await aca.Send(embed);
+			await QueueDelete(aca, adt, imageData, embi);
 		}
 	}
 
-	private static async Task QueueDelete(AbbybotCommandArgs aca, ImageData imageData, Discord.Rest.RestUserMessage abbybotMessage)
+	private static async Task QueueDelete(AbbybotCommandArgs aca, int autoDeleteTime, ImageData imageData, Discord.Rest.RestUserMessage abbybotMessage)
 	{
-		int deleteTime = aca.guild.AutoDeleteTime;
-		var adt = 0;
-		if (imageData.ContainsLoli)
-			adt = deleteTime / 2;
-		else if (imageData.Nsfw)
-			adt = deleteTime;
-
-		if (adt > 0)
-			await aca.Send(abbybotMessage, aca.originalMessage, RequestType.Delete, DateTime.Now.AddSeconds(adt));
+		if (autoDeleteTime > 0)
+			await aca.Send(abbybotMessage, aca.originalMessage, RequestType.Delete, DateTime.Now.AddSeconds(autoDeleteTime));
 	}
 
 	private async Task AddTags(List<string> tags, (string, string)[] types, int index, Action<List<string>, string> OnSuccess, Action OnFailure=null  )

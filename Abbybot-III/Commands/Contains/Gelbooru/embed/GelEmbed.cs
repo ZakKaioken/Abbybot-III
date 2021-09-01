@@ -97,7 +97,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
 
 		
 
-		public static EmbedBuilder Build(AbbybotCommandArgs a,  string fileurl, string source, string fc, List<Core.Data.User.AbbybotUser> mentionedUsers, string command, AbbybotUser user)
+		public static EmbedBuilder Build(AbbybotCommandArgs a,  string fileurl, string source, string fc, List<AbbybotUser> mentionedUsers, string command, AbbybotUser user, int autoDeleteTime)
 		{
 			StringBuilder message = new StringBuilder();
 
@@ -119,8 +119,8 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
 			embededodizer.AddField($"{fcn}  :)", $"[Image Source]({fixedsource})");
 			embededodizer.Color = Color.LightOrange;
 			embededodizer.Description = message.ToString();
-			if (a.isGuild && a.guild.AutoDeleteTime > 0)
-				embededodizer.Footer = new EmbedFooterBuilder() { Text = $"This post will be deleted in {a.guild.AutoDeleteTime} seconds." };
+			if (a.isGuild && autoDeleteTime > 0)
+				embededodizer.Footer = new EmbedFooterBuilder() { Text = $"This post will be deleted in {autoDeleteTime} seconds." };
 			return embededodizer;
 		}
 
