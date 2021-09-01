@@ -301,7 +301,8 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 			{
 				try
 				{
-					SearchResult imgdata = await aca.GetPicture(o);
+					SearchResult imgdata = new SearchResult();
+					await aca.GetPicture(o, s => imgdata = s);
 					if (imgdata.Source.Contains("noimagefound"))
 						throw new Exception("AAAA");
 					if (imgdata.Rating == BooruSharp.Search.Post.Rating.Safe)
@@ -313,15 +314,11 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 					{
 						var e = o.ToList();
 						e.Add(" rating:safe ");
-						try
-						{
-							var i = await aca.GetPicture(e.ToArray());
-							if (i.Source.Contains("noimagefound"))
-								throw new Exception("AAAA");
-							pictureurl = i.FileUrl;
-							previewurl = i.PreviewUrl;
-						}
-						catch { }
+							await aca.GetPicture(e.ToArray(), GotResult: i =>
+							{
+								pictureurl = i.FileUrl;
+								previewurl = i.PreviewUrl;
+							});
 					}
 
 					canrun = true;

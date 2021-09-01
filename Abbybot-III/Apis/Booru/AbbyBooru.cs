@@ -44,17 +44,15 @@ namespace Abbybot_III.Apis
 			return totalposts;
 		}
 
-		public static async Task<SearchResult> GetPictureById(int id) {
-
-			SearchResult sr = new SearchResult();
-		var booru = boorus[0];
-				try {
-					sr = await booru.GetPostByIdAsync(id);
-				}catch{
-					throw new Exception("No post found...");
-				}
-			
-			return sr;
+		public static async Task GetPictureById(int id, Action<SearchResult> onResult=null, Action<Exception> onFail=null) 
+		{
+			var booru = boorus[0];
+			try {
+				var sr = await booru.GetPostByIdAsync(id);
+				onResult?.Invoke(sr);
+			}catch (Exception e){
+				onFail?.Invoke(e);
+			}
 		}
 
 		public static async Task<List<BooruSharp.Search.Tag.SearchResult>> GetTagData(string[] tags)
@@ -83,34 +81,27 @@ namespace Abbybot_III.Apis
 			return totalposts;
 		}
 
-		public static async Task<List<SearchResult>> ExecuteAsync(string[] tags)
+		public static async Task ExecuteAsync(string[] tags, Action<List<SearchResult>> GotResults = null, Action onFail =null, Action<Exception[]> onFailDeep = null)
 		{
 			List<string> tagz = GetTags(tags);
-			
-			List<SearchResult> results = new List<SearchResult>();
-			foreach (var booru in boorus)
+			List<SearchResult> results = new();
+			List<Exception> deepFails = new();
+			int index = 0;
+			bool gotposts = false;
+			while (!gotposts && index < boorus.Count)
 			{
 				try
 				{
-					var rs = await booru.GetRandomPostsAsync(25, tagz.ToArray());
-
-					foreach (var searchResult in rs.Where(x => x.FileUrl != null))
-						if (!searchResult.Source.Contains("sofra"))
-						{
-							results.Add(searchResult);
-						}
-
-					break;
+					var rs = await boorus[index].GetRandomPostsAsync(25, tagz.ToArray());
+					foreach (var searchResult in rs.Where(x => x.FileUrl != null && !x.Source.Contains("sofra")))
+						results.Add(searchResult);
+					if (results.Count > 0) { GotResults?.Invoke(results); break; }
+				} catch (Exception e) {
+					deepFails.Add(e);
 				}
-				catch { throw new Exception(); }
-				
 			}
 			if (results.Count == 0)
-			{
-				Console.WriteLine("results 0");
-				throw new Exception("AAAA");
-			}
-				return results;
+				onFail?.Invoke();
 		}
 
 		public static async Task<SearchResult[]> GetLatest(string[] tags)

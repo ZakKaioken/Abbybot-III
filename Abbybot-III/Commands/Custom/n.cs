@@ -5,6 +5,7 @@ using Abbybot_III.Core.CommandHandler.Types;
 using Discord;
 using Discord.WebSocket;
 
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,58 +31,50 @@ namespace Abbybot_III.Commands.Custom
 		public override async Task<bool> Evaluate(AbbybotCommandArgs cea)
 		{
 			books.Clear();
-			var msg = cea.Message.ToLower().Split(" ");
+			var msg = cea.Split(" ", true);
 			var cmd = Command.ToLower();
 			bool verification = false;
 			foreach (var m in msg)
 			{
-				bool v = m.Contains(cmd.ToLower());
-				if (v)
+				if (!m.Contains(cmd)) continue;
+				var book = m.Split(cmd);
+				Console.WriteLine($"{cmd}: id: {book[1]}");
+				if (int.TryParse(book[1], out int o))
 				{
-					int o = 0;
-					var book = m.Split(cmd);
-					if (int.TryParse(book[1], out o))
+					Console.WriteLine("converted to int");
+					await IsHentai(o, _ =>
 					{
-						bool hen = await IsHentai(o);
-						if (hen)
-						{
-							books.Add(o);
-							verification = true;
-						}
-					}
+						books.Add(o);
+					}, e=>Console.WriteLine($"<<<<<{e}>>>>>"));
+				}else {
+					Console.WriteLine("failed to converted to int");
 				}
 			}
+
 			bool isnsfwchannel = false;
 			if (cea.channel is SocketDMChannel sdc)
-			{
 				isnsfwchannel = true;
-			}
 			else if (cea.channel is ITextChannel itc)
-			{
 				isnsfwchannel = itc.IsNsfw;
-			}
 
-			if (!cea.user.IsLewd || !isnsfwchannel)
+			if (books.Count > 0) verification = true;
+
+			if (!isnsfwchannel)
 				verification = false;
+
+
 			return verification;
 		}
 
-		public async Task<bool> IsHentai(int book)
+		public async Task IsHentai(int book, Action<int> onSuccess=null, Action<Exception> onFail=null)
 		{
-			StringBuilder sb = new StringBuilder();
-			object o = null;
+			StringBuilder sb = new();
 			try
 			{
-				o = await NHentaiSharp.Core.SearchClient.SearchByIdAsync(book);
+				var w = await NHentaiSharp.Core.SearchClient.SearchByIdAsync(book);
+				onSuccess?.Invoke(book);
 			}
-			catch { }
-
-			bool isbook = false;
-			if (o != null)
-			{
-				isbook = true;
-			}
-			return isbook;
+			catch (Exception e) { onFail?.Invoke(e); }
 		}
 
 		public override async Task<string> toHelpString(AbbybotCommandArgs aca)

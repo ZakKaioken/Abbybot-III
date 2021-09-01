@@ -163,7 +163,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 				try
 				{
 					set = await GenerateTags(aca, kinds[index]);
-					picture.imgdata = await aca.GetPicture(set.tags.ToArray());
+					await aca.GetPicture(set.tags.ToArray(), s => picture.imgdata =s);
 					if (picture.imgdata.Source == "noimagefound") 
 						throw new Exception("CFC+FC FAILED");
 					var cf = fc;

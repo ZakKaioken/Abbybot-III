@@ -188,18 +188,10 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 				{
 					tagz.Add($"-{item}");
 				}
-				BooruSharp.Search.Post.SearchResult imgdata;
+				BooruSharp.Search.Post.SearchResult imgdata = new();
 
-				try
-				{
-					imgdata = (await Apis.AbbyBooru.ExecuteAsync(tagz.ToArray()))[0];
-				}
-				catch
-				{
-					im.source = "error";
-					return;
-				}
-
+				await Apis.AbbyBooru.ExecuteAsync(tagz.ToArray(), ss => imgdata =ss[0]);
+				
 				im.loli = imgdata.Tags.Contains("loli");
 				im.shot = imgdata.Tags.Contains("shot");
 				im.nsfw = (imgdata.Rating == BooruSharp.Search.Post.Rating.Explicit || imgdata.Rating == BooruSharp.Search.Post.Rating.Explicit);

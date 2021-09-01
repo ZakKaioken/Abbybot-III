@@ -3,6 +3,7 @@ using Abbybot_III.Core.Heart;
 using Abbybot_III.Core.Twitter.Queue.sql;
 using Abbybot_III.Core.Twitter.Queue.types;
 using Abbybot_III.Sql.AbbyBooru;
+using Abbybot_III.Sql.Abbybot.Abbybot;
 
 using BooruSharp.Search.Post;
 
@@ -98,7 +99,7 @@ namespace Abbybot_III.Core.AbbyBooru
                         {
                             if (sr.source != null)
                                 fixedsource = sr.source.Replace("/member_illust.php?mode=medium&amp;illust_id=", "/en/artworks/");
-
+                            
                             embededodizer.AddField($"New picture of {character.tag.Replace("_", " ")} :)", $"[Source]({fixedsource})");
                             embededodizer.Color = Color.LightOrange;
 
@@ -109,10 +110,12 @@ namespace Abbybot_III.Core.AbbyBooru
                         await AbbyBooruCharacterSql.AddLatestPostIdAsync(character.Id, sr.Id, sr.GelId);
 
                         if (character.Id == 3)
-                        {
-                            Tweet tweet = new Tweet()
+						{
+							var dl = await FunAbbybotFactsSql.GetFactsList(true);
+                            Random r = new Random();
+							Tweet tweet = new()
                             {
-                                message = "A new tweet just came in from gelbooru!!",
+                                message = $"A new tweet just came in from gelbooru!!\n{dl[r.Next(0,dl.Count)]}",
                                 url = sr.imgurl,
                                 sourceurl = fixedsource,
                                 GelId = sr.GelId

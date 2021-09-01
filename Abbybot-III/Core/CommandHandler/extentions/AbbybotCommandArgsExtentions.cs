@@ -45,21 +45,25 @@ public static async Task<List<RestUserMessage>> Send<t>(this AbbybotCommandArgs 
 
         public static async Task<RestUserMessage> Send(this AbbybotCommandArgs arg, EmbedBuilder eb)
         {
-            if (eb == null)
-                return null;
-            return await arg.channel.SendMessageAsync(null, false, eb.Build());
+            return (eb != null) ? await arg.channel.SendMessageAsync(null, false, eb.Build()) : null;
         }
 
         public static async Task<RestUserMessage> Send(this AbbybotCommandArgs arg, StringBuilder sb)
         {
-            //Abbybot.print(sb);
             if (sb.Length < 1)
                 return null;
             return await arg.channel.SendMessageAsync(sb.ToString());
-        }
+		}
 
-        public static async Task Send(this AbbybotCommandArgs arg, RequestObject ro)
+		public static async Task Send(this AbbybotCommandArgs arg, RequestObject ro)
+		{
+			await Task.FromResult(ro);
+			RequestCore.AddRequest(ro);
+		}
+        public static async Task Send(this AbbybotCommandArgs arg, RestUserMessage abbybot, SocketMessage user, RequestType type, DateTime time, ISocketMessageChannel imc = null)
         {
+
+            var ro = new RequestObject() { AbbybotMessage = abbybot, UsersMessage = user, itc = imc, requestType = type, time = time };
             await Task.FromResult(ro);
             RequestCore.AddRequest(ro);
         }
@@ -97,8 +101,8 @@ public static async Task<List<RestUserMessage>> Send<t>(this AbbybotCommandArgs 
         public static StringBuilder Replace(this AbbybotCommandArgs arg, string item, string replacement, bool lowercase = false)
         {
             StringBuilder sb;
-            if (lowercase) sb = new StringBuilder(arg.Message.ToLower()).Replace(arg.Message.ToLower(), "");
-            else sb = new StringBuilder(arg.Message).Replace(arg.Message, "");
+            if (lowercase) sb = new StringBuilder(arg.Message.ToLower()).Replace(item.ToLower(), replacement);
+            else sb = new StringBuilder(arg.Message).Replace(item, replacement);
             if (sb.Length > 0)
             {
                 while (sb[0] == ' ')
@@ -264,30 +268,16 @@ public static async Task<List<RestUserMessage>> Send<t>(this AbbybotCommandArgs 
             return osi;
         }
 
-        public static async Task<SearchResult> GetPicture(this AbbybotCommandArgs aca, string[] tags)
+        public static async Task GetPicture(this AbbybotCommandArgs aca, string[] tags, Action<SearchResult> GotResult = null, Action<Exception> OnFail = null)
         {
-            Console.WriteLine("get picture ");
-
-            try
-            {
-                var ts = await Apis.AbbyBooru.ExecuteAsync(tags);
-
-                Console.WriteLine(ts.Count);
-                var o = (ts)[0];
-                if (ts.Count < 1) throw new Exception("AAAA");
-                return o;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"no image found... [{e}]");
-                throw new Exception("AAAA");
-                return new SearchResult(null, null, null, Rating.Safe, null, 0, null, 0, 0, null, null, null, "noimagefound", null, null);
-            }
-
-        }
-        public static async Task<List<SearchResult>> GetPictures(this AbbybotCommandArgs aca, List<string> tags)
+                await Apis.AbbyBooru.ExecuteAsync(tags,
+                    GotResults: ts => GotResult?.Invoke(ts[0]),
+                    onFail: () => OnFail?.Invoke(new Exception("Failed to get pictures"))
+                );
+		}
+		public static async Task GetPictures(this AbbybotCommandArgs aca, List<string> tags, Action<List<SearchResult>> onResults=null, Action onFail =null)
         {
-            return await Apis.AbbyBooru.ExecuteAsync(tags.ToArray());
+            await Apis.AbbyBooru.ExecuteAsync(tags.ToArray(), onResults, onFail);
         }
         public static async Task<bool> IsAbbybotHere(this AbbybotCommandArgs aca)
         {

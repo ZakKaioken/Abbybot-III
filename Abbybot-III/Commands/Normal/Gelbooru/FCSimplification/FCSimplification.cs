@@ -42,6 +42,8 @@ namespace Abbybot_III.Commands.Normal.Gelbooru.FCSimplification
                 "revert" => await DoRevert(a),
                 "add" => await DoAdd(a),
                 "remove" => await DoRemove(a),
+                "buildtag" => await DoBuildTag(a),
+                "breaktag" => await DoBreakTag(a),
                 _ => await DoSet(a)
             };
 
@@ -138,67 +140,62 @@ namespace Abbybot_III.Commands.Normal.Gelbooru.FCSimplification
             if (ofclist.Length > 2 && info.type == "set") await a.Send("Hey, ps... I think you may have made a mistake... You set that favorite character instead of adding it. \nIf you didn't mean to override your favorite character list, I suggest you to run: ``%fc undo``");
         }
 
-        public static async Task<(bool canrun, Uri pictureurl, Uri previewurl, string fc)> awa(AbbybotCommandArgs aca, string[] o, string type)
+		private async Task<(string type, bool cons, StringBuilder Fc, StringBuilder TitleFc)> DoBreakTag(AbbybotCommandArgs a)
+		{
+            var FavoriteCharacter = a.Replace(Command);
+            FavoriteCharacter.Remove(0, 9);
+            await a.Send(a.BreakAbbybooruTag(FavoriteCharacter));
+            return ("breaktag", false, null, null);
+        }
+
+		private async Task<(string type, bool cons, StringBuilder Fc, StringBuilder TitleFc)> DoBuildTag(AbbybotCommandArgs a)
+		{
+            var FavoriteCharacter = a.Replace(Command);
+            FavoriteCharacter.Remove(0, 9);
+            await a.Send(a.BuildAbbybooruTag(FavoriteCharacter));
+            return ("buildtag", false, null, null);
+        }
+
+		public static async Task<(bool canrun, Uri pictureurl, Uri previewurl, string fc)> awa(AbbybotCommandArgs aca, string[] o, string type)
 		{
             
 			string fc = o[0];
 			Uri pictureurl = null;
 			Uri previewurl = null;
-			bool canrun = false; int tries = 0;
-			do
+			bool canrun = false;
+         var tagza = o.ToList();
+
+         int windex = 0;
+         do
+         {
+             if (windex == 1 || windex == 3)
+                 tagza.Add(" rating:safe ");
+             
+             if (windex == 2)
 			{
-				try
-				{
-					BooruSharp.Search.Post.SearchResult imgdata = await aca.GetPicture(o);
-                    Console.WriteLine("searched picture");
-                    if (imgdata.Source.Contains("noimagefound"))
-					{
-                        Console.WriteLine("failed first test");
-						throw new Exception("AAAA");
+				o[0] = aca.InvertName(o[0]);
+                tagza = o.ToList();
+				fc = o[0];
+             }
 
-					}
-					if (imgdata.Rating == BooruSharp.Search.Post.Rating.Safe)
 
-					{
-						pictureurl = imgdata.FileUrl;
-						previewurl = imgdata.PreviewUrl;
-					}
-					else
-					{
-						var e = o.ToList();
-						e.Add(" rating:safe ");
-						try
-						{
-							var i = await aca.GetPicture(e.ToArray());
-							if (i.Source.Contains("noimagefound"))
-								throw new Exception("AAAA");
-							pictureurl = i.FileUrl;
-							previewurl = i.PreviewUrl;
-						}
-						catch { Console.WriteLine("first fc test failed"); }
-
-					}
-
-					canrun = true;
-                    Console.WriteLine($"{fc} can run");
-					break;
-				}
-				catch (Exception e)
-				{
-					if (e.ToString().Contains("AAAA"))
-					{
-                        Console.WriteLine($"{o[0]} fail!ed...");
-
-                        o[0] = aca.InvertName(o[0]);
-
-                        fc = o[0];
-					}
-					else throw new Exception("failed");
-				}
-				tries++;
-			} while (tries <= 4);
-            Console.WriteLine($"ended with a fc of {fc}");
-			return (canrun, pictureurl, previewurl, fc);
+             await aca.GetPictures(tagza, so =>
+             {
+                 int index = 0;
+                 do
+                 {
+                     var s = so[index];
+                     if (s.Rating == BooruSharp.Search.Post.Rating.Safe)
+                     {
+                         pictureurl = s.FileUrl;
+                         previewurl = s.PreviewUrl;
+                     }
+                 } while (pictureurl == null && index++ < so.Count);
+             });
+         } while (pictureurl == null && ++windex <= 3);
+          canrun = pictureurl != null;
+				
+	    return (canrun, pictureurl, previewurl, fc);
 		}
 
         private async Task<(string type, bool cons, StringBuilder Fc, StringBuilder TitleFc)> DoHelp(AbbybotCommandArgs a)

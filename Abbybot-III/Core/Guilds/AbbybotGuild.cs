@@ -6,5 +6,7 @@
         public string Name;
         public bool NoLoli;
         public bool NoNSFW;
-    }
+		public ulong PrefAbbybot;
+		internal int AutoDeleteTime;
+	}
 }

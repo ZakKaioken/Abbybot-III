@@ -52,66 +52,52 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 				List<string> failedblt = new List<string>();
 				foreach (var item in tags)
 				{
-					try
-					{
-						try
-						{
-							BooruSharp.Search.Post.SearchResult imgdata = await message.GetPicture(new string[] { item });
-						}
-						catch
-						{
-							throw new Exception("This tag doesn't have images. I can't add it to your badtaglist.");
-						}
-						try
-						{
-							bool addedtag = await UserBadTagListSql.AddBadTag(message.user.Id, item);
-							if (addedtag)
-							{
-								blt.Add(item);
-								FavoriteCharacter.Append($"{item} ");
-							}
-						}
-						catch
-						{
+					await message.GetPicture(
+					tags: new string[] { item },
+					OnFail: _ => reason = "This tag doesn't have images. I can't add it to your badtaglist."
+					);
+
+					await UserBadTagListSql.AddBadTag(message.user.Id, item, ()=> {
+						blt.Add(item);
+						FavoriteCharacter.Append($"{item} ");
+						},
+						e => {
 							failedblt.Add(item);
+							reason = e;
 						}
-					}
-					catch (Exception ecx)
-					{
-						reason = ecx.Message;
-					}
+					);
 				}
 
-				var ff = new StringBuilder();
+				StringBuilder ff = new();
 				if (failedblt.Count > 0)
-				{
 					for (int i = 0; i < failedblt.Count; i++)
 					{
 						string b = failedblt[i];
 						ff.Append(b);
 						if (i != failedblt.Count - 1)
-						{
 							ff.Append(", ");
-						}
 					}
-				}
-				StringBuilder fcmaa = new StringBuilder();
+				
+				StringBuilder fcmaa = new();
 				if (blt.Count > 0)
 				{
 					eb.Title = $"{fc} Yayy!!";
 					eb.Color = Color.Green;
 					fcmaa.Append($"I added tags {FavoriteCharacter} to your gel bad tag list cutie {message.user.Preferedname} master!!");
 					if (ff.Length > 0) fcmaa.Append(" (").Append(ff).Append(")");
-
 					eb.Description = fcmaa.ToString();
 				}
-				else
+				else 
 				{
 					eb.Title = reason;
 					eb.Color = Color.Red;
 					eb.ImageUrl = "https://cdn.discordapp.com/avatars/595308053448884294/69542a3eb0866c37f33aa63704fe3726.png";
 					fcmaa.Append($"sorry {message.user.Preferedname} master...");
-					fcmaa.Append(" I could not add these tags to your bad tag list...: ").Append(ff).Append("...");
+					if (failedblt.Count > 1)					
+						fcmaa.Append(" I could not add these tags to your bad tag list...: ").Append(ff).Append("...");
+					else 
+						fcmaa.Append(reason);
+					
 					eb.Description = fcmaa.ToString();
 				}
 

@@ -11,7 +11,7 @@ namespace Abbybot_III.Core.Twitter.Queue.sql
     {
         public static async Task Add(Image I)
         {
-            await AbbysqlClient.RunSQL($"INSERT INTO `twitter`.`images` ( `ImgUrl`,`SrcUrl` ) VALUES ('{I.url}','{I.sourceurl}' ); ");
+            await AbbysqlClient.RunSQL($"INSERT INTO `twitter`.`images` ( `ImgUrl`,`SrcUrl`, `GelId`, `md5` ) VALUES ('{I.url}','{I.sourceurl}', '{I.gelId}', '{I.md5}' ); ");
         }
 
         public static async Task<int> Count()
@@ -38,7 +38,9 @@ namespace Abbybot_III.Core.Twitter.Queue.sql
                 {
                     id = (int)row["Id"],
                     url = (row["ImgUrl"] is string i) ? i : "",
-                    sourceurl = (row["ImgUrl"] is string s) ? s : ""
+                    sourceurl = (row["ImgUrl"] is string s) ? s : "",
+                    gelId = row["GelId"] is int isi ? isi : 0,
+                    md5 = row["md5"] is string md5 ? md5 : ""
                 };
             }
             return image;

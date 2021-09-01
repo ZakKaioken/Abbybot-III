@@ -3,6 +3,7 @@ using Abbybot_III.Apis.Mysql;
 using Abbybot_III.Apis.Twitter;
 using Abbybot_III.Core.AbbyBooru;
 using Abbybot_III.Core.Heart;
+using Abbybot_III.Core.RequestSystem;
 using Abbybot_III.Core.Twitter;
 
 using System.Diagnostics;
@@ -26,6 +27,7 @@ while (true)
 static async Task InitAll()
 {
 	await Twitter.init();
+	RequestCore.Init();
 	AbbyBooruChecker.Init();
 	if (Twitter.tson)
 		AbbybotTwitter.init();

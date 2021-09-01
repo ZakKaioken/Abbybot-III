@@ -14,7 +14,7 @@ namespace Abbybot_III.Sql.Abbybot.Abbybot
         public static async Task<List<FunAbbybotFact>> GetFactsList(bool v)
         {
             List<FunAbbybotFact> faf = new List<FunAbbybotFact>();
-            StringBuilder sb = new StringBuilder($"SELECT * FROM funabbybotfacts");
+            StringBuilder sb = new StringBuilder($"SELECT * FROM facts");
             if (!v) sb.Append(" WHERE `Lewd` = '0'");
             sb.Append(";");
             AbbyTable table = await AbbysqlClient.FetchSQL(sb.ToString());
@@ -23,7 +23,7 @@ namespace Abbybot_III.Sql.Abbybot.Abbybot
                 {
                     faf.Add(new FunAbbybotFact
                     {
-                        id = (ulong)row["Id"],
+                        id = row["Id"] is ulong u ? u : 0,
                         fact = (row["Fact"] is string i) ? i : ""
                     });
                 }

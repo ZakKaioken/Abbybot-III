@@ -1,4 +1,6 @@
 ﻿using Abbybot_III.Core.CommandHandler;
+using Abbybot_III.Core.Guilds;
+using Abbybot_III.Core.Guilds.sql;
 using Abbybot_III.Sql.Abbybot.Abbybot;
 using Abbybot_III.Sql.Abbybot.User;
 
@@ -35,15 +37,28 @@ namespace Abbybot_III.Apis.Events
                 WriteMessage(message);
 
             ulong guidId = 0, chanelId = 0;
+            ulong abbybotId = Discord.__client.CurrentUser.Id;
 
             if (message.Author is SocketGuildUser sgu)
             {
                 guidId = sgu.Guild.Id;
                 chanelId = message.Channel.Id;
-            }
-            ulong abbybotId = Discord.__client.CurrentUser.Id;
-            await PassiveUserSql.IncreaseStat(abbybotId, guidId, chanelId, message.Author.Id, "MessagesSent");
 
+                var pref = await GuildSql.GetGuild(guidId);
+                if (pref.PrefAbbybot == 0)
+                {
+                    await GuildSql.UpdatePrefAbbybot(guidId, abbybotId);
+                    pref = await GuildSql.GetGuild(guidId);
+                }
+                if (pref.PrefAbbybot != abbybotId)
+                {
+                    Abbybot.print("I'm not the prefered abbybot for this message");
+                    return;
+                }
+            }
+
+            await PassiveUserSql.IncreaseStat(abbybotId, guidId, chanelId, message.Author.Id, "MessagesSent");
+            
             await CommandHandler.Handle(message);
         }
 

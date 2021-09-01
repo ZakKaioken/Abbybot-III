@@ -9,5 +9,6 @@
         public string sourceurl;
         public string message;
         public string md5;
-    }
+		internal string source;
+	}
 }

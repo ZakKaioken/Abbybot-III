@@ -17,9 +17,9 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
 	{
 		public static EmbedBuilder Build(AbbybotCommandArgs a, ImgData imgdata, StringBuilder sb)
 		{
-			StringBuilder message = new StringBuilder();
+			StringBuilder message = new();
 
-			EmbedBuilder embededodizer = new EmbedBuilder();
+			EmbedBuilder embededodizer = new();
 			var iu = imgdata.Imageurl;
 			if (iu.Contains(new string[] { "mp4", "avi", "webm" }))
 				embededodizer.Url = iu;
@@ -119,7 +119,8 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
 			embededodizer.AddField($"{fcn}  :)", $"[Image Source]({fixedsource})");
 			embededodizer.Color = Color.LightOrange;
 			embededodizer.Description = message.ToString();
-
+			if (a.isGuild && a.guild.AutoDeleteTime > 0)
+				embededodizer.Footer = new EmbedFooterBuilder() { Text = $"This post will be deleted in {a.guild.AutoDeleteTime} seconds." };
 			return embededodizer;
 		}
 

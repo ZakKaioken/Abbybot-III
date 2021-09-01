@@ -1,4 +1,5 @@
 ﻿using Abbybot_III.Core.Twitter.Queue.types;
+using Abbybot_III.Sql.Abbybot.Abbybot;
 
 using AbbySql;
 using AbbySql.Types;
@@ -12,7 +13,7 @@ namespace Abbybot_III.Core.Twitter.Queue.sql
     {
         public static async Task<int> Count()
         {
-            var table = await AbbysqlClient.FetchSQL("SELECT COUNT(*) as 'rows' FROM twitter.tweetarchive;");
+            var table = await AbbysqlClient.FetchSQL("SELECT COUNT(*) as 'rows' FROM twitter.archive;");
             int rows = 0;
             foreach (AbbyRow row in table)
                 rows = int.Parse(row["rows"].ToString());
@@ -21,7 +22,7 @@ namespace Abbybot_III.Core.Twitter.Queue.sql
 
         public static async Task Remove(Tweet I)
         {
-            await AbbysqlClient.RunSQL($"DELETE FROM `twitter`.`tweetarchive` WHERE `Id` = '{I.id}';");
+            await AbbysqlClient.RunSQL($"DELETE FROM `twitter`.`archive` WHERE `Id` = '{I.id}';");
         }
 
         static Random r = new Random();
@@ -29,7 +30,7 @@ namespace Abbybot_III.Core.Twitter.Queue.sql
         public static async Task<Tweet> Peek()
         {
             Tweet tweet = null;
-            var table = await AbbysqlClient.FetchSQL($"SELECT * FROM `abbybottwitter`.`tweetarchive`");
+            var table = await AbbysqlClient.FetchSQL($"SELECT * FROM `twitter`.`archive` ");
             if (table.Count < 1)
                 throw new Exception("no tweets in list");
             //Console.WriteLine($"You have {table.Count} items in the tweetarchive");
@@ -40,7 +41,10 @@ namespace Abbybot_III.Core.Twitter.Queue.sql
                 url = (row["ImgUrl"] is string i) ? i : "",
                 sourceurl = (row["SrcUrl"] is string s) ? s : "",
                 message = (row["Description"] is string m) ? m : "",
-                priority = (sbyte)row["Priority"] == 1 ? true : false
+                priority = (sbyte)row["Priority"] == 1,
+                GelId = (row["GelId"] is int gild ? gild : 0),
+                md5 = (row["md5"] is string smd5) ? smd5 : "",
+                source = "tweetarchive"
             };
 
             return tweet;
@@ -48,19 +52,20 @@ namespace Abbybot_III.Core.Twitter.Queue.sql
 
         public static async Task Add(Tweet I, bool v)
         {
+
+            var facts = await FunAbbybotFactsSql.GetFactsList(true);
+            Random r = new();
             int priority = v ? 1 : 0;
             var url = AbbysqlClient.EscapeString(I.url);
             var sourceurl = AbbysqlClient.EscapeString(I.sourceurl);
 
             var message = AbbysqlClient.EscapeString(I.message);
+            if (message.Contains("new tweet just came in"))
+                message = facts[r.Next(0, facts.Count)].fact;
+            message = AbbysqlClient.EscapeString(message);
 
-            if (message.Contains("new tweet just came in")) message = "Abby is a cutie!!";
 
-            var table = await AbbysqlClient.FetchSQL($"SELECT * FROM `twitter`.`tweetarchive` WHERE `ImgUrl` = '{url}' AND `Description` = '{message}';");
-            if (table.Count > 0)
-                return;
-
-            await AbbysqlClient.RunSQL($"INSERT INTO `twitter`.`tweetarchive` ( `ImgUrl`,`SrcUrl`, `Description`, `Priority` ) VALUES('{url}', '{sourceurl}', '{message}', '{priority}');");
+            await AbbysqlClient.RunSQL($"INSERT INTO `twitter`.`archive` ( `ImgUrl`,`SrcUrl`, `Description`, `Priority`, `md5`, `GelId` ) VALUES('{url}', '{sourceurl}', '{message}','0', '{I.md5}', '{I.GelId}');");
         }
     }
 }

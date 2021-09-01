@@ -19,7 +19,6 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 	{
 		public override async Task DoWork(AbbybotCommandArgs a)
 		{
-			//StringBuilder tagss = new StringBuilder(a.Message.Replace(Command, ""));
 			var tagss = a.Replace(Command);
 			if (tagss.Length < 1)
 			{
@@ -50,31 +49,16 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 				}
 			}
 			EmbedBuilder eb = null;
-			try
-			{
-				BooruSharp.Search.Post.SearchResult imgdata = await a.GetPicture(tags.ToArray());
-				ImgData im = (new ImgData { });
+				await a.GetPicture(tags.ToArray(), s =>
+				{
+					ImgData im = new ();
+					if (s.FileUrl != null)
+						im.Imageurl = s.FileUrl.ToString();
+					if (s.Source != null)
+						im.source = s.Source;
 
-				if (imgdata.FileUrl != null)
-				{
-					im.Imageurl = imgdata.FileUrl.ToString();
-				}
-				if (imgdata.Source != null)
-				{
-					im.source = imgdata.Source;
-				}
-
-				try
-				{
-					eb = Contains.Gelbooru.embed.GelEmbed.Build(a,im, new StringBuilder("abbybot"));
-				}
-				catch (Exception e)
-				{
-					Console.WriteLine(e.Message+e.StackTrace);
-					eb = new EmbedBuilder { Description = "It didn't work... :(" };
-				}
-			}
-			catch { }
+					eb = Contains.Gelbooru.embed.GelEmbed.Build(a, im, new StringBuilder("abbybot"));
+				});
 
 			await a.Send(eb);
 		}

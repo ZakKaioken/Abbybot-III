@@ -15,7 +15,7 @@ namespace Abbybot_III.Core.Twitter.Queue.sql
             var url = AbbysqlClient.EscapeString(I.url);
             var sourceurl = AbbysqlClient.EscapeString(I.sourceurl);
             var msg = AbbysqlClient.EscapeString(message);
-            await AbbysqlClient.RunSQL($"INSERT INTO `twitter`.`tweets` ( `ImgUrl`,`SrcUrl`, `Description`, `Priority` ) VALUES('{url}', '{sourceurl}', '{msg}','0');");
+            await AbbysqlClient.RunSQL($"INSERT INTO `twitter`.`tweets` ( `ImgUrl`,`SrcUrl`, `Description`, `Priority`, `md5`, `GelId` ) VALUES('{url}', '{sourceurl}', '{msg}','0', '{I.md5}', '{I.gelId}');");
         }
 
         public static async Task<int> Count()
@@ -29,7 +29,7 @@ namespace Abbybot_III.Core.Twitter.Queue.sql
 
         public static async Task Remove(Tweet I)
         {
-            await AbbysqlClient.RunSQL($"DELETE FROM `twitter`.`tweets` WHERE `Id` = '{I.id}';");
+            await AbbysqlClient.RunSQL($"DELETE FROM `twitter`.`{I.source}` WHERE `Id` = '{I.id}';");
         }
 
         public static async Task<Tweet> Peek()
@@ -47,7 +47,10 @@ namespace Abbybot_III.Core.Twitter.Queue.sql
                     url = (row["ImgUrl"] is string i) ? i : "",
                     sourceurl = (row["SrcUrl"] is string s) ? s : "",
                     message = (row["Description"] is string m) ? m : "",
-                    priority = (sbyte)row["Priority"] == 1 ? true : false
+                    priority = (sbyte)row["Priority"] == 1 ? true : false,
+                    GelId = (row["GelId"] is int gild ? gild : 0),
+                    md5 = (row["md5"] is string smd5) ? smd5 : "",
+                    source = "tweets"
                 };
             }
             return tweet;
@@ -59,7 +62,7 @@ namespace Abbybot_III.Core.Twitter.Queue.sql
             var url = AbbysqlClient.EscapeString(I.url);
             var sourceurl = AbbysqlClient.EscapeString(I.sourceurl);
             var message = AbbysqlClient.EscapeString(I.message);
-            await AbbysqlClient.RunSQL($"INSERT INTO `twitter`.`tweets` ( `ImgUrl`,`SrcUrl`, `Description`, `Priority` ) VALUES('{url}', '{sourceurl}', '{message}', '{priority}');");
+            await AbbysqlClient.RunSQL($"INSERT INTO `twitter`.`tweets` ( `ImgUrl`,`SrcUrl`, `Description`, `Priority`, `GelId`, `md5` ) VALUES('{url}', '{sourceurl}', '{message}', '{priority}','{I.GelId}','{I.md5}' );");
         }
     }
 }

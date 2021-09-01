@@ -1,5 +1,6 @@
 ﻿using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
+using Abbybot_III.extentions;
 using Abbybot_III.Sql.Abbybot.Fun;
 
 using Discord;

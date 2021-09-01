@@ -46,27 +46,13 @@ namespace Abbybot_III.Apis.Twitter.Core
             string location = "";
             int i = 0, olo = 0;
             do {
-                Console.WriteLine("starting do while");
-				try
-				{
-                    Console.WriteLine($"gonna fetch a picture attempt {olo} of the {i}th list");
-
                     tweet = await tweets[i];
-                    Console.WriteLine("Gonna fetch the post i want from gelbooru");
-					if (tweet == null) Console.WriteLine("tweet is gone...");
-                    if (tweet.md5 == null) Console.WriteLine("the md5 was null...");
-					var post = await AbbyBooru.GetPictureById(tweet.GelId);
-                    tweet.url = post.FileUrl.ToString();
-                    Console.WriteLine(tweet.url);
-                    tweet.sourceurl = post.Source;
-                    location = post.FileUrl.ToString();
-                    if (location != "")
-                    Console.WriteLine($"we got the picture. The tweet we're gonna try to send is {tweet.message}");
-                    break;
-                } catch (Exception e){
-                    Console.WriteLine(e);
-				}
-
+                    await AbbyBooru.GetPictureById(tweet.GelId, post =>
+                    {
+                        tweet.url = post.FileUrl.ToString();
+                        tweet.sourceurl = post.Source;
+                        location = post.FileUrl.ToString();
+                    });
                 if (olo++ > 3)
                 {
                     i++;
@@ -175,6 +161,10 @@ namespace Abbybot_III.Apis.Twitter.Core
                     "Status is a duplicate." => await Archive(),
                     _ => null
                 };
+                if (a == "archived")
+                {
+                    return;
+                }
                 if (a!=null)
                     Console.WriteLine(a);
                 tweetvalue = tweeto.Value;
@@ -211,9 +201,9 @@ namespace Abbybot_III.Apis.Twitter.Core
                     await TweetArchiveSql.Add(tweet, true);
                     await TweetQueueSql.Remove(tweet);
                     return "archived";
-                } catch {
-
-                    return "Failed to archive";
+                } catch (Exception e) {
+                    
+                    return $"Failed to archive {e}";
                 }
                 }
         }

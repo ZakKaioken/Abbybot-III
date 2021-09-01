@@ -12,7 +12,7 @@ namespace Abbybot_III.Commands.Normal
     {
         public override async Task DoWork(AbbybotCommandArgs e)
         {
-            var args = e.ReplaceSplit(Command, "", " ");
+            var args = e.ReplaceSplit(Command, " ");
 
             StringBuilder sb = new StringBuilder();
             sb.Append($"normal command {Command} was called. got back these args:");
@@ -26,7 +26,7 @@ namespace Abbybot_III.Commands.Normal
 
         public override async Task<bool> Evaluate(AbbybotCommandArgs aca)
         {
-            var e = aca.Message.Split(" ");
+            var e = aca.Split(" ");
             //Abbybot.print($"{Command}");
             if (e.Length < 2) return false;
             if ((e[0].ToLower() + " " + e[1].ToLower()) == Command.ToLower())
