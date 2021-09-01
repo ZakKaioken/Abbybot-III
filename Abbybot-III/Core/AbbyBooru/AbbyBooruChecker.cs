@@ -115,7 +115,7 @@ namespace Abbybot_III.Core.AbbyBooru
                             Random r = new Random();
 							Tweet tweet = new()
                             {
-                                message = $"A new tweet just came in from gelbooru!!\n{dl[r.Next(0,dl.Count)]}",
+                                message = $"A new tweet just came in from gelbooru!!\n{dl[r.Next(0,dl.Count)].fact}",
                                 url = sr.imgurl,
                                 sourceurl = fixedsource,
                                 GelId = sr.GelId
