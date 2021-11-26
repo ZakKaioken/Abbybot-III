@@ -27,7 +27,6 @@ namespace Abbybot_III.Commands.Contains
 					sb.Append($", Nickname: {abd.user.Nickname}");
 			sb.Append("\n");
 			sb.AppendLine($"Your favorite character is: {abd.user.FavoriteCharacter}");
-
 			if (abd.user.MarriedUserId != 0)
 			{
 				var married = await AbbybotUser.GetUserFromSocketGuildUser(abd.guild.Id, abd.user.Id);
@@ -37,19 +36,19 @@ namespace Abbybot_III.Commands.Contains
 			{
 				sb.AppendLine("You're not married to anyone.");
 			}
-			
 			sb.Append("AutoFcDms: ");
-			sb.Append((await abd.GetAutoFcDms())? "✅ ":"❌ ");
+			sb.Append((await abd.GetAutoFcDms()) ? "✅ " : "❌ ");
 			sb.Append("FCMentions: ");
-			sb.Append((await abd.GetFCMentions())? "✅ ":"❌ ");
+			sb.Append((await abd.GetFCMentions()) ? "✅ " : "❌ ");
 
 
+			var MSC = await abd.GetPassiveStat("MessagesSent");
+			var cSC = await abd.GetPassiveStat("CommandsSent");
 			sb.Append("\n");
 			if (abd.guild != null)
 			{
 				sb.Append("Your favorite channel in this server is: ");
 
-				var MSC = await abd.GetPassiveStat("MessagesSent");
 				var orderedlist = MSC.OrderBy(x => x.stat).ToList()[0];
 				var chan = abd.GetGuildChannel(abd.guild.Id, orderedlist.channel);
 				sb.AppendLine(chan.Name);
@@ -63,8 +62,12 @@ namespace Abbybot_III.Commands.Contains
 
 				sb.AppendLine($"You are level {e.level}. ({e.exp}/{e.expleft})");
 			}
-
-			sb.AppendLine($"You have sent {abd.user.MessagesSent} messages and {abd.user.CommandsSent} commands");
+			sb.Append("Your permission levels: \n    ");
+			foreach (var rating in abd.user.Ratings) {
+				sb.Append($"**{rating}**");
+			}
+			sb.Append("\n");
+			sb.AppendLine($"You have sent {MSC} messages and {cSC} commands");
 
 			await abd.Send(sb.ToString());
 		}
