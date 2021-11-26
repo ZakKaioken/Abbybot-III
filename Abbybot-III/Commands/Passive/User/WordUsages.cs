@@ -29,6 +29,16 @@ namespace Abbybot_III.Commands.Passive.User
                 guildId = aca.guild.Id;
                 channelId = aca.channel.Id;
             }
+            foreach (var m in aca.mentionedUsers)
+                await aca.IncreasePassiveStat($"({m.Id})Mentions");
+
+            if (aca.IsChannelNSFW)
+                await aca.IncreasePassiveStat("nsfwMessages");
+            else
+                await aca.IncreasePassiveStat("sfwMessages");
+
+            await aca.IncreasePassiveStat(aca.IsChannelNSFW ? "nsfwMessages" : "sfwMessages");
+
             foreach (var w in words)
                 if (aca.Message.ReplaceA("abbybot ", "").ToLower().Contains(w.word))
                     await aca.IncreasePassiveStat(w.column);

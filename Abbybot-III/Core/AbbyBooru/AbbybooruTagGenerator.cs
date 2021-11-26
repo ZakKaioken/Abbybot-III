@@ -31,6 +31,7 @@ namespace Abbybot_III.Core.AbbyBooru
 				FCString.Replace(noWildOrs, " ~ ").Replace(wildOrs, "* ~ ");
 			}
 			FCString.Replace(noWildAnds, " ").Replace(wildAnds, "* ");
+			while (FCString.Contains("**")) FCString.Replace("**", "*");
 			return FCString;
 		}
 

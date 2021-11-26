@@ -11,6 +11,7 @@ using Abbybot_III.Core.CommandHandler.Types;
 using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.extentions;
 using Abbybot_III.Core.RequestSystem;
+using System.Text;
 
 class PictureCommandSimplification
 {
@@ -27,31 +28,61 @@ class PictureCommandSimplification
 		var picture = Commands.ToList().Where(x => message.message.Contains(x["Command"] is string cc ? $"abbybot {cc}" : "anotherunlikelycommand")).Take(3).ToList();
 
 		if (picture.Count <= 0) return;
-
+		Console.Clear();
 		string pfc = message.favoriteCharacter;
 		foreach (var command in picture)
 		{
+
 			string tags = command["Tags"] is string ta ? ta : "";
 			int rating = command["RatingId"] is int rI ? rI : -1;
 			string commandi = command["Command"] is string cmdo ? cmdo : "missing";
 			string nick = command["Nickname"] is string tw && tw.Length > 0 ? tw : commandi;
-			if (tags == "" || rating == -1) continue;
 
+			var cmdu = await aca.IncreasePassiveStat($"{commandi.ToLower()}Uses");
+
+			Console.WriteLine($"{nick}: {((CommandRatings)rating)}");
+			if (tags == "" || rating == -1) continue;
+			if (!message.isNSFW && ((int)CommandRatings.hot) == rating)
+			{
+				await aca.Send($"I could not show you a {nick}ing picture here, as it's nsfw.");
+				continue;
+			}
+			if (!message.isLoli && ((int)CommandRatings.omy) == rating)
+			{
+				await aca.Send($"I'm not even allowed to send a {nick}ing picture.");
+				continue;
+			}
 			if (!message.ratings.Contains((CommandRatings)rating)) continue;
 			if (message.favoriteCharacter.Contains(" ~ "))
 			{
+				Console.WriteLine($"there are multiple favorite characters");
 				var smfc = message.favoriteCharacter.Replace("{", "").Replace("}", "").Split(" ~ ");
+				var e = await aca.IncreasePassiveStat("GelCommandUsages");
+				foreach (var sta in e)
+					message.index += sta.stat;
 				message.index %= (ulong)smfc.Length;
 				pfc = (message.Rolling) ? smfc[message.index++] : smfc[(new Random()).Next(0, smfc.Length)];
+				Console.WriteLine($"rolling {message.Rolling}: ");
+
 			}
 
-			(string, string)[] types = new (string, string)[] {
+			List<(string, string)> types = new() {
 				(message.channelFavoriteCharacter, pfc),
-				(message.channelFavoriteCharacter, null),
-				(pfc, null),
-				("abigail_williams_(fate/grand_order)", null)
+				(message.channelFavoriteCharacter, null)
 			};
-
+			if (!(message.channelFavoriteCharacter != null && message.channelFavoriteCharacter.Length! > 0))
+			{
+				types.Add((pfc, null));
+				types.Add(("abigail_williams*", null));
+			}
+			if (aca.Contains("-<testingmode>-")) {
+				StringBuilder sb = new StringBuilder("testing fcs:");
+				foreach (var type in types)
+				{
+					sb.AppendLine($"cfc: {type.Item1}, ffc: {type.Item2}");
+				}
+				await aca.Send(sb);
+			}
 			List<string> tagd = tags.Split(" ").ToList();
 			if (message.isGuildChannel)
 			{
@@ -67,54 +98,63 @@ class PictureCommandSimplification
 			{
 				tagd.Add($"-{badTag}");
 			}
-
+			Console.WriteLine($"adding tags/removing bad tags");
 			int triesIndex = 0;
 			ImageData imageData = null;
+
+			Console.WriteLine($"trying to find a picture");
+			bool cfcavailable;
 			do
 			{
 				List<string> tagz = null;
 				string ww = "";
-
-				await AddTags(tagd, types, triesIndex,
+				if (types.Count > triesIndex)
+				Console.WriteLine($"{triesIndex}: fc {types[triesIndex].Item1}, channel fc {types[triesIndex].Item2}");
+				await AddTags(tagd, types.ToArray(), triesIndex,
 					OnSuccess: (a, b) =>
 					{
 						tagz = a;
 						ww = b;
+						Console.WriteLine($"chose {ww}");
 					});
-
 				await aca.GetPicture(tagz.ToArray(),
-					GotResult: imgdata => imageData = new ImageData()
+					GotResult: imgdata =>
 					{
-						pictureCharacter = ww,
-						FileUrl = imgdata.FileUrl,
-						PreviewUrl = imgdata.PreviewUrl,
-						Tags = imgdata.Tags.ToArray(),
-						Source = (imgdata.Source is string sos && sos.Length > 0 && sos != "noimagefound") ? sos : "No source",
-						Nsfw = imgdata.Rating != BooruSharp.Search.Post.Rating.Safe
+						imageData = new ImageData()
+						{
+							pictureCharacter = ww,
+							FileUrl = imgdata.FileUrl,
+							PreviewUrl = imgdata.PreviewUrl,
+							Tags = imgdata.Tags.ToArray(),
+							Source = (imgdata.Source is string sos && sos.Length > 0 && sos != "noimagefound") ? sos : "No source",
+							Nsfw = imgdata.Rating != BooruSharp.Search.Post.Rating.Safe
+						};
+						Console.WriteLine($"got a picture. nsfw: {imgdata.Rating != BooruSharp.Search.Post.Rating.Safe}");
 					},
-					OnFail: e => triesIndex++
+					OnFail: e =>
+					{
+						Console.WriteLine($"failed to get a picture: \n\n{e}\n");
+						//triesIndex++;
+					}
 				);
-			} while (imageData == null && triesIndex <= types.Length);
-
+				Console.WriteLine("--Trying again...--");
+			} while (imageData == null && ++triesIndex < types.Count);
+			
 			if (imageData == null)
 			{
-				await aca.Send("No picture found.");
-				continue;
-			}
-
-			if (imageData.Source == "No source")
-			{
-				await aca.Send($"Master... I didn't find a {nick}ing picture of {aca.BreakAbbybooruTag(imageData.pictureCharacter)}");
+				await aca.Send($"Master... I didn't find a {nick}ing picture of {pfc}");
 				continue;
 			}
 			if (!message.isNSFW && imageData.Nsfw)
 			{
+				Console.WriteLine("server's nsfw is off");
 				await aca.Send("Master that's a lewd image... I can't send it...");
 				continue;
 			}
 
 			if (!message.isLoli && imageData.ContainsLoli)
 			{
+				Console.WriteLine("server loli is off");
 				await aca.Send("Master... I found an image, but it's against discord's tos so i'm not going to send it.");
 				continue;
 			}
@@ -125,7 +165,6 @@ class PictureCommandSimplification
 				adt = deleteTime / 2;
 			else if (imageData.Nsfw)
 				adt = deleteTime;
-
 
 			var embed = GelEmbed.Build(aca,
 				fileurl: imageData.FileUrl.ToString(),
@@ -153,7 +192,11 @@ class PictureCommandSimplification
 	{
 		var tagz = tags.ToList();
 		string ww = "";
-
+		if (index >= types.Length)
+		{
+			OnFailure?.Invoke();
+			return;
+		}
 		if (types[index].Item1 is string i1)
 		{
 			tagz.Add(i1);

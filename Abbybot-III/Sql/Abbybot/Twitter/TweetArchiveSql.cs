@@ -60,7 +60,7 @@ namespace Abbybot_III.Core.Twitter.Queue.sql
             var sourceurl = AbbysqlClient.EscapeString(I.sourceurl);
 
             var message = AbbysqlClient.EscapeString(I.message);
-            if (message.Contains("new tweet just came in"))
+            if (message.Contains("new tweet just came in")&&facts.Count>0)
                 message = facts[r.Next(0, facts.Count)].fact;
             message = AbbysqlClient.EscapeString(message);
 

@@ -43,6 +43,8 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 				var ratings = a.user.Ratings;
 				var sgc = (ITextChannel)a.channel;
 				if (sgc == null) return;
+
+				if (a.Contains("-testlewd")) await a.Send($"channel is nsfw? {a.IsChannelNSFW }, you are lewd? {a.user.IsLewd}, You have permissions? {a.user.HasRatings(CommandRatings.hot)}");
 				if (!a.IsChannelNSFW || !a.user.IsLewd || !a.user.HasRatings(CommandRatings.hot))
 				{
 					tags.Add("rating:safe");

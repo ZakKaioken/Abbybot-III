@@ -19,12 +19,19 @@ namespace Abbybot_III.Apis.Events
         }
 
         static async Task Connected()
-        {
-            await Task.CompletedTask;
+		{
+			await Task.CompletedTask;
+
+            foreach (var g in Discord.__client.Guilds)
+            {
+                var gg = Discord.__client.GetGuild(g.Id);
+                if (gg!=null)
+                Console.WriteLine($"guild {gg.Id} {(gg.Name!=null?gg.Name:"null")}");
+            }
             //throw new NotImplementedException();
         }
 
-        static async Task Disconnected(Exception exception)
+		static async Task Disconnected(Exception exception)
         {
             await Task.CompletedTask;
             //throw new NotImplementedException();

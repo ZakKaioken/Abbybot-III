@@ -4,6 +4,7 @@ using Abbybot_III.Core.CommandHandler.Types;
 using Abbybot_III.Core.Data.User;
 using Abbybot_III.Core.RequestSystem;
 using Abbybot_III.Core.Users.sql;
+using Abbybot_III.extentions;
 using Abbybot_III.Sql.Abbybot.Abbybot;
 using Abbybot_III.Sql.Abbybot.User;
 
@@ -151,7 +152,10 @@ public static async Task<List<RestUserMessage>> Send<t>(this AbbybotCommandArgs 
         }
         public static StringBuilder BreakAbbybooruTag(this AbbybotCommandArgs arg, StringBuilder s)
         {
-            return s.Replace("* ~ ", " or ").Replace("* ", " and ").Replace("{", "").Replace("}", "").Replace("_", " ").Replace("*", "");
+            s = s.Replace("* ~ ", " or ").Replace("* ", " and ").Replace("{", "").Replace("}", "").Replace("_", " ").Replace("*", "");
+
+            while (s.Contains("**")) s.Replace("**", "*");
+            return s;
         }
         public static string[] ReplaceSplit(this AbbybotCommandArgs arg, string item, string replacement, string split)
         {
@@ -270,6 +274,7 @@ public static async Task<List<RestUserMessage>> Send<t>(this AbbybotCommandArgs 
 
         public static async Task GetPicture(this AbbybotCommandArgs aca, string[] tags, Action<SearchResult> GotResult = null, Action<Exception> OnFail = null)
         {
+            
                 await Apis.AbbyBooru.ExecuteAsync(tags,
                     GotResults: ts => GotResult?.Invoke(ts[0]),
                     onFail: () => OnFail?.Invoke(new Exception("Failed to get pictures"))

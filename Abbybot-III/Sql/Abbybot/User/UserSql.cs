@@ -22,7 +22,7 @@ namespace Abbybot_III.Core.Users.sql
 			(string favoritecharacter, bool isLewd, ulong marriedid) gol = ("Abigail_Williams*", true, 0);
 
 			gol.favoritecharacter = (row["FavoriteCharacter"] is string s) ? s : "abigail_williams*";
-			gol.isLewd = row["IsLewd"] is int il && il == 1;
+			gol.isLewd = row["IsLewd"] is ulong il && il == 1;
 			gol.marriedid = row["MarriedUserId"] is ulong mid ? mid : 0;
 
 			return gol;

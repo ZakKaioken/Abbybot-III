@@ -25,7 +25,7 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 		{
 			PictureCommandSimplification pcI = new PictureCommandSimplification();
 			if (aca.Contains(new string[] { "abbybot say", "abbybot whisper" })) return;
-			PictureCommandData pcD = new PictureCommandData();
+			PictureCommandData pcD = new();
 			pcD.user = aca.user;
 		
 			ulong guildId = 0, channelId = 0;
@@ -34,11 +34,6 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 			{
 				guildId = aca.guild.Id;
 				channelId = aca.channel.Id;
-			}
-			var e = await aca.IncreasePassiveStat("GelCommandUsages");
-			foreach (var sta in e)
-			{
-				pcD.index += sta.stat;
 			}
 			pcD.favoriteCharacter = aca.user.FavoriteCharacter;
 			pcD.channelFavoriteCharacter = ((await ChannelFCOverrideSQL.GetFCMAsync(guildId, channelId)).fc is string sai && sai != "NO" ? sai : null);

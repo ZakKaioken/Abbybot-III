@@ -29,6 +29,7 @@ namespace Abbybot_III.Core.Twitter.Queue.sql
 
         public static async Task Remove(Tweet I)
         {
+            if (I.source=="tweets")
             await AbbysqlClient.RunSQL($"DELETE FROM `twitter`.`{I.source}` WHERE `Id` = '{I.id}';");
         }
 

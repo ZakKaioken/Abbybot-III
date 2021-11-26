@@ -326,35 +326,35 @@ namespace Abbybot_III.Commands.Normal.Gelbooru.FCSimplification
 
         private async Task<(string type, bool cons, StringBuilder Fc, StringBuilder TitleFc)> DoRemove(AbbybotCommandArgs a)
         {
+
+            StringBuilder sb = new StringBuilder();
             var FavoriteCharacter = a.Replace(Command);
             var TitleFC = a.Replace(Command);
-            var fccx = a.GetFCList();
+            var charactertag = a.BreakAbbybooruTag(a.user.FavoriteCharacter);
             FavoriteCharacter.Remove(0, 7);
-				TitleFC.Remove(0, 7);
-				a.BuildAbbybooruTag(FavoriteCharacter);
-				if ((FavoriteCharacter.Length < 2)) return ("Remove", false, null,null);
-				if (fccx.Contains(FavoriteCharacter.ToString()))
-				{
-					var eee = fccx.ToList();
-					eee.Remove(FavoriteCharacter.ToString());
-					FavoriteCharacter.Clear();
-					if (eee.Count > 1)
-					{
-						foreach (var chr in eee)
-						{
-							if (chr == "*" || chr == "**" || chr.Length <= 1) continue;
+			TitleFC.Remove(0, 7);
+            sb.AppendLine($"you entered {FavoriteCharacter}");
+            FavoriteCharacter = a.BreakAbbybooruTag(FavoriteCharacter);
+            var chosenChr = FavoriteCharacter.Split(" or ");
+			var chrt = charactertag.Split(" or ");
+            List<string> strs = new List<string>();
 
-							if (chr.EndsWith("*"))
-								FavoriteCharacter.Insert(0, $"{chr.Remove(chr.Length - 1)} or ");
-							else FavoriteCharacter.Insert(0, $"{chr} or ");
-						}
-					}
-					else if (eee.Count == 1)
-					{
-						FavoriteCharacter.Append(eee[0]);
-					}
-				}
-                return ("Remove", true, FavoriteCharacter, TitleFC);
+            if (chrt.Length > 1)
+            {
+                var awf =chrt.Where(c => !chosenChr.Contains(c));
+                foreach (var chr in awf)
+                {
+                    strs.Add(chr);
+                }
+            } else {
+                await a.Send($"silly!! You can't remove the last character from your fc!!");
+                return ("remove", false, FavoriteCharacter, a.BreakAbbybooruTag(TitleFC)); 
+            }
+            var ww = new StringBuilder().AppendJoin(" or ", strs);
+
+            await a.Send(sb);
+           
+            return ("remove", true, a.BuildAbbybooruTag(ww), a.BreakAbbybooruTag(TitleFC));
 
         }
 

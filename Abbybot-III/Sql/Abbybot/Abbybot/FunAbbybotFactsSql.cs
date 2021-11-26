@@ -11,12 +11,12 @@ namespace Abbybot_III.Sql.Abbybot.Abbybot
 {
     class FunAbbybotFactsSql
     {
-        public static async Task<List<FunAbbybotFact>> GetFactsList(bool v)
+        public static async Task<List<FunAbbybotFact>> GetFactsList(bool v, string origin = "all")
         {
             List<FunAbbybotFact> faf = new List<FunAbbybotFact>();
-            StringBuilder sb = new StringBuilder($"SELECT * FROM facts");
-            if (!v) sb.Append(" WHERE `Lewd` = '0'");
-            sb.Append(";");
+            StringBuilder sb = new StringBuilder($"SELECT * FROM facts WHERE `origin` = '{origin}'");
+            if (!v) sb.Append(" AND `Lewd` = '0'");
+            sb.Append(';');
             AbbyTable table = await AbbysqlClient.FetchSQL(sb.ToString());
             if (table.Count > 0)
                 foreach (AbbyRow row in table)

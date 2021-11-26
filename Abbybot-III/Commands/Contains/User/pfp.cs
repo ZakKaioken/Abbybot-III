@@ -13,7 +13,7 @@ namespace Abbybot_III.Commands.Normal
         {
             var mu = a.mentionedUsers;
             if (a.isMentioning)
-                await a.Send(mu[0].GetAvatarUrl());
+                await a.Send(mu[0].GetAvatarUrl().Replace("size=128","size=1024"));
         }
 
         public override async Task<string> toHelpString(AbbybotCommandArgs aca)

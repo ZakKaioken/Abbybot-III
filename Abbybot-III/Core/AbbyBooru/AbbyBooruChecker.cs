@@ -1,4 +1,5 @@
 ﻿using Abbybot_III.Core.AbbyBooru.types;
+using Abbybot_III.Core.Guilds.sql;
 using Abbybot_III.Core.Heart;
 using Abbybot_III.Core.Twitter.Queue.sql;
 using Abbybot_III.Core.Twitter.Queue.types;
@@ -50,10 +51,15 @@ namespace Abbybot_III.Core.AbbyBooru
                             continue;
                         //Console.WriteLine($"{character.tag}, guild found!");
                         var G = Apis.Discord.__client.GetGuild(character.guildId);
+
+                        var pref = await GuildSql.GetGuild(character.guildId);
+                        if (pref.PrefAbbybot != Apis.Discord.__client.CurrentUser.Id) 
+                            continue;
                         channel = G.GetTextChannel(character.channelId);
 
                         tags.Add(character.tag);
-                        safe = !channel.IsNsfw || !character.IsLewd;
+                        Console.WriteLine($"channel nsfw? {channel.IsNsfw}, character lewd? {character.IsLewd}");
+                        safe = !channel.IsNsfw;
                     }
                     catch (Exception e)
                     {
@@ -63,9 +69,18 @@ namespace Abbybot_III.Core.AbbyBooru
                     if (safe)
                         tags.Add("rating:safe");
 
-                    SearchResult[] charpicx = (await Apis.AbbyBooru.GetLatest(tags.ToArray()));
-                    if (charpicx.Length > 0) charpicx = charpicx.Take(5).ToArray();
 
+                    SearchResult[] charpicx = new SearchResult[0];
+                    try
+                    {
+                        charpicx = (await Apis.AbbyBooru.GetLatest(tags.ToArray()));
+                        if (charpicx == null) continue;
+                        if (charpicx.Length > 5)
+                            charpicx = charpicx.Take(5).ToArray();
+                        else continue;
+                    } catch {
+                        Console.WriteLine("aaaa");
+					}
                     List<img> nngs = new List<img>();
                     var postIds = (await AbbyBooruCharacterSql.GetLatestPostIdsAsync(character));
 
@@ -111,11 +126,13 @@ namespace Abbybot_III.Core.AbbyBooru
 
                         if (character.Id == 3)
 						{
-							var dl = await FunAbbybotFactsSql.GetFactsList(true);
+							var dl = await FunAbbybotFactsSql.GetFactsList(true, "twitter");
                             Random r = new Random();
-							Tweet tweet = new()
+                            var ranfac = dl.Count>0? dl[r.Next(0, dl.Count)].fact:"";
+
+                            Tweet tweet = new()
                             {
-                                message = $"A new tweet just came in from gelbooru!!\n{dl[r.Next(0,dl.Count)].fact}",
+                                message = $"A new tweet just came in from gelbooru!!\n{ranfac}",
                                 url = sr.imgurl,
                                 sourceurl = fixedsource,
                                 GelId = sr.GelId
