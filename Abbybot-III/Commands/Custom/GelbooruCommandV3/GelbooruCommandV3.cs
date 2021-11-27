@@ -56,11 +56,11 @@ namespace Abbybot_III.Commands.Contains.Gelbooru
 
 		public override async Task<bool> Evaluate(AbbybotCommandArgs aca)
 		{
-			return (await base.Evaluate(aca));
+			return false; //(await base.Evaluate(aca));
 		}
         public override async Task<bool> ShowHelp(AbbybotCommandArgs aca)
         {
-            return true;
+            return false;
         }
 		public override async Task<string> toHelpString(AbbybotCommandArgs aca)
 		{

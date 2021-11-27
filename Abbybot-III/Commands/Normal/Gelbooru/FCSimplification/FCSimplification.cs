@@ -179,19 +179,19 @@ namespace Abbybot_III.Commands.Normal.Gelbooru.FCSimplification
              }
 
 
-             await aca.GetPictures(tagza, so =>
-             {
+             var so = await aca.GetPictures(tagza);
+              
                  int index = 0;
                  do
                  {
                      var s = so[index];
-                     if (s.Rating == BooruSharp.Search.Post.Rating.Safe)
+                     if (!s.Nsfw)
                      {
                          pictureurl = s.FileUrl;
                          previewurl = s.PreviewUrl;
                      }
                  } while (pictureurl == null && index++ < so.Count);
-             });
+             
          } while (pictureurl == null && ++windex <= 3);
           canrun = pictureurl != null;
 				

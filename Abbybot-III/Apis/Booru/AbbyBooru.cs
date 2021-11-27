@@ -81,28 +81,33 @@ namespace Abbybot_III.Apis
 			return totalposts;
 		}
 
-		public static async Task ExecuteAsync(string[] tags, Action<List<SearchResult>> GotResults = null, Action onFail =null, Action<Exception[]> onFailDeep = null)
+	public static async Task<List<GelbooruResult>> ExecuteAsync(string[] tags, Action<Exception[]> onFailDeep = null)
+	{
+		List<string> tagz = GetTags(tags);
+		List<GelbooruResult> results = new();
+		List<Exception> deepFails = new();
+		int index = 0;
+		bool gotposts = false;
+		while (!gotposts && index < boorus.Count)
 		{
-			List<string> tagz = GetTags(tags);
-			List<SearchResult> results = new();
-			List<Exception> deepFails = new();
-			int index = 0;
-			bool gotposts = false;
-			while (!gotposts && index < boorus.Count)
+			try
 			{
-				try
-				{
-					var rs = await boorus[index].GetRandomPostsAsync(25, tagz.ToArray());
-					foreach (var searchResult in rs.Where(x => x.FileUrl != null && !x.Source.Contains("sofra")))
-						results.Add(searchResult);
-					if (results.Count > 0) { GotResults?.Invoke(results); break; }
-				} catch (Exception e) {
-					deepFails.Add(e);
-				}
+				var rs = await boorus[index].GetRandomPostsAsync(25, tagz.ToArray());
+				foreach (var ts in rs.Where(x => x.FileUrl != null && !x.Source.Contains("sofra")))
+					results.Add(new GelbooruResult() {tags = ts.Tags.ToArray(),
+                        FileUrl = ts.FileUrl,
+                        PreviewUrl = ts.PreviewUrl,
+                        Source = ts.Source,
+                        Nsfw= ts.Rating != Rating.Safe});
+				if (results.Count > 0) { break; }
+			} catch (Exception e) {
+				deepFails.Add(e);
 			}
-			if (results.Count == 0)
-				onFail?.Invoke();
 		}
+		if (results.Count == 0)
+			return null;
+		return results;
+	}
 
 		public static async Task<SearchResult[]> GetLatest(string[] tags)
 		{

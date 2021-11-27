@@ -51,17 +51,15 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 				}
 			}
 			EmbedBuilder eb = null;
-				await a.GetPicture(tags.ToArray(), s =>
-				{
-					ImgData im = new ();
+			var s = (await a.GetPicture(tags.ToArray()))[0];
+			ImgData im = new ();
 					if (s.FileUrl != null)
 						im.Imageurl = s.FileUrl.ToString();
 					if (s.Source != null)
 						im.source = s.Source;
 
 					eb = Contains.Gelbooru.embed.GelEmbed.Build(a, im, new StringBuilder("abbybot"));
-				});
-
+				
 			await a.Send(eb);
 		}
 

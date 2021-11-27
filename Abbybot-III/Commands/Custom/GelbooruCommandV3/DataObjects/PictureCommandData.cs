@@ -11,7 +11,6 @@ class PictureCommandData
 	public string favoriteCharacter;
 
 	public string[] badTags = new string[] {
-		"sofra", "large_breasts"
 	};
 
 	public List<AbbybotUser> mentions = new List<AbbybotUser>();

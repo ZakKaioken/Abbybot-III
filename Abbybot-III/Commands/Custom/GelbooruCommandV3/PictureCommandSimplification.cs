@@ -63,7 +63,6 @@ class PictureCommandSimplification
 				message.index %= (ulong)smfc.Length;
 				pfc = (message.Rolling) ? smfc[message.index++] : smfc[(new Random()).Next(0, smfc.Length)];
 				Console.WriteLine($"rolling {message.Rolling}: ");
-
 			}
 
 			List<(string, string)> types = new() {
@@ -103,7 +102,6 @@ class PictureCommandSimplification
 			ImageData imageData = null;
 
 			Console.WriteLine($"trying to find a picture");
-			bool cfcavailable;
 			do
 			{
 				List<string> tagz = null;
@@ -117,6 +115,7 @@ class PictureCommandSimplification
 						ww = b;
 						Console.WriteLine($"chose {ww}");
 					});
+					/*
 				await aca.GetPicture(tagz.ToArray(),
 					GotResult: imgdata =>
 					{
@@ -137,6 +136,9 @@ class PictureCommandSimplification
 						//triesIndex++;
 					}
 				);
+				*/
+
+				//the end of support for v3
 				Console.WriteLine("--Trying again...--");
 			} while (imageData == null && ++triesIndex < types.Count);
 			
@@ -174,21 +176,28 @@ class PictureCommandSimplification
 				command: nick,
 				user: message.user,
 				autoDeleteTime: adt
-
 			); 
 
-			var embi = await aca.Send(embed);
-			await QueueDelete(aca, adt, imageData, embi);
+			var abm = await aca.Send(embed);
+			
+			if (adt > 0)
+				await QueueDelete(aca, adt, imageData, abm);
 		}
 	}
 
-	private static async Task QueueDelete(AbbybotCommandArgs aca, int autoDeleteTime, ImageData imageData, Discord.Rest.RestUserMessage abbybotMessage)
-	{
-		if (autoDeleteTime > 0)
-			await aca.Send(abbybotMessage, aca.originalMessage, RequestType.Delete, DateTime.Now.AddSeconds(autoDeleteTime));
+	async Task AddEmojis(Discord.Rest.RestUserMessage message, ImageData imageData) {
+		ulong messageId = message.Id;
+		ulong channelId = message.Channel.Id;
+		ulong guildId = (message.Channel is Discord.Rest.RestGuildChannel rge) ? rge.GuildId : 0; 
+		
 	}
 
-	private async Task AddTags(List<string> tags, (string, string)[] types, int index, Action<List<string>, string> OnSuccess, Action OnFailure=null  )
+	static async Task QueueDelete(AbbybotCommandArgs aca, int autoDeleteTime, ImageData imageData, Discord.Rest.RestUserMessage abbybotMessage)
+	{
+		await aca.Send(abbybotMessage, aca.originalMessage, RequestType.Delete, DateTime.Now.AddSeconds(autoDeleteTime));
+	}
+
+	async Task AddTags(List<string> tags, (string, string)[] types, int index, Action<List<string>, string> OnSuccess, Action OnFailure=null  )
 	{
 		var tagz = tags.ToList();
 		string ww = "";

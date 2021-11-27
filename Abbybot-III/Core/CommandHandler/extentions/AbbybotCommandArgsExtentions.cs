@@ -272,17 +272,15 @@ public static async Task<List<RestUserMessage>> Send<t>(this AbbybotCommandArgs 
             return osi;
         }
 
-        public static async Task GetPicture(this AbbybotCommandArgs aca, string[] tags, Action<SearchResult> GotResult = null, Action<Exception> OnFail = null)
+        public static async Task<List<GelbooruResult>> GetPicture(this AbbybotCommandArgs aca, string[] tags, Action<Exception> OnFail = null)
         {
-            
-                await Apis.AbbyBooru.ExecuteAsync(tags,
-                    GotResults: ts => GotResult?.Invoke(ts[0]),
-                    onFail: () => OnFail?.Invoke(new Exception("Failed to get pictures"))
-                );
+            return await Apis.AbbyBooru.ExecuteAsync(tags, 
+                onFailDeep: d => d.ToList().ForEach(f=> OnFail?.Invoke(f))
+            );
 		}
-		public static async Task GetPictures(this AbbybotCommandArgs aca, List<string> tags, Action<List<SearchResult>> onResults=null, Action onFail =null)
+		public static async Task<List<GelbooruResult>> GetPictures(this AbbybotCommandArgs aca, List<string> tags)
         {
-            await Apis.AbbyBooru.ExecuteAsync(tags.ToArray(), onResults, onFail);
+            return await Apis.AbbyBooru.ExecuteAsync(tags.ToArray());
         }
         public static async Task<bool> IsAbbybotHere(this AbbybotCommandArgs aca)
         {
