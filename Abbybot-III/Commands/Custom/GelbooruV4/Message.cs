@@ -13,7 +13,7 @@ public class Message {
     public List<string> fcs=new(), badTags=new();
     public List<AbbybotUser> mentions = new List<AbbybotUser>();
 	
-    public string cfc, pfc;
+    public string cfc, pfc, ufc;
     public bool isNSFW, isLoli, isGuild;
     public int index=0;
     public AbbybotUser user;

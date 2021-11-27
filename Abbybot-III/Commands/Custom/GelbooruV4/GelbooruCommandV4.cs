@@ -45,67 +45,35 @@ namespace Abbybot_III.Commands.Contains.GelbooruV4
 				cmd.nickname = item["Nickname"] is string tw && tw.Length > 0 ? tw : cmd.command;
 				cmd.message = msg;
 				
-				int index = 0;
-				var e = await aca.IncreasePassiveStat("GelCommandUsages");
-				foreach(var i in e) 
-					index += (int)i.stat;
-				msg.pfc = cmd.GetRandomFC(index);
-				if (cmd.TestCommand()) continue;
-				cmd.GenTypes(msg.pfc);
-				var tags = cmd.AddBadTags();
+				
+				var imageData = await cmd.GenerateAsync(aca);
+				var json = Newtonsoft.Json.JsonConvert.SerializeObject(cmd);
+				Console.Write($"\n--Abbybot--\n{json}\n--Abbybot--\n");
+				
+				if (imageData==null) continue;
 
-				List<GelbooruResult> results;
-				string usedfc;
-				index = 0;
-				do {
-				var ee = cmd.AddTags(tags, index);
-				usedfc = ee.usedfc;
-				results = await cmd.GetPictureAsync(ee.tagz.ToArray());
-				} while (results == null  && ++index < cmd.types.Count);
-
-				if (results == null||results.Count == 0)
-				{
-					await aca.Send($"Master... I didn't find a {cmd.nickname}ing picture of {msg.pfc}");
-					continue;
-				}
-
-				if (!msg.isNSFW && results[0].Nsfw)
-				{
-					Console.WriteLine("server's nsfw is off");
-					await aca.Send("Master that's a lewd image... I can't send it...");
-					continue;
-				}
-
-				if (!msg.isLoli && results[0].ContainsLoli)
-				{
-					Console.WriteLine("server loli is off");
-					await aca.Send("Master... I found an image, but it's against discord's tos so i'm not going to send it.");
-					continue;
-				}
-
-				var imageData = results[0];
 
 				int deleteTime = aca.guild.AutoDeleteTime;
 				var adt = -1;
 				if (imageData.ContainsLoli)
 					adt = deleteTime / 2;
 				else if (imageData.Nsfw)
-						adt = deleteTime;
+					adt = deleteTime;
 
-			var embed = GelEmbed.Build(aca,
-				fileurl: imageData.FileUrl.ToString(),
-				source: imageData.Source,
-				fc: usedfc,
-				mentionedUsers: msg.mentions,
-				command: cmd.nickname,
-				user: msg.user,
-				autoDeleteTime: adt
-			); 
+				var embed = GelEmbed.Build(aca,
+					fileurl: imageData.FileUrl.ToString(),
+					source: imageData.Source,
+					fc: msg.ufc,
+					mentionedUsers: msg.mentions,
+					command: cmd.nickname,
+					user: msg.user,
+					autoDeleteTime: adt
+				); 
 
-			var abm = await aca.Send(embed);
-			
-			if (adt > 0)
-				await QueueDelete(aca, adt, abm);
+				var abm = await aca.Send(embed);
+
+				if (adt > 0)
+					await QueueDelete(aca, adt, abm);
 
 			}
 			

@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Abbybot_III.Core.CommandHandler.extentions;
+using Abbybot_III.Core.CommandHandler.Types;
 using BooruSharp.Search.Post;
 using Capi.Interfaces;
 
@@ -13,6 +15,47 @@ public class GelbooruCommand {
     public string command = "missing", nickname="";
     public List<(string, string)> types;
     public Message message;
+
+    public async Task<GelbooruResult> GenerateAsync(AbbybotCommandArgs aca) {
+        
+				int index = 0;
+				var e = await aca.IncreasePassiveStat("GelCommandUsages");
+				foreach(var i in e) 
+					index += (int)i.stat;
+				message.pfc = GetRandomFC(index);
+				if (TestCommand()) 
+                    return null;
+                    
+				GenTypes(message.pfc);
+				var tags = AddBadTags();
+
+				List<GelbooruResult> results;
+				index = 0;
+				do {
+				var ee = AddTags(tags, index);
+				message.ufc = ee.usedfc;
+				results = await GetPictureAsync(ee.tagz.ToArray());
+				} while (results == null  && ++index < types.Count);
+
+				if (results == null||results.Count == 0)
+				{
+					await aca.Send($"Master... I didn't find a {nickname}ing picture of {message.pfc}");
+					return null;
+				}
+
+				if (!message.isNSFW && results[0].Nsfw)
+				{
+					await aca.Send("Master that's a lewd image... I can't send it...");
+					return null;
+				}
+
+				if (!message.isLoli && results[0].ContainsLoli)
+				{
+					await aca.Send("Master... I found an image, but it's against discord's tos so i'm not going to send it.");
+					return null;
+				}
+        return results[0];
+    }
 
     public async Task<List<GelbooruResult>> GetPictureAsync(string[] tags) {
         return await Abbybot_III.Apis.AbbyBooru.ExecuteAsync(tags);
