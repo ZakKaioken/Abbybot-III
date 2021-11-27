@@ -17,11 +17,12 @@ public class Message {
     public bool isNSFW, isLoli, isGuild;
     public int index=0;
     public AbbybotUser user;
-    public ulong guildId=0, channelId=0, userId=0;
+    public ulong abbybotId=0,guildId=0, channelId=0, userId=0;
     
     public async Task Init(AbbybotCommandArgs aca) {
         if (aca.Contains(new string[] { "abbybot say", "abbybot whisper" })) return;
 			user = aca.user;
+			abbybotId = aca.abbybotId;
 			if (aca.guild != null)
 			{
 				guildId = aca.guild.Id;

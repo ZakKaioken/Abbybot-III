@@ -1,4 +1,5 @@
 ﻿using Abbybot_III.Commands.Contains.Gelbooru.embed;
+using Abbybot_III.Commands.Contains.GelbooruV4.embed;
 using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
 using Abbybot_III.Core.RequestSystem;
@@ -30,7 +31,7 @@ namespace Abbybot_III.Commands.Contains.GelbooruV4
 			if (Commands.Count <= 0)
 				return;
 			
-			var picture = Commands.ToList().Where(x => aca.Contains(x["Command"] is string cc ? $"abbybot !{cc}" : "anotherunlikelycommand")).Take(3).ToList();
+			var picture = Commands.ToList().Where(x => aca.Contains(x["Command"] is string cc ? $"abbybot {cc}" : "anotherunlikelycommand")).Take(3).ToList();
 
 			var msg = new Message();
 			await msg.Init(aca);
@@ -46,7 +47,7 @@ namespace Abbybot_III.Commands.Contains.GelbooruV4
 				cmd.message = msg;
 				
 				
-				var imageData = await cmd.GenerateAsync(aca);
+				var imageData = await cmd.GenerateAsync();
 				var json = Newtonsoft.Json.JsonConvert.SerializeObject(cmd);
 				Console.Write($"\n--Abbybot--\n{json}\n--Abbybot--\n");
 				
@@ -60,15 +61,7 @@ namespace Abbybot_III.Commands.Contains.GelbooruV4
 				else if (imageData.Nsfw)
 					adt = deleteTime;
 
-				var embed = GelEmbed.Build(aca,
-					fileurl: imageData.FileUrl.ToString(),
-					source: imageData.Source,
-					fc: msg.ufc,
-					mentionedUsers: msg.mentions,
-					command: cmd.nickname,
-					user: msg.user,
-					autoDeleteTime: adt
-				); 
+				var embed = GelEmbed.GlobalBuild(cmd, imageData);
 
 				var abm = await aca.Send(embed);
 

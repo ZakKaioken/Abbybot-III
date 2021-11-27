@@ -1,4 +1,5 @@
-﻿using Abbybot_III.Commands.Contains.Gelbooru.dataobject;
+﻿
+using Abbybot_III.Commands.Contains.GelbooruV4;
 using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
 using Abbybot_III.Core.Data.User;
@@ -11,36 +12,39 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Abbybot_III.Commands.Contains.Gelbooru.embed
+namespace Abbybot_III.Commands.Contains.GelbooruV4.embed
 {
 	public class GelEmbed
 	{
-		public static EmbedBuilder Build(AbbybotCommandArgs a, ImgData imgdata, StringBuilder sb)
-		{
+
+		public static EmbedBuilder GlobalBuild(GelbooruCommand cmd, GelbooruResult result) {
 			StringBuilder message = new();
-
 			EmbedBuilder embededodizer = new();
-			var iu = imgdata.Imageurl;
-			if (iu.Contains(new string[] { "mp4", "avi", "webm" }))
-				embededodizer.Url = iu;
-			else
-				embededodizer.ImageUrl = iu;
-			string fcn = a.BreakAbbybooruTag(sb).ToString();
 
+			if (result.FileUrl.ToString().Contains(new string[] { "mp4", "avi", "webm" }))
+				embededodizer.Url = result.FileUrl.ToString();
+			else
+				embededodizer.ImageUrl = result.FileUrl.ToString();
+
+			message.Append(cmd.message.ufc);
+			message = message.Replace("* ~ ", " or ").Replace("* ", " and ").Replace("{", "").Replace("}", "").Replace("_", " ").Replace("*", "");
+			while (message.Contains("**")) message.Replace("**", "*");
+			string ufc = message.ToString();
+			
 			message.Clear();
-			if (imgdata.mentions != null)
-			if (imgdata.mentions.Count > 0)
-			{
-				message = MentionsEmbed(imgdata.user, imgdata.command, imgdata.mentions);
-			}
-			string fixedsource = FixSource(imgdata.source);
-			embededodizer.AddField($"{fcn}  :)", $"[Image Source]({fixedsource})");
+			if (cmd.message.mentions != null)
+				if (cmd.message.mentions.Count > 0)
+				{
+					message = MentionsEmbed(cmd.message.user, cmd.command, cmd.message.mentions);
+				}
+
+
+			string fixedsource = FixSource(result.Source);
+			embededodizer.AddField($"{cmd.message.ufc}  :)", $"[Image Source]({fixedsource})");
 			embededodizer.Color = Color.LightOrange;
 			embededodizer.Description = message.ToString();
-
 			return embededodizer;
 		}
-
 		static StringBuilder MentionsEmbed(AbbybotUser user, string command, List<AbbybotUser> mentions)
 		{
 			if (mentions == null || mentions.Count == 0) return null;
@@ -93,69 +97,6 @@ namespace Abbybot_III.Commands.Contains.Gelbooru.embed
 			if (!string.IsNullOrEmpty(source))
 				return source.Replace("/member_illust.php?mode=medium&amp;illust_id=", "/en/artworks/");
 			return "";
-		}
-
-		
-
-		public static EmbedBuilder Build(AbbybotCommandArgs a,  string fileurl, string source, string fc, List<AbbybotUser> mentionedUsers, string command, AbbybotUser user, int autoDeleteTime)
-		{
-			StringBuilder message = new StringBuilder();
-
-			EmbedBuilder embededodizer = new EmbedBuilder();
-
-			var iu = fileurl;
-			if (iu.Contains(new string[] { "mp4", "avi", "webm" }))
-				embededodizer.Url = iu;
-			else
-				embededodizer.ImageUrl = iu;
-			string fcn = a.BreakAbbybooruTag(fc.ToString());
-
-			message.Clear();
-			string fixedsource = FixSource(source);
-			if (mentionedUsers.Count > 0)
-			{
-				message = MentionsEmbed(user, command, mentionedUsers);
-			}
-			embededodizer.AddField($"{fcn}  :)", $"[Image Source]({fixedsource})");
-			embededodizer.Color = Color.LightOrange;
-			embededodizer.Description = message.ToString();
-			if (a.isGuild && autoDeleteTime > 0)
-				embededodizer.Footer = new EmbedFooterBuilder() { Text = $"This post will be deleted in {autoDeleteTime} seconds." };
-			return embededodizer;
-		}
-
-		public static EmbedBuilder Build(AbbybotCommandArgs aca, ImgData imgdrata, bool found, bool rolling)
-		{
-			StringBuilder message = new StringBuilder();
-			EmbedBuilder embededodizer = new EmbedBuilder();
-
-			var iu = new Uri(imgdrata.Imageurl).ToString();
-			if (iu.Contains(new string[] { "mp4", "avi", "webm" }))
-				message.AppendLine(iu).Replace("%20", "\\%20");
-			else
-				try
-				{
-					embededodizer.ImageUrl = iu;
-				}
-				catch
-				{
-					message.AppendLine(iu);
-				}
-			string fcn = aca.BreakAbbybooruTag(imgdrata.favoritecharacter.ToString());
-
-			string fixedsource = FixSource(imgdrata.source);
-			string title = ((rolling) ? "r" : "") + $"{fcn} :)";
-			if (found)
-				embededodizer.AddField($"{fcn}  :)", $"[Image Source]({fixedsource})");
-			else
-				embededodizer.AddField($"I couldn't find a {imgdrata.command.ReplaceA("abbybot ", "")} picture of {fcn}...  :o", $"[Image Source]({fixedsource})");
-			embededodizer.Color = Color.LightOrange;
-			if (imgdrata.mentions.Count > 0)
-				message = MentionsEmbed(imgdrata.user, imgdrata.command, imgdrata.mentions);
-
-			embededodizer.Description = message.ToString();
-
-			return embededodizer;
 		}
 	}
 }

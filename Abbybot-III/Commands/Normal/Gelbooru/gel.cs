@@ -58,7 +58,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 					if (s.Source != null)
 						im.source = s.Source;
 
-					eb = Contains.Gelbooru.embed.GelEmbed.Build(a, im, new StringBuilder("abbybot"));
+			//eb = GelEmbed.Build(a, im, new StringBuilder("abbybot"));
 				
 			await a.Send(eb);
 		}

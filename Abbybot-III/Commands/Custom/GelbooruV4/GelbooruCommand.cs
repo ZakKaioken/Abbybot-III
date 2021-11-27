@@ -1,8 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
+using Abbybot_III.Sql.Abbybot.User;
+
 using BooruSharp.Search.Post;
 using Capi.Interfaces;
 
@@ -16,11 +19,18 @@ public class GelbooruCommand {
     public List<(string, string)> types;
     public Message message;
 
-    public async Task<GelbooruResult> GenerateAsync(AbbybotCommandArgs aca) {
+    public async Task<GelbooruResult> GenerateAsync(Action<string> OnFail = null) {
         
 				int index = 0;
-				var e = await aca.IncreasePassiveStat("GelCommandUsages");
-				foreach(var i in e) 
+            List<(ulong channel, ulong stat)> osi = null;
+            string stat = "GelCommandUsages";
+            try
+            {
+                await PassiveUserSql.IncreaseStat(message.abbybotId, message.guildId, message.channelId, message.userId, stat);
+                osi = await PassiveUserSql.GetChannelsinGuildStats(message.abbybotId, message.guildId, message.userId, stat);
+            } catch { }
+
+				foreach(var i in osi) 
 					index += (int)i.stat;
 				message.pfc = GetRandomFC(index);
 				if (TestCommand()) 
@@ -39,19 +49,19 @@ public class GelbooruCommand {
 
 				if (results == null||results.Count == 0)
 				{
-					await aca.Send($"Master... I didn't find a {nickname}ing picture of {message.pfc}");
+					OnFail?.Invoke($"Master... I didn't find a {nickname}ing picture of {message.pfc}");
 					return null;
 				}
 
 				if (!message.isNSFW && results[0].Nsfw)
 				{
-					await aca.Send("Master that's a lewd image... I can't send it...");
+                    OnFail?.Invoke("Master that's a lewd image... I can't send it...");
 					return null;
 				}
 
 				if (!message.isLoli && results[0].ContainsLoli)
 				{
-					await aca.Send("Master... I found an image, but it's against discord's tos so i'm not going to send it.");
+                    OnFail?.Invoke("Master... I found an image, but it's against discord's tos so i'm not going to send it.");
 					return null;
 				}
         return results[0];

@@ -25,7 +25,7 @@ namespace Abbybot_III.Core.AbbyBooru
         public static void Init()
         {
             AbbyHeart.heartBeat += async (time) => await RequestBeat(time);
-            CheckTime = DateTime.Now.AddMinutes(2);
+            CheckTime = DateTime.Now.AddMinutes(5);
         }
 
         static async Task RequestBeat(DateTime time)
