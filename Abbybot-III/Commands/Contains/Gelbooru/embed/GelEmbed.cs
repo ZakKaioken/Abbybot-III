@@ -26,7 +26,7 @@ namespace Abbybot_III.Commands.Contains.GelbooruV4.embed
 			else
 				embededodizer.ImageUrl = result.FileUrl.ToString();
 
-			message.Append(cmd.message.ufc);
+			message.Append(cmd.message.pfc);
 			message = message.Replace("* ~ ", " or ").Replace("* ", " and ").Replace("{", "").Replace("}", "").Replace("_", " ").Replace("*", "");
 			while (message.Contains("**")) message.Replace("**", "*");
 			string ufc = message.ToString();
@@ -40,7 +40,7 @@ namespace Abbybot_III.Commands.Contains.GelbooruV4.embed
 
 
 			string fixedsource = FixSource(result.Source);
-			embededodizer.AddField($"{cmd.message.ufc}  :)", $"[Image Source]({fixedsource})");
+			embededodizer.AddField($"{ufc}  :)", $"[Image Source]({fixedsource})");
 			embededodizer.Color = Color.LightOrange;
 			embededodizer.Description = message.ToString();
 			return embededodizer;

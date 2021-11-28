@@ -4,6 +4,7 @@ using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
 using Abbybot_III.Core.RequestSystem;
 using Abbybot_III.Core.Users.sql;
+using Abbybot_III.Sql.Abbybot.AbbyBooru;
 using Abbybot_III.Sql.Abbybot.User;
 
 using AbbySql.Types;
@@ -45,31 +46,30 @@ namespace Abbybot_III.Commands.Contains.GelbooruV4
 				};
 				cmd.nickname = item["Nickname"] is string tw && tw.Length > 0 ? tw : cmd.command;
 				cmd.message = msg;
+
+				var gelbooruResult = await cmd.GenerateAsync();
 				
-				
-				var imageData = await cmd.GenerateAsync();
-				var json = Newtonsoft.Json.JsonConvert.SerializeObject(cmd);
-				Console.Write($"\n--Abbybot--\n{json}\n--Abbybot--\n");
-				
-				if (imageData==null) continue;
+				if (gelbooruResult==null) continue;
 
 
 				int deleteTime = aca.guild.AutoDeleteTime;
 				var adt = -1;
-				if (imageData.ContainsLoli)
+				if (gelbooruResult.ContainsLoli)
 					adt = deleteTime / 2;
-				else if (imageData.Nsfw)
+				else if (gelbooruResult.Nsfw)
 					adt = deleteTime;
 
-				var embed = GelEmbed.GlobalBuild(cmd, imageData);
+				var embed = GelEmbed.GlobalBuild(cmd, gelbooruResult);
 
 				var abm = await aca.Send(embed);
 
 				if (adt > 0)
 					await QueueDelete(aca, adt, abm);
 
+				await cmd.AddReactionsAsync(abm, gelbooruResult);
+
 			}
-			
+
 		}
 
 		static async Task QueueDelete(AbbybotCommandArgs aca, int autoDeleteTime, Discord.Rest.RestUserMessage abbybotMessage)

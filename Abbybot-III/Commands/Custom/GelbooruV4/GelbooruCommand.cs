@@ -1,14 +1,17 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
+using Abbybot_III.Sql.Abbybot.AbbyBooru;
 using Abbybot_III.Sql.Abbybot.User;
 
 using BooruSharp.Search.Post;
 using Capi.Interfaces;
 
+using Discord;
+using Discord.Rest;
 
 namespace Abbybot_III.Commands.Contains.GelbooruV4
 {
@@ -67,8 +70,23 @@ public class GelbooruCommand {
         return results[0];
     }
 
-    public async Task<List<GelbooruResult>> GetPictureAsync(string[] tags) {
-        return await Abbybot_III.Apis.AbbyBooru.ExecuteAsync(tags);
+        //we need a better way to add multiple emojis to the db lol
+		public async Task AddReactionsAsync(RestUserMessage abm, GelbooruResult gelbooruResult)
+		{
+            var msgjson = Newtonsoft.Json.JsonConvert.SerializeObject(this);
+            var resjson = Newtonsoft.Json.JsonConvert.SerializeObject(gelbooruResult);
+            (Emoji emoji, int type)[] e = new(Emoji, int)[]
+            {
+                (new("a:abbybongo:728506581423095838"), 0),
+                (new("❌"), 2),
+                (new("⚙️"), 1)
+             };
+            await abm.AddReactionsAsync(e.Select(e=>e.emoji).ToArray());
+            await GelEmojiSql.AddEmojisAsync(message.user.Id, abm.Id, e, msgjson, resjson);
+        }
+
+		public async Task<List<GelbooruResult>> GetPictureAsync(string[] tags) {
+        return await Apis.AbbyBooru.ExecuteAsync(tags);
     }
 
     public (List<string> tagz, string usedfc) AddTags(List<string> tags, int index)
@@ -107,7 +125,7 @@ public class GelbooruCommand {
     public void GenTypes(string pfc) {
         if (types == null) {
             types = new() {
-                (message.cfc, pfc),
+                (pfc, message.cfc),
                 (message.cfc, null)
             };
             if (!(message.cfc != null && message.cfc.Length! > 0))
