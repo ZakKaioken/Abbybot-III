@@ -16,7 +16,6 @@ namespace Abbybot_III.Apis
         {
             bool o = true;
 
-            bool oo = (o =!o) ? true:false;
             do
             {
                 try

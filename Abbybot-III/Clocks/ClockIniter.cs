@@ -9,7 +9,7 @@ namespace Abbybot_III.Clocks
 		static BaseClock[] clocks = new BaseClock[]
 		{
             //new TwitterMentionClock()
-            new MostActiveUserClock(),
+            //new MostActiveUserClock(),
 			new PingAbbybotClock()
 		};
 

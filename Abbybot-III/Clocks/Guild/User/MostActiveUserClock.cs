@@ -74,7 +74,7 @@ namespace Abbybot_III.Clocks.Guild.User
 				//get the a list of everyone who has sent a message at all in the last month
 				var guz = client.GetGuild(role.guildId).Users.ToList();
 				var rols = guildi.Roles.Where(x => x.Id == role.roleId).ToList();
-				if (rols.Count > 0)
+				if (rols.Count() > 0)
 				{
 					foreach (var gu in guz)
 					{

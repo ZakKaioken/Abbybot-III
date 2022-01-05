@@ -1,9 +1,10 @@
-﻿using Abbybot_III.Core.AbbyBooru.sql;
+﻿using Abbybot_III.Commands.Normal.Gelbooru.FCSimplification;
+using Abbybot_III.Core.AbbyBooru.sql;
 using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
 using Abbybot_III.Sql.AbbyBooru;
 
-using BooruSharp.Search.Post;
+
 
 using Discord;
 
@@ -33,7 +34,7 @@ namespace Abbybot_III.Commands.Normal.AbbyBooruChecker
 			var o = new string[1];
 			o[0] = FavoriteCharacter.ToString() + "*";
 
-			var ee = await Gelbooru.Fc.awa(a, o);
+			var ee = await FCSimplification.awa(a, o, "");
 			EmbedBuilder eb = new EmbedBuilder();
 			eb.ImageUrl = pictureurl;
 			var u = a.user;

@@ -35,7 +35,7 @@ namespace Abbybot_III.Commands.Custom
 				if (azr < 3)
 				{
 					azr++;
-					Console.WriteLine($"test {azr}");
+					//Console.WriteLine($"test {azr}");
 					await message.Send(s); //when print is used send message
 				}
 				else
@@ -117,10 +117,7 @@ namespace Abbybot_III.Commands.Custom
 			Multithreaded = true;
 			var v = cea.Message.Contains("```lua");
 
-			if (v)
-				return await base.Evaluate(cea);
-			else
-				return false;
+			return v ? await base.Evaluate(cea) : false;
 		}
 
 		public override async Task<string> toHelpString(AbbybotCommandArgs aca)

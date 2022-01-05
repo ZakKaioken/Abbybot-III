@@ -11,9 +11,11 @@ using System.IO;
 using System.Threading.Tasks;
 
 Abbybot.print("Abbybot III starting!");
+/*
 if (File.Exists("AbbybotSleep.exe"))
 	if (Process.GetProcessesByName("AbbybotSleep").Length < 1)
 		Process.Start("AbbybotSleep.exe");
+		*/
 await MysqlCore.CheckMysql(@"ApiKeys\mysqlbinpath.abbytxt");
 AbbySql.AbbysqlClient.connectionstring = Abbybot_III.Apis.Mysql.ApiKeys.MysqlApiKeys.Load(@"ApiKeys\Mysql.json").ToString();
 await InitAll();

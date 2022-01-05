@@ -10,11 +10,7 @@ namespace Abbybot_III.extentions
         {
             double nextdouble = r.NextDouble();
             float c = min / max;
-            if (nextdouble < c)
-            {
-                return true;
-            }
-            return false;
-        }
-    }
+			return nextdouble < c;
+		}
+	}
 }

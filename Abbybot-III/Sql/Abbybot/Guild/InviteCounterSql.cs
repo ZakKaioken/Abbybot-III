@@ -25,9 +25,7 @@ namespace Abbybot_III.Sql.Abbybot.Guild
             var table = await AbbysqlClient.FetchSQL($"SELECT `Joins` FROM `invites` WHERE `GuildId` = '{abg.Id}' AND `InviteId` = '{rim.Code}';");
 
             bool e = table.Count > 0;
-            if (e)
-                return (int)table[0]["Joins"];
-            return 0;
-        }
-    }
+			return e ? (int)table[0]["Joins"] : 0;
+		}
+	}
 }

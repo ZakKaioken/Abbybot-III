@@ -38,7 +38,7 @@ namespace Abbybot_III.Commands
 
 		bool selfrun = false;
 
-		public bool Multithreaded
+		public virtual bool Multithreaded
 		{
 			get; set;
 		}
@@ -131,7 +131,7 @@ namespace Abbybot_III.Commands
 			try
 			{
 				var cmdW = aca.commandsRun++;
-				Console.WriteLine($"[c{cmdW}] {Command}");
+				//Console.WriteLine($"[c{cmdW}] {Command}");
 				await DoWork(aca);
 			}
 			catch (Exception e)
@@ -170,8 +170,8 @@ namespace Abbybot_III.Commands
 			AbbybotCommandArgs aca = message as AbbybotCommandArgs;
 			var cmdI = ++aca.commandsTested;
 			bool gonnaRun = await Evaluate(aca);
-			if (gonnaRun)
-				Console.WriteLine($"[t{cmdI}]. {Command}");
+			//if (gonnaRun)
+				//Console.WriteLine($"[t{cmdI}]. {Command}");
 			return gonnaRun;
 		}
 

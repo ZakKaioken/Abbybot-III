@@ -30,8 +30,7 @@ namespace Abbybot_III.Commands.Nano
 		public async Task<bool> Eval(AbbybotCommandArgs aca)
 		{
 			bool v = (aca.Message.ToLower().Contains(Command.ToLower()));
-			if (v) return await base.Evaluate(aca);
-			else return false;
+			return v && await base.Evaluate(aca);
 		}
 
 		public override async Task<bool> ShowHelp(AbbybotCommandArgs aca)

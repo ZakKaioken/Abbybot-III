@@ -1,4 +1,5 @@
 ﻿using Abbybot_III.Commands.Contains.Gelbooru.dataobject;
+using Abbybot_III.Commands.Contains.GelbooruV4.embed;
 using Abbybot_III.Core.CommandHandler.extentions;
 using Abbybot_III.Core.CommandHandler.Types;
 using Abbybot_III.Core.Users.sql;
@@ -51,16 +52,14 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 				}
 			}
 			EmbedBuilder eb = null;
-			var s = (await a.GetPicture(tags.ToArray()))[0];
+			var s = (await a.GetPicture(tags.ToArray(), OnFail: async e => { await a.Send( e.ToString( ) ); } ) )[0];
 			ImgData im = new ();
-					if (s.FileUrl != null)
-						im.Imageurl = s.FileUrl.ToString();
-					if (s.Source != null)
-						im.source = s.Source;
+					if (s.fileUrl != null)
+						im.Imageurl = s.fileUrl;
+					if (s.source != null)
+						im.source = s.source;
 
-			//eb = GelEmbed.Build(a, im, new StringBuilder("abbybot"));
-				
-			await a.Send(eb);
+			await a.Send($"{s.fileUrl}, *{im.source}*");
 		}
 
 

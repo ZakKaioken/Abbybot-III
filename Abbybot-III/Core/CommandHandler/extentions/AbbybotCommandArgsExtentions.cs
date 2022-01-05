@@ -8,11 +8,13 @@ using Abbybot_III.extentions;
 using Abbybot_III.Sql.Abbybot.Abbybot;
 using Abbybot_III.Sql.Abbybot.User;
 
-using BooruSharp.Search.Post;
+
 
 using Discord;
 using Discord.Rest;
 using Discord.WebSocket;
+
+using Nano.XML;
 
 using System;
 using System.Collections.Generic;
@@ -26,12 +28,10 @@ namespace Abbybot_III.Core.CommandHandler.extentions
     {
         public static async Task<RestUserMessage> Send(this AbbybotCommandArgs arg, object st)
         {
-            //Abbybot.print(st);
-            if (st.ToString().Length < 1)
-                return null;
-            return await arg.channel.SendMessageAsync(st.ToString());
-        }
-public static async Task<List<RestUserMessage>> Send<t>(this AbbybotCommandArgs arg, List<t> st)
+			//Abbybot.print(st);
+			return st.ToString().Length < 1 ? null : await arg.channel.SendMessageAsync(st.ToString());
+		}
+		public static async Task<List<RestUserMessage>> Send<t>(this AbbybotCommandArgs arg, List<t> st)
         {
             if (st==null) return null;
             List<RestUserMessage> rums = new();
@@ -43,17 +43,22 @@ public static async Task<List<RestUserMessage>> Send<t>(this AbbybotCommandArgs 
             }
             return rums;
         }
-
+        public static async Task<RestUserMessage> Send(this AbbybotCommandArgs arg, StringBuilder sb, ComponentBuilder comp) {
+            return (sb!=null)? await arg.channel.SendMessageAsync(text: sb.ToString(), components:  comp?.Build()):null;
+		}
         public static async Task<RestUserMessage> Send(this AbbybotCommandArgs arg, EmbedBuilder eb)
         {
             return (eb != null) ? await arg.channel.SendMessageAsync(null, false, eb.Build()) : null;
         }
-
+        public static async Task<RestUserMessage> Send(this AbbybotCommandArgs arg, StringBuilder sb, EmbedBuilder eb)
+        {
+            string s = sb?.ToString();
+            Embed e= eb?.Build();
+            return (eb != null||sb!=null) ? await arg.channel.SendMessageAsync(s, false, eb.Build()) : null;
+        }
         public static async Task<RestUserMessage> Send(this AbbybotCommandArgs arg, StringBuilder sb)
         {
-            if (sb.Length < 1)
-                return null;
-            return await arg.channel.SendMessageAsync(sb.ToString());
+			return sb.Length < 1 ? null : await arg.channel.SendMessageAsync(sb.ToString());
 		}
 
 		public static async Task Send(this AbbybotCommandArgs arg, RequestObject ro)
@@ -71,12 +76,10 @@ public static async Task<List<RestUserMessage>> Send<t>(this AbbybotCommandArgs 
 
         public static async Task<IUserMessage> SendDM(this AbbybotCommandArgs arg, object st)
         {
-            if (st.ToString().Length < 1)
-                return null;
-            return await arg.author.SendMessageAsync(st.ToString());
-        }
+			return st.ToString().Length < 1 ? null : await arg.author.SendMessageAsync(st.ToString());
+		}
 
-        public static async Task<IUserMessage> SendDM(this AbbybotCommandArgs arg, EmbedBuilder eb)
+		public static async Task<IUserMessage> SendDM(this AbbybotCommandArgs arg, EmbedBuilder eb)
         {
             return await arg.author.SendMessageAsync(null, false, eb.Build());
         }
@@ -190,37 +193,24 @@ public static async Task<List<RestUserMessage>> Send<t>(this AbbybotCommandArgs 
             await arg.originalMessage.DeleteAsync();
         }
 
-        public static async Task<bool> IsNSFW(this AbbybotCommandArgs arg)
-        {
-            if (arg.channel is SocketDMChannel sdc)
-            {
-                return true;
-            }
-            else if (arg.channel is ITextChannel itc)
-            {
-                return itc.IsNsfw;
-            }
-            else
-            {
-                return false;
-            }
-        }
+		public static async Task<bool> IsNSFW( this AbbybotCommandArgs arg ) => arg.channel switch
+		{
+			SocketDMChannel sdc => true,
+			ITextChannel itc => itc.IsNsfw,
+			_ => false
+		};
 
-        public static async Task<List<AbbybotUser>> GetMentionedUsers(this AbbybotCommandArgs aca)
+		public static async Task<List<AbbybotUser>> GetMentionedUsers(this AbbybotCommandArgs aca)
         {
             List<AbbybotUser> mentionedUsers = new List<AbbybotUser>();
 
             foreach (var u in aca.mentionedUsers)
             {
                 AbbybotUser au = null;
-                if (u is SocketGuildUser sgu)
-                {
+                if (u is SocketGuildUser sgu)                
                     au = await AbbybotUser.GetUserFromSocketGuildUser(sgu);
-                }
                 else
-                {
                     au = await AbbybotUser.GetUserFromSocketUser(u);
-                }
                 mentionedUsers.Add(au);
             }
 
@@ -272,15 +262,16 @@ public static async Task<List<RestUserMessage>> Send<t>(this AbbybotCommandArgs 
             return osi;
         }
 
-        public static async Task<List<GelbooruResult>> GetPicture(this AbbybotCommandArgs aca, string[] tags, Action<Exception> OnFail = null)
+        public static async Task<List<Post>> GetPicture( this AbbybotCommandArgs aca, string[ ] tags, Action<Exception> OnFail = null )
         {
-            return await Apis.AbbyBooru.ExecuteAsync(tags, 
-                onFailDeep: d => d.ToList().ForEach(f=> OnFail?.Invoke(f))
-            );
+            return ( await Apis.AbbyBooru.GetRandomPost( tags,
+                onFailDeep: d => d.ToList( ).ForEach( f => OnFail?.Invoke( f ) )
+            ) );
 		}
-		public static async Task<List<GelbooruResult>> GetPictures(this AbbybotCommandArgs aca, List<string> tags)
+		public static async Task<List<Post>> GetPictures(this AbbybotCommandArgs aca, List<string> tags)
         {
-            return await Apis.AbbyBooru.ExecuteAsync(tags.ToArray());
+            return ( await Apis.AbbyBooru.GetRandomPost( tags.ToArray( ) ) );
+            ;
         }
         public static async Task<bool> IsAbbybotHere(this AbbybotCommandArgs aca)
         {

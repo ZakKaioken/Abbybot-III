@@ -2,7 +2,7 @@
 using Abbybot_III.Core.Twitter.Queue.sql;
 using Abbybot_III.Core.Twitter.Queue.types;
 
-using BooruSharp.Search.Post;
+
 
 using System;
 using System.Collections.Generic;
@@ -14,7 +14,7 @@ namespace Abbybot_III.Core.Twitter.Queue
     {
         static DateTime ImageQueueBeat;
 
-        static int imgQueueMilis = 10000;
+        static int imgQueueMilis = 50000;
 
         public static void init()
         {
@@ -35,13 +35,13 @@ namespace Abbybot_III.Core.Twitter.Queue
                 var count = await ImageQueueSql.Count();
                 if (count < 50)
                 {
-                    var ee = await Apis.AbbyBooru.ExecuteAsync(new string[] { "abigail_williams*" });
+                    var ee = await Apis.AbbyBooru.GetRandomPost(new string[] { "abigail_williams*" });
 
                     foreach (var e in ee) {
                         await ImageQueueSql.Add(new Image()
                         {
-                            url = e.FileUrl.ToString(),
-                            sourceurl = e.Source,
+                            url = e.fileUrl,
+                            sourceurl = e.source,
                             gelId = e.id,
                             md5 = e.md5
                         });

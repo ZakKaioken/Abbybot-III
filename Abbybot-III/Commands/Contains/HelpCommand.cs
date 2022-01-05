@@ -161,7 +161,7 @@ namespace Abbybot_III.Commands.Contains
 		}
 	}
 
-	static class LinqExtensions
+	public static class LinqExtensions
 	{
 		public static IEnumerable<IEnumerable<T>> Split<T>(this IEnumerable<T> list, int parts)
 		{

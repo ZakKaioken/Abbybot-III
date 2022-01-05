@@ -6,10 +6,12 @@ using Abbybot_III.Core.Twitter.Queue.types;
 using Abbybot_III.Sql.AbbyBooru;
 using Abbybot_III.Sql.Abbybot.Abbybot;
 
-using BooruSharp.Search.Post;
+
 
 using Discord;
 using Discord.WebSocket;
+
+using Nano.XML;
 
 using System;
 using System.Collections.Generic;
@@ -58,44 +60,44 @@ namespace Abbybot_III.Core.AbbyBooru
                         channel = G.GetTextChannel(character.channelId);
 
                         tags.Add(character.tag);
-                        Console.WriteLine($"channel nsfw? {channel.IsNsfw}, character lewd? {character.IsLewd}");
+                        //Console.WriteLine($"channel nsfw? {channel.IsNsfw}, character lewd? {character.IsLewd}");
                         safe = !channel.IsNsfw;
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine(e.ToString());
+                        //Console.WriteLine(e.ToString());
                         continue;
                     }
                     if (safe)
                         tags.Add("rating:safe");
 
 
-                    SearchResult[] charpicx = new SearchResult[0];
+                    Post[] charpicx = new Post[0];
                     try
                     {
-                        charpicx = (await Apis.AbbyBooru.GetLatest(tags.ToArray()));
+                        charpicx = (await Apis.AbbyBooru.GetLatest(tags.ToArray())).ToArray();
                         if (charpicx == null) continue;
                         if (charpicx.Length > 5)
                             charpicx = charpicx.Take(5).ToArray();
                         else continue;
                     } catch {
-                        Console.WriteLine("aaaa");
+                        //Console.WriteLine("aaaa");
 					}
                     List<img> nngs = new List<img>();
                     var postIds = (await AbbyBooruCharacterSql.GetLatestPostIdsAsync(character));
 
-                    SearchResult[] eeee = charpicx.Where(x => !postIds.Contains((ulong)x.ID)).Take(5).ToArray();
+                    Post[] eeee = charpicx.Where(x => !postIds.Contains((ulong)x.id)).Take(5).ToArray();
 
                     foreach (var ex in eeee)
                     {
                         img nng = new img()
                         {
-                            Id = (ulong)ex.ID,
-                            imgurl = ex.FileUrl.ToString(),
-                            source = ex.Source,
-                            safe = (ex.Rating == Rating.Safe),
-                            GelId = ex.ID,
-                            md5 = ex.MD5
+                            Id = (ulong)ex.id,
+                            imgurl = ex.fileUrl,
+                            source = ex.source,
+                            safe = (ex.rating.Contains($"safe")),
+                            GelId = ex.id,
+                            md5 = ex.md5
                         };
                         nngs.Add(nng);
                     }

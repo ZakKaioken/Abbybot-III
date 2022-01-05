@@ -10,6 +10,7 @@ namespace Abbybot_III.Apis.Events
         public static void Init(DiscordSocketClient _client)
         {
             _client.Log += async (log) => await Log.Recieved(log);
+            
         }
 
         static async Task Recieved(LogMessage log)

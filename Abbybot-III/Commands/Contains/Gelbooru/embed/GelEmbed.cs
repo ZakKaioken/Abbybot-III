@@ -7,6 +7,8 @@ using Abbybot_III.extentions;
 
 using Discord;
 
+using Nano.XML;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,14 +19,14 @@ namespace Abbybot_III.Commands.Contains.GelbooruV4.embed
 	public class GelEmbed
 	{
 
-		public static EmbedBuilder GlobalBuild(GelbooruCommand cmd, GelbooruResult result) {
+		public static EmbedBuilder GlobalBuild(GelbooruCommand cmd, Post result) {
 			StringBuilder message = new();
 			EmbedBuilder embededodizer = new();
 
-			if (result.FileUrl.ToString().Contains(new string[] { "mp4", "avi", "webm" }))
-				embededodizer.Url = result.FileUrl.ToString();
+			if ( result.fileUrl.Contains( new string[ ] { "mp4", "avi", "webm" } ) )
+				embededodizer.Url = result.fileUrl;
 			else
-				embededodizer.ImageUrl = result.FileUrl.ToString();
+				embededodizer.ImageUrl = result.fileUrl;
 
 			message.Append(cmd.message.pfc);
 			message = message.Replace("* ~ ", " or ").Replace("* ", " and ").Replace("{", "").Replace("}", "").Replace("_", " ").Replace("*", "");
@@ -39,7 +41,7 @@ namespace Abbybot_III.Commands.Contains.GelbooruV4.embed
 				}
 
 
-			string fixedsource = FixSource(result.Source);
+			string fixedsource = FixSource(result.source);
 			embededodizer.AddField($"{ufc}  :)", $"[Image Source]({fixedsource})");
 			embededodizer.Color = Color.LightOrange;
 			embededodizer.Description = message.ToString();
@@ -94,9 +96,7 @@ namespace Abbybot_III.Commands.Contains.GelbooruV4.embed
 		{
 			//https://www.pixiv.net/en/artworks/77911151
 			//http://www.pixiv.net/member_illust.php?mode=medium&amp;illust_id=66620949
-			if (!string.IsNullOrEmpty(source))
-				return source.Replace("/member_illust.php?mode=medium&amp;illust_id=", "/en/artworks/");
-			return "";
+			return !string.IsNullOrEmpty(source) ? source.Replace("/member_illust.php?mode=medium&amp;illust_id=", "/en/artworks/") : "";
 		}
 	}
 }

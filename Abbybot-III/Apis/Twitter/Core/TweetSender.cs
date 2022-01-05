@@ -51,18 +51,18 @@ namespace Abbybot_III.Apis.Twitter.Core
                 try {
                     tweet = await tweets[i];
                 } catch(Exception e){ i++; if (i < tweets.Length) continue; else break; }
-                    await AbbyBooru.GetPictureById(tweet.GelId, post =>
+                    await AbbyBooru.GetPictureById((ulong)tweet.GelId, post =>
                     {
-                        tweet.url = post.FileUrl.ToString();
-                        tweet.sourceurl = post.Source;
-                        location = post.FileUrl.ToString();
+                        tweet.url = post.fileUrl;
+                        tweet.sourceurl = post.source;
+                        location = post.fileUrl;
                     });
                 if (olo++ > 3)
                 {
                     i++;
                     olo = 0;
                 }
-                } while (location == "" && i < tweets.Length);
+                } while (location == "" && i <tweets.Length);
             Console.Write($"location found? {location!=""}, i was bigger than or equal to dbs? {i>=tweets.Length}");
             
             if (i >= tweets.Length)

@@ -42,8 +42,11 @@ namespace Abbybot_III.Core.Users.sql
 			item = AbbysqlClient.EscapeString(item);
 			var e = await AbbysqlClient.RunSQL($"DELETE FROM `user`.`gelbadtaglist` WHERE `UserId` = '{id}' and `Tag` = '{item}';");
 
-			if (e < 1) throw new Exception("I failed to remove the tag from your list");
-			return e > 0;
+			return e switch
+			{
+				< 1 => throw new Exception( "I failed to remove the tag from your list" ),
+				_ => e > 0
+			};
 		}
 	}
 }

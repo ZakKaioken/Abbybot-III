@@ -25,6 +25,7 @@ namespace Abbybot_III.Commands.Contains.GelbooruV4
 	[Capi.Cmd("GelbooruCommandV4", 1, 1)]
 	class GelbooruCommandV4 : BaseCommand
 	{
+		public override bool Multithreaded => true;
 		public override async Task DoWork(AbbybotCommandArgs aca)
 		{
 			var Commands = await AbbySql.AbbysqlClient.FetchSQL("Select * from `abbybooru`.`commands`;");
@@ -54,7 +55,7 @@ namespace Abbybot_III.Commands.Contains.GelbooruV4
 
 				int deleteTime = aca.guild.AutoDeleteTime;
 				var adt = -1;
-				if (gelbooruResult.ContainsLoli)
+				if (gelbooruResult.Loli)
 					adt = deleteTime / 2;
 				else if (gelbooruResult.Nsfw)
 					adt = deleteTime;
@@ -95,7 +96,8 @@ namespace Abbybot_III.Commands.Contains.GelbooruV4
 				string cmd = command["Command"] is string cmdi ? cmdi : "";
 				bool rate = aca.channel is not SocketDMChannel;
 				if (rate) if (!aca.user.Ratings.Contains((CommandRatings)rating)) continue;
-				sb.Append($"``%!{cmd}`` ");
+				sb.Append($"" +
+				$"[**%{cmd}**]");
 			}
 			return sb.ToString();
 		}

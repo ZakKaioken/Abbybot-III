@@ -54,7 +54,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru.FCSimplification
 			a.BuildAbbybooruTag(info.Fc);
             o[0] = (info.TitleFc ?? info.Fc).ToString(); 
 
-            (bool canrun, Uri pictureurl, Uri previewurl, string fc) aaa = (false, null, null, "");
+            (bool canrun, string pictureurl, string previewurl, string fc) aaa = (false, null, null, "");
 
             int failcount = 0;
             bool failed = false;
@@ -77,7 +77,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru.FCSimplification
                 o[0] = aaa.fc;
             }
                 Console.WriteLine($"{sif}->{o[0]}");
-                Uri[] uris = new Uri[] {
+                string[] uris = new string[] {
                     aaa.pictureurl, aaa.previewurl
                 };
                 int count = 0;
@@ -156,12 +156,12 @@ namespace Abbybot_III.Commands.Normal.Gelbooru.FCSimplification
             return ("buildtag", false, null, null);
         }
 
-		public static async Task<(bool canrun, Uri pictureurl, Uri previewurl, string fc)> awa(AbbybotCommandArgs aca, string[] o, string type)
+		public static async Task<(bool canrun, string pictureurl, string previewurl, string fc)> awa(AbbybotCommandArgs aca, string[] o, string type)
 		{
             
 			string fc = o[0];
-			Uri pictureurl = null;
-			Uri previewurl = null;
+			string pictureurl = null;
+			string previewurl = null;
 			bool canrun = false;
          var tagza = o.ToList();
 
@@ -187,8 +187,8 @@ namespace Abbybot_III.Commands.Normal.Gelbooru.FCSimplification
                      var s = so[index];
                      if (!s.Nsfw)
                      {
-                         pictureurl = s.FileUrl;
-                         previewurl = s.PreviewUrl;
+                         pictureurl = s.fileUrl;
+                         previewurl = s.previewUrl;
                      }
                  } while (pictureurl == null && index++ < so.Count);
              

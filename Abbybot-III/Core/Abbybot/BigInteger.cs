@@ -513,21 +513,18 @@ public class BigInteger
 
                 // overflow check
                 int lastPos = maxLength - 1;
-                if((bi1.data[lastPos] & 0x80000000) == (bi2.data[lastPos] & 0x80000000) &&
-                   (result.data[lastPos] & 0x80000000) != (bi1.data[lastPos] & 0x80000000))
-                {
-                        throw (new ArithmeticException());
-                }
-
-                return result;
-        }
+		return ( bi1.data[lastPos] & 0x80000000) == (bi2.data[lastPos] & 0x80000000) &&
+                   (result.data[lastPos] & 0x80000000) != (bi1.data[lastPos] & 0x80000000)
+					? throw (new ArithmeticException())
+					: result;
+	}
 
 
-        //***********************************************************************
-        // Overloading of the unary ++ operator
-        //***********************************************************************
+	//***********************************************************************
+	// Overloading of the unary ++ operator
+	//***********************************************************************
 
-        public static BigInteger operator ++(BigInteger bi1)
+	public static BigInteger operator ++(BigInteger bi1)
         {
                 BigInteger result = new BigInteger(bi1);
 
@@ -556,16 +553,15 @@ public class BigInteger
                 // overflow check
                 int lastPos = maxLength - 1;
 
-                // overflow if initial value was +ve but ++ caused a sign
-                // change to negative.
+		// overflow if initial value was +ve but ++ caused a sign
+		// change to negative.
 
-                if((bi1.data[lastPos] & 0x80000000) == 0 &&
-                   (result.data[lastPos] & 0x80000000) != (bi1.data[lastPos] & 0x80000000))
-                {
-                        throw (new ArithmeticException("Overflow in ++."));
-                }
-                return result;
-        }
+		return bi1.data[ lastPos ] & 0x80000000 switch
+		{
+			0 when ( result.data[ lastPos ] & 0x80000000 ) != ( bi1.data[ lastPos ] & 0x80000000 ) => throw new ArithmeticException( "Overflow in ++." ),
+			_ => result
+		};
+	}
 
 
         //***********************************************************************
@@ -607,21 +603,18 @@ public class BigInteger
                 // overflow check
 
                 int lastPos = maxLength - 1;
-                if((bi1.data[lastPos] & 0x80000000) != (bi2.data[lastPos] & 0x80000000) &&
-                   (result.data[lastPos] & 0x80000000) != (bi1.data[lastPos] & 0x80000000))
-                {
-                        throw (new ArithmeticException());
-                }
-
-                return result;
-        }
+		return ( bi1.data[lastPos] & 0x80000000) != (bi2.data[lastPos] & 0x80000000) &&
+                   (result.data[lastPos] & 0x80000000) != (bi1.data[lastPos] & 0x80000000)
+					? throw (new ArithmeticException())
+					: result;
+	}
 
 
-        //***********************************************************************
-        // Overloading of the unary -- operator
-        //***********************************************************************
+	//***********************************************************************
+	// Overloading of the unary -- operator
+	//***********************************************************************
 
-        public static BigInteger operator --(BigInteger bi1)
+	public static BigInteger operator --(BigInteger bi1)
         {
                 BigInteger result = new BigInteger(bi1);
 
@@ -3188,13 +3181,10 @@ public class BigInteger
 		        {
 			        for(int i = 0; i < 64; i++)
 			        {
-				        if(i < t1)
-					        val[i] = (byte)(rand.NextDouble() * 256);
-				        else
-					        val[i] = 0;
+				        val[i] = i < t1 ? (byte)(rand.NextDouble() * 256) : (byte)0;
 
-				        if(val[i] != 0)
-					        done = true;
+					    if (val[i] != 0)
+					            done = true;
 			        }
 		        }
 

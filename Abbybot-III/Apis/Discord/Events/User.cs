@@ -34,7 +34,7 @@ namespace Abbybot_III.Apis.Events
             await MessageHandler.DoGuildMessage(jm);
         }
 
-        static async Task Left(SocketGuildUser user)
+        static async Task Left( SocketGuild guild, SocketGuildUser user)
         {
             LeftMessage lm = await LeftMessage.CreateFromUser(user);
             await MessageHandler.DoGuildMessage(lm);
@@ -63,11 +63,10 @@ namespace Abbybot_III.Apis.Events
             }
             //throw new NotImplementedException();
         }
-
         public static void Init(DiscordSocketClient _client)
         {
             _client.UserJoined += async (user) => await Joined(user);
-            _client.UserLeft += async (user) => await Left(user);
+            _client.UserLeft += async ( guild, user ) => await Left( guild, guild.GetUser(user.Id) );
             _client.UserBanned += async (user, guild) => await Banned(user, guild);
             _client.UserUnbanned += async (user, guild) => await Unbanned(user, guild);
             _client.UserUpdated += async (olduser, newuser) => await Updated(olduser, newuser);

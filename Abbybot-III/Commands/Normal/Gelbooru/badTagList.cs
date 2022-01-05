@@ -137,7 +137,7 @@ namespace Abbybot_III.Commands.Normal.Gelbooru
 					}
 					catch (Exception e)
 					{
-						Console.WriteLine(e);
+						//Console.WriteLine(e);
 						failedblt.Add(item);
 					}
 				}

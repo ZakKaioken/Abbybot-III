@@ -55,10 +55,8 @@ namespace Abbybot_III.Commands.Custom
                 }
             }
 
-            if (oai)
-                return await base.Evaluate(cea);
-            else return false;
-        }
+			return oai && await base.Evaluate( cea );
+		}
 
         public override async Task<string> toHelpString(AbbybotCommandArgs aca)
         {

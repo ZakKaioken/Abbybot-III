@@ -7,6 +7,7 @@ using Discord.WebSocket;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,16 +17,33 @@ namespace Abbybot_III.Commands.Custom
 	class n : ContainCommand
 	{
 		StringBuilder nhen = new StringBuilder();
-		List<int> books = new List<int>();
+		List<(string title, string ptitle, Uri cover, string[] tags, int id)> books = new();
 
 		public override async Task DoWork(AbbybotCommandArgs message)
 		{
 			nhen.Clear();
-			foreach (var b in books)
+			foreach ((string title, string ptitle, Uri cover, string[] tags, int id) in books)
 			{
-				nhen.AppendLine($"https://nhentai.net/g/{b}");
+				EmbedBuilder eb = new();
+				eb.Title = ptitle;
+				eb.ImageUrl = cover.ToString();
+				eb.Color = new Color(237, 37, 83);
+
+				StringBuilder sb = new(string.Join(", ", tags));
+				int incs = 34;
+				int boincs = (int)Math.Floor(sb.Length / (float)incs);
+				for (int i = 1; i < boincs; i++)
+				{
+					sb.Insert(incs * i, "\n");
+				}
+				eb.Footer = new EmbedFooterBuilder() {
+					Text = sb.ToString(),
+					IconUrl = "https://pbs.twimg.com/profile_images/733172726731415552/8P68F-_I_400x400.jpg"
+				};
+				
+				nhen.AppendLine($"https://nhentai.net/g/{id}");
+				await message.Send(nhen, eb);
 			}
-			await message.Send(nhen);
 		}
 
 		public override async Task<bool> Evaluate(AbbybotCommandArgs cea)
@@ -38,16 +56,16 @@ namespace Abbybot_III.Commands.Custom
 			{
 				if (!m.Contains(cmd)) continue;
 				var book = m.Split(cmd);
-				Console.WriteLine($"{cmd}: id: {book[1]}");
+				//Console.WriteLine($"{cmd}: id: {book[1]}");
 				if (int.TryParse(book[1], out int o))
 				{
-					Console.WriteLine("converted to int");
-					await IsHentai(o, _ =>
-					{
-						books.Add(o);
-					}, e=>Console.WriteLine($"<<<<<{e}>>>>>"));
+					//Console.WriteLine("converted to int");
+					var b = await IsHentai(o, 
+					e=>Console.WriteLine($"<<<<<{e}>>>>>"));
+					if (b.title != null)
+						books.Add((b.title, b.ptitle, b.cover, b.tags, o));
 				}else {
-					Console.WriteLine("failed to converted to int");
+					//Console.WriteLine("failed to converted to int");
 				}
 			}
 
@@ -66,15 +84,17 @@ namespace Abbybot_III.Commands.Custom
 			return verification;
 		}
 
-		public async Task IsHentai(int book, Action<int> onSuccess=null, Action<Exception> onFail=null)
+		public async Task<(string title, string ptitle, Uri cover, string[] tags)> IsHentai(int book, Action<Exception> onFail=null)
 		{
 			StringBuilder sb = new();
 			try
 			{
-				var w = await NHentaiSharp.Core.SearchClient.SearchByIdAsync(book);
-				onSuccess?.Invoke(book);
+			var boog = await NHentaiSharp.Core.SearchClient.SearchByIdAsync(book);
+
+				return (boog.englishTitle, boog.prettyTitle, boog.cover.imageUrl, boog.tags.Select(t => t.name).ToArray());
 			}
 			catch (Exception e) { onFail?.Invoke(e); }
+			return (null, null, null, null);
 		}
 
 		public override async Task<string> toHelpString(AbbybotCommandArgs aca)

@@ -98,7 +98,7 @@ namespace Abbybot_III.Apis.Events
             Abbybot.print(sb.ToString());
         }
 
-        static async Task Deleted(Cacheable<IMessage, ulong> message, ISocketMessageChannel channel)
+        static async Task Deleted(Cacheable<IMessage, ulong> message, Cacheable<IMessageChannel, ulong> channel)
         {
             await Task.CompletedTask;
             //throw new NotImplementedException();
@@ -110,7 +110,7 @@ namespace Abbybot_III.Apis.Events
             //throw new NotImplementedException();
         }
 
-        static async Task BulkDeleted(IReadOnlyCollection<Cacheable<IMessage, ulong>> messages, ISocketMessageChannel channel)
+        static async Task BulkDeleted(IReadOnlyCollection<Cacheable<IMessage, ulong>> messages, Cacheable<IMessageChannel, ulong> channel)
         {
             await Task.CompletedTask;
             //throw new NotImplementedException();

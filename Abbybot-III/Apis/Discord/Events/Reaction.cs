@@ -20,46 +20,22 @@ namespace Abbybot_III.Apis.Events
             _client.ReactionsCleared += async (message, channel) => await Reaction.Cleared(message, channel);
         }
 
-        static async Task Added(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel, SocketReaction reaction)
+        static async Task Added(Cacheable<IUserMessage, ulong> message, Cacheable<IMessageChannel, ulong> channel, SocketReaction reaction)
         {
+
             var msg = await message.GetOrDownloadAsync();
-            Console.WriteLine($"emoji {reaction.Emote.Name}");
-            var olo = await GelEmojiSql.GetEmojiType(msg.Id, reaction.Emote.Name, reaction.UserId);
-            if (olo == 0) {
-                var o = await GelEmojiSql.GetEmojiCommand(msg.Id, reaction.Emote.Name, reaction.UserId);
-                if (o != null)
-                {
-                    var obj = Newtonsoft.Json.JsonConvert.DeserializeObject<GelbooruCommand>(o);
-                    var results = await obj.GenerateAsync();
-                    var embed = GelEmbed.GlobalBuild(obj, results);
-                    var newpicture = await channel.SendMessageAsync(embed: embed.Build());
-                    await obj.AddReactionsAsync(newpicture, results);
-                }
-            } else if (olo == 1) {
-                var o = await GelEmojiSql.GetEmojiResult(msg.Id, reaction.Emote.Name, reaction.UserId);
-                var obj = Newtonsoft.Json.JsonConvert.DeserializeObject<GelbooruResult>(o);
-                EmbedBuilder eb = new();
-                eb.Title = ($"here are the tags ♥️");
-                StringBuilder sb = new();
-                foreach(var tag in obj.tags) {
-                    sb.Append($"[{tag}] ");
-				}
-                eb.AddField("♥️", sb.ToString());
-                eb.Color = Color.LightOrange;
-                var newpicture = await channel.SendMessageAsync(embed: eb.Build());
-            } else if (olo == 2) {
-                await msg.DeleteAsync();
-			}
+            var cha = await channel.GetOrDownloadAsync();
+            await GelbooruEmojiEngine.DoEmojiReaction(msg,cha, reaction);
 
         }
 
-        static async Task Removed(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel, SocketReaction reaction)
+        static async Task Removed(Cacheable<IUserMessage, ulong> message, Cacheable<IMessageChannel, ulong> channel, SocketReaction reaction)
         {
             await Task.CompletedTask;
             //throw new NotImplementedException();
         }
 
-        static async Task Cleared(Cacheable<IUserMessage, ulong> message, ISocketMessageChannel channel)
+        static async Task Cleared(Cacheable<IUserMessage, ulong> message, Cacheable<IMessageChannel, ulong> channel)
         {
             await Task.CompletedTask;
             //throw new NotImplementedException();

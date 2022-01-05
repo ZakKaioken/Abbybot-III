@@ -7,11 +7,13 @@ using Abbybot_III.Core.CommandHandler.Types;
 using Abbybot_III.Sql.Abbybot.AbbyBooru;
 using Abbybot_III.Sql.Abbybot.User;
 
-using BooruSharp.Search.Post;
+
 using Capi.Interfaces;
 
 using Discord;
 using Discord.Rest;
+
+using Nano.XML;
 
 namespace Abbybot_III.Commands.Contains.GelbooruV4
 {
@@ -22,7 +24,7 @@ public class GelbooruCommand {
     public List<(string, string)> types;
     public Message message;
 
-    public async Task<GelbooruResult> GenerateAsync(Action<string> OnFail = null) {
+    public async Task<Post> GenerateAsync(Action<string> OnFail = null) {
         
 				int index = 0;
             List<(ulong channel, ulong stat)> osi = null;
@@ -42,7 +44,7 @@ public class GelbooruCommand {
 				GenTypes(message.pfc);
 				var tags = AddBadTags();
 
-				List<GelbooruResult> results;
+				List<Post> results;
 				index = 0;
 				do {
 				var ee = AddTags(tags, index);
@@ -62,7 +64,7 @@ public class GelbooruCommand {
 					return null;
 				}
 
-				if (!message.isLoli && results[0].ContainsLoli)
+				if (!message.isLoli && results[0].Loli)
 				{
                     OnFail?.Invoke("Master... I found an image, but it's against discord's tos so i'm not going to send it.");
 					return null;
@@ -71,7 +73,7 @@ public class GelbooruCommand {
     }
 
         //we need a better way to add multiple emojis to the db lol
-		public async Task AddReactionsAsync(RestUserMessage abm, GelbooruResult gelbooruResult)
+		public async Task AddReactionsAsync(RestUserMessage abm, Post gelbooruResult)
 		{
             var msgjson = Newtonsoft.Json.JsonConvert.SerializeObject(this);
             var resjson = Newtonsoft.Json.JsonConvert.SerializeObject(gelbooruResult);
@@ -79,14 +81,15 @@ public class GelbooruCommand {
             {
                 (new("a:abbybongo:728506581423095838"), 0),
                 (new("❌"), 2),
-                (new("⚙️"), 1)
+                (new("⚙️"), 1),
+                (new("😵‍💫"), 3)
              };
             await abm.AddReactionsAsync(e.Select(e=>e.emoji).ToArray());
             await GelEmojiSql.AddEmojisAsync(message.user.Id, abm.Id, e, msgjson, resjson);
         }
 
-		public async Task<List<GelbooruResult>> GetPictureAsync(string[] tags) {
-        return await Apis.AbbyBooru.ExecuteAsync(tags);
+		public async Task<List<Post>> GetPictureAsync(string[] tags) {
+            return await Apis.AbbyBooru.GetRandomPost( tags );
     }
 
     public (List<string> tagz, string usedfc) AddTags(List<string> tags, int index)
@@ -123,7 +126,7 @@ public class GelbooruCommand {
     }
     
     public void GenTypes(string pfc) {
-        if (types == null) {
+        
             types = new() {
                 (pfc, message.cfc),
                 (message.cfc, null)
@@ -136,7 +139,7 @@ public class GelbooruCommand {
                     ("abigail_williams*", null)
                 });
             }
-        }
+        
     }
 
     //this feels wrong
@@ -152,7 +155,7 @@ public class GelbooruCommand {
     public string GetRandomFC(int stat) {
         if (message == null) return "";
         message.index = (stat+message.index)%message.fcs.Count;
-        return message.fcs[message.index++];
+        return message.fcs[message.index];
     }
 
 

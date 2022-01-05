@@ -1,5 +1,4 @@
-﻿using BooruSharp.Booru;
-using BooruSharp.Search.Post;
+﻿using Nano.XML;
 
 using System;
 using System.Collections.Generic;
@@ -10,115 +9,52 @@ namespace Abbybot_III.Apis
 {
 	class AbbyBooru
 	{
-		static List<ABooru> boorus = new List<ABooru>()
-		{
-			new Gelbooru(),
-			new SankakuComplex(),
-			new DanbooruDonmai(),
-			new Safebooru()
-		};
-
 		public static string[] badtaglist = { "bondage", "beastiality", "suicide", "injury", "furry", "guro", "sofra", "asian", "photo_(medium)", "scat" };
 		//I swear i'm not racist but this is an anime bot for anime girls
 		
 
 		public static async Task<int> GetPostCount(string[] tags)
-		{
-			int totalposts = 0;
-
-			foreach (var booru in boorus)
-			{
-				try
+		{		
+		try
 				{
-					totalposts += await booru.GetPostCountAsync(tags);
-					break;
+				var c = await Nano.Booru.GetPictureAsync( tags.ToList(), 0 );
+				return c.count;
 				}
 				catch (Exception e)
 				{
-					Console.ForegroundColor = ConsoleColor.Red;
 					Console.WriteLine(e.ToString());
-					Console.ForegroundColor = ConsoleColor.White;
 				}
-			}
-
-			return totalposts;
+			
+			return 0;
 		}
 
-		public static async Task GetPictureById(int id, Action<SearchResult> onResult=null, Action<Exception> onFail=null) 
+		public static async Task GetPictureById(ulong id, Action<Post> onResult=null, Action<Exception> onFail=null) 
 		{
-			var booru = boorus[0];
 			try {
-				var sr = await booru.GetPostByIdAsync(id);
-				onResult?.Invoke(sr);
+				var sr = await Nano.Booru.GetPictureWithId(id);
+				if (sr.count>0) 
+				onResult?.Invoke(sr.posts[0]);
 			}catch (Exception e){
+				Console.WriteLine( e );
 				onFail?.Invoke(e);
 			}
 		}
 
-		public static async Task<List<BooruSharp.Search.Tag.SearchResult>> GetTagData(string[] tags)
-		{
-			List<BooruSharp.Search.Tag.SearchResult> totalposts = new List<BooruSharp.Search.Tag.SearchResult>();
+		
 
-			foreach (var booru in boorus)
-			{
-				try
-				{
-					var w = string.Join(' ', tags);
-					Abbybot.print(w);
-					var e = await booru.GetTagsAsync(w);
-
-					totalposts.AddRange(e);
-					break;
-				}
-				catch (Exception e)
-				{
-					Console.ForegroundColor = ConsoleColor.Red;
-					Console.WriteLine(e.ToString());
-					Console.ForegroundColor = ConsoleColor.White;
-				}
-			}
-
-			return totalposts;
-		}
-
-	public static async Task<List<GelbooruResult>> ExecuteAsync(string[] tags, Action<Exception[]> onFailDeep = null)
+	public static async Task<List<Post>> GetRandomPost(string[] tags, Action<Exception[]> onFailDeep = null)
 	{
-		List<string> tagz = GetTags(tags);
-		List<GelbooruResult> results = new();
-		List<Exception> deepFails = new();
-		int index = 0;
-		bool gotposts = false;
-		while (!gotposts && index < boorus.Count)
-		{
-			try
-			{
-				var rs = await boorus[index].GetRandomPostsAsync(25, tagz.ToArray());
-				foreach (var ts in rs.Where(x => x.FileUrl != null && !x.Source.Contains("sofra")))
-					results.Add(new GelbooruResult() {tags = ts.Tags.ToArray(),
-                        FileUrl = ts.FileUrl,
-                        PreviewUrl = ts.PreviewUrl,
-                        Source = ts.Source,
-                        Nsfw= ts.Rating != Rating.Safe});
-				if (results.Count > 0) { break; }
-			} catch (Exception e) {
-				deepFails.Add(e);
-			}
-		}
-		if (results.Count == 0)
-			return null;
-		return results;
+			List<string> tagz = GetTags(tags);
+
+			var rs = await Nano.Booru.GetPictureAsync(tagz, 5 , true);
+			return rs.posts.Where( p => !p.source.Contains( "sofra" ) ).ToList();
 	}
 
-		public static async Task<SearchResult[]> GetLatest(string[] tags)
+		public static async Task<List<Post>> GetLatest(string[] tags)
 		{
-			SearchResult[] e = null;
-
-			try
-			{
-				e = await boorus[0].GetLastPostsAsync(tags);
-			}
-			catch { }
-			return e;
+			List<string> tagz = GetTags( tags );
+			var rs = await Nano.Booru.GetPictureAsync( tagz , 100, false );
+			return rs.posts.Where( p => !p.source.Contains( "sofra" ) ).ToList( );
 		}
 
 		static List<string> GetTags(string[] tags)
